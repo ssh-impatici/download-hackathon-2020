@@ -1,2 +1,1 @@
-Download Hackathon 2020
-TEAM: SSH-impatici 
+# Download Hackathon 2020 team SSH-impatici 
