@@ -1,10 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hackathon/utils/theme.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-void main() => runApp(App());
+import 'package:hackathon/pages/auth.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(App());
+}
 
 class App extends StatelessWidget {
   final MainModel _model = MainModel();
@@ -15,9 +22,7 @@ class App extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: AppTheme.theme,
-          routes: {'/': (BuildContext context) => page()},
+          routes: {'/': (BuildContext context) => AuthPage()},
         ));
   }
 }
-
-Widget page() => Scaffold(body: Container());

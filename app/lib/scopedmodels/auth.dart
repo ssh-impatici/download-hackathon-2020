@@ -9,13 +9,13 @@ mixin AuthModel on ConnectedModel {
   // Firebase email/password auth methods
 
   Future<User> createUserWithEmailAndPassword(
-      String email, String password) async {
+      {String email, String password}) async {
     UserCredential user = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
     return user.user;
   }
 
-  Future<User> login(String email, String password) async {
+  Future<User> login({String email, String password}) async {
     UserCredential user = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
     return user.user;
