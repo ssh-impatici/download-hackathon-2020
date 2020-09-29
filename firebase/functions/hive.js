@@ -6,7 +6,6 @@ const db = admin.firestore();
 
 exports.addHiveTakenRole = functions.https.onRequest(async (req, res) => {
   // ## Remove from open roles
-  if (!req.body) return res.status(401).send("req body not found");
   const data = JSON.parse(req.body);
   const hive = await db.collection('hives').doc(data.hiveId).get();
   if (!hive.exists) return res.status(404).send("Hive not found");
@@ -32,31 +31,4 @@ exports.addHiveTakenRole = functions.https.onRequest(async (req, res) => {
     })
   });
   return res.status(201).send("Taken role created");
-});
-
-
-exports.createHive = functions.https.onRequest(async (request, response) => {
-  // Check for POST request
-  if (request.method !== "POST") {
-    response.status(400).send('Please send a POST request');
-    return;
-  }
-
-  const obj = JSON.parse(request.body);
-  let loc = null;
-  if (obj.location != null) {
-    loc = new firebase.firestore.GeoPoint(obj.location.latitude, obj.location.longitude)
-  }
-  // GeoPoint
-  await db.collection('hives').add({
-    active: true,
-    description: obj.description,
-    location: loc,
-    name: obj.name,
-    openRoles: obj.openRoles,
-    takenRoles: null,
-    topics: obj.topics
-  });
-
-  return response.status(200).send("Hive created!");
 });
