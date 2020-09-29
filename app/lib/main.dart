@@ -1,10 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hackathon/utils/theme.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-void main() => runApp(App());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(App());
+}
 
 class App extends StatelessWidget {
   final MainModel _model = MainModel();
