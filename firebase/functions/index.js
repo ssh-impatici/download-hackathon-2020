@@ -24,7 +24,9 @@ exports.addHiveTakenRole = functions.https.onRequest(async (req, res) => {
     // if quantity is enough subtract it
     roles[roleIndex].quantity = quantity - 1;
   }
-  await db.doc(data.hiveRef).update({ openRoles: roles });
+  await db.doc(data.hiveRef).update({
+    openRoles: roles
+  });
 
   // ## Add to taken roles
   await db.doc(data.hiveRef).update({
@@ -47,11 +49,13 @@ exports.createHive = functions.https.onRequest(async (request, response) => {
     return response.status(400).send('Please send a POST request');
 
   const data = JSON.parse(request.body);
+
   let loc = null;
   if (data.location != null) {
-    loc = new firebase.firestore.GeoPoint(data.location.latitude, data.location.longitude)
+    // GeoPoint
+    loc = new admin.firestore.GeoPoint(data.location.latitude, data.location.longitude)
   }
-  // GeoPoint
+
   await db.collection('hives').add({
     active: true,
     description: data.description,
