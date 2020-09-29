@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+enum AuthMode { LOGIN, SINGUP }
+
 class AuthPage extends StatefulWidget {
   @override
   _AuthPageState createState() => _AuthPageState();
@@ -9,10 +11,12 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   //
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   bool visible = false;
+  AuthMode mode = AuthMode.LOGIN;
 
   String email;
   String password;
@@ -24,10 +28,13 @@ class _AuthPageState extends State<AuthPage> {
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [_email(), _password(), _button()],
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [_email(), _password(), _verify(), _button()],
+            ),
           ),
         ),
       ),
@@ -54,7 +61,6 @@ class _AuthPageState extends State<AuthPage> {
             }
           },
           onSaved: (String value) {
-
             email = value;
             emailController..text = value;
           }),
@@ -90,6 +96,33 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
+  Widget _verify() {
+    return mode == AuthMode.SINGUP
+        ? Container(
+            child: TextFormField(
+                style: TextStyle(color: Colors.black),
+                maxLines: 1,
+                controller: passwordController,
+                decoration: InputDecoration(
+                    labelText: 'Password',
+                    labelStyle: TextStyle(color: Colors.black),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.remove_red_eye),
+                      color: Colors.black,
+                      onPressed: () => _changePasswordVisibility(),
+                    )),
+                obscureText: visible ? false : true,
+                cursorColor: Colors.black,
+                // ignore: missing_return
+                validator: (String value) {
+                  if (value.isEmpty) {
+                    return 'password required! :(';
+                  }
+                },
+                onSaved: (String value) => verify = value))
+        : Container();
+  }
+
   Widget _button() {
     return ScopedModelDescendant(
         builder: (BuildContext context, Widget child, MainModel model) {
@@ -105,8 +138,17 @@ class _AuthPageState extends State<AuthPage> {
                     style: TextStyle(color: Colors.black),
                   ),
           ),
-          onPressed: () => {model.createUserWithEmailAndPassword(email, password)});
+          onPressed: () => {
+                // model.createUserWithEmailAndPassword(email, password)
+                _submit(model.createUserWithEmailAndPassword)
+              });
     });
+  }
+
+  void _submit(Function authfunc) {
+    if (!_formKey.currentState.validate()) return;
+    _formKey.currentState.save();
+    authfunc(email: email, password: password);
   }
 
   void _changePasswordVisibility() {
