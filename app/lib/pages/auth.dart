@@ -14,6 +14,7 @@ class _AuthPageState extends State<AuthPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController verifyController = TextEditingController();
 
   bool visible = false;
   AuthMode mode = AuthMode.LOGIN;
@@ -33,7 +34,15 @@ class _AuthPageState extends State<AuthPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [_email(), _password(), _verify(), _button()],
+              children: [
+                _title(),
+                _email(),
+                _password(),
+                _verify(),
+                _button(),
+                _togglemode(),
+                _google()
+              ],
             ),
           ),
         ),
@@ -41,16 +50,26 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
+  Widget _title() {
+    return Container(
+      padding: EdgeInsets.only(top: 50, bottom: 30),
+      child: Text(
+        'Hackathon',
+        style: TextStyle(
+            fontSize: 22,
+            color: Colors.grey.shade200,
+            fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
   Widget _email() {
     return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
       child: TextFormField(
-          style: TextStyle(color: Colors.black),
+          keyboardType: TextInputType.emailAddress,
           controller: emailController,
-          decoration: InputDecoration(
-            labelText: 'email',
-            labelStyle: TextStyle(color: Colors.black),
-          ),
-          cursorColor: Colors.black,
+          decoration: InputDecoration(hintText: 'Email'),
           // ignore: missing_return
           validator: (String value) {
             if (value.isEmpty) return 'email required! :(';
@@ -69,20 +88,18 @@ class _AuthPageState extends State<AuthPage> {
 
   Widget _password() {
     return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
       child: TextFormField(
-          style: TextStyle(color: Colors.black),
           maxLines: 1,
           controller: passwordController,
           decoration: InputDecoration(
-              labelText: 'Password',
-              labelStyle: TextStyle(color: Colors.black),
+              hintText: 'Password',
               suffixIcon: IconButton(
                 icon: Icon(Icons.remove_red_eye),
-                color: Colors.black,
+                color: Colors.grey.shade200,
                 onPressed: () => _changePasswordVisibility(),
               )),
           obscureText: visible ? false : true,
-          cursorColor: Colors.black,
           // ignore: missing_return
           validator: (String value) {
             if (value.isEmpty) {
@@ -99,61 +116,114 @@ class _AuthPageState extends State<AuthPage> {
   Widget _verify() {
     return mode == AuthMode.SINGUP
         ? Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
             child: TextFormField(
-                style: TextStyle(color: Colors.black),
-                maxLines: 1,
-                controller: passwordController,
-                decoration: InputDecoration(
-                    labelText: 'Password',
-                    labelStyle: TextStyle(color: Colors.black),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.remove_red_eye),
-                      color: Colors.black,
-                      onPressed: () => _changePasswordVisibility(),
-                    )),
-                obscureText: visible ? false : true,
-                cursorColor: Colors.black,
-                // ignore: missing_return
-                validator: (String value) {
-                  if (value.isEmpty) {
-                    return 'password required! :(';
-                  }
-                },
-                onSaved: (String value) => verify = value))
+              maxLines: 1,
+              controller: verifyController,
+              decoration: InputDecoration(
+                  hintText: 'Password',
+                  labelStyle: TextStyle(color: Colors.black),
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.remove_red_eye),
+                    color: Colors.grey.shade200,
+                    onPressed: () => _changePasswordVisibility(),
+                  )),
+              obscureText: visible ? false : true,
+              // ignore: missing_return
+              validator: (String value) {
+                if (mode == AuthMode.SINGUP) {
+                  if (value.isEmpty) return 'password required! :(';
+                  if (value != passwordController.text)
+                    return 'password must match! :(';
+                }
+              },
+            ),
+          )
         : Container();
   }
 
   Widget _button() {
     return ScopedModelDescendant(
         builder: (BuildContext context, Widget child, MainModel model) {
-      return RaisedButton(
-          color: Colors.white,
-          child: Center(
-            child: model.loading
-                ? Container(
-                    padding: EdgeInsets.all(10),
-                    child: Center(child: CircularProgressIndicator()))
-                : Text(
-                    'Log In',
-                    style: TextStyle(color: Colors.black),
-                  ),
-          ),
-          onPressed: () => {
-                // model.createUserWithEmailAndPassword(email, password)
-                _submit(model.createUserWithEmailAndPassword)
-              });
+      return Container(
+        padding: EdgeInsets.only(top: 20, bottom: 15),
+        child: RaisedButton(
+            color: Colors.grey.shade900,
+            child: Center(
+              child: model.loading
+                  ? Container(
+                      padding: EdgeInsets.all(10),
+                      child: Center(child: CircularProgressIndicator()))
+                  : Text(
+                      mode == AuthMode.LOGIN ? 'Log in' : 'Sign in',
+                      style: TextStyle(color: Colors.white),
+                    ),
+            ),
+            onPressed: () => _submit(mode == AuthMode.LOGIN
+                ? model.login
+                : model.createUserWithEmailAndPassword)),
+      );
     });
   }
 
-  void _submit(Function authfunc) {
+  void _submit(Function callback) async {
     if (!_formKey.currentState.validate()) return;
     _formKey.currentState.save();
-    authfunc(email: email, password: password);
+    await callback(email: email, password: password);
+    // TODO : navigate if success
+    Navigator.of(context).pushReplacementNamed('/home');
   }
 
   void _changePasswordVisibility() {
     setState(() {
       visible = !visible;
+    });
+  }
+
+  Widget _togglemode() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 15),
+      alignment: Alignment.center,
+      child: InkWell(
+        onTap: () {
+          setState(() => mode == AuthMode.LOGIN
+              ? mode = AuthMode.SINGUP
+              : mode = AuthMode.LOGIN);
+        },
+        child: Text(
+          mode == AuthMode.LOGIN
+              ? "Don't have an account? Sign up"
+              : 'Already have an account? Log in',
+          style: TextStyle(decoration: TextDecoration.underline),
+        ),
+      ),
+    );
+  }
+
+  Widget _google() {
+    return ScopedModelDescendant(
+        builder: (BuildContext context, Widget child, MainModel model) {
+      return Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: GestureDetector(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            decoration: BoxDecoration(color: Colors.grey.shade900),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image(
+                    image: AssetImage('assets/images/google.png'), height: 20),
+                SizedBox(width: 20),
+                Text('Sign in with Google')
+              ],
+            ),
+          ),
+          onTap: () => model.signInWithGoogle(),
+        ),
+      );
     });
   }
 }

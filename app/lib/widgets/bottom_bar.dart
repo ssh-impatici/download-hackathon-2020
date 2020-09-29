@@ -18,19 +18,9 @@ class _BottomBarState extends State<BottomBar> {
     switch (index) {
       case 0:
         widget.animateToPage(0);
-
         break;
       case 1:
         widget.animateToPage(1);
-        break;
-      case 2:
-        widget.animateToPage(2);
-        break;
-      case 3:
-        widget.animateToPage(3);
-        break;
-      case 4:
-        widget.animateToPage(4);
         break;
     }
   }
@@ -45,24 +35,12 @@ class _BottomBarState extends State<BottomBar> {
           title: Text('Map'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.camera_alt),
-          title: Text('Scanner'),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.local_offer),
-          title: Text('Bonus'),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.assessment),
-          title: Text('Ranking'),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.shopping_cart),
-          title: Text('Shop'),
+          icon: Icon(Icons.list),
+          title: Text('Hives'),
         ),
       ],
       currentIndex: _selectedIndex,
-      selectedItemColor: Colors.green[800],
+      selectedItemColor: Colors.yellow,
       onTap: _onItemTapped,
     );
   }

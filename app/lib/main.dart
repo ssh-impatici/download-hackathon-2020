@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:hackathon/pages/home.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 
 import 'package:flutter/material.dart';
@@ -22,7 +23,10 @@ class App extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: AppTheme.theme,
-          routes: {'/': (BuildContext context) => AuthPage()},
+          routes: {
+            '/': (context) => AuthPage(),
+            '/home': (context) => HomePage()
+          },
         ));
   }
 }
