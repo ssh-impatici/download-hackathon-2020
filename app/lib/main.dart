@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:hackathon/utils/theme.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import 'package:hackathon/pages/auth.dart';
+
 void main() => runApp(App());
 
 class App extends StatelessWidget {
@@ -15,9 +17,7 @@ class App extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: AppTheme.theme,
-          routes: {'/': (BuildContext context) => page()},
+          routes: {'/': (BuildContext context) => AuthPage()},
         ));
   }
 }
-
-Widget page() => Scaffold(body: Container());
