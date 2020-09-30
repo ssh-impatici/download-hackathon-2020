@@ -22,11 +22,10 @@ class HiveDescription extends StatelessWidget {
               _author(),
               _section('Hive Descrpition'),
               _description(),
-              // hive.address != null ? _section('Address') : Container()
-              _section('Address'),
+              hive.address != null ? _section('Address') : Container(),
               _place(),
-              _section('Open Roles'),
-              _openRoles(),
+              hive.openRoles.isNotEmpty ? _section('Open Roles') : Container(),
+              _openRoles(context),
               _section('People'),
               _takenRoles(context)
             ],
@@ -91,11 +90,11 @@ class HiveDescription extends StatelessWidget {
     );
   }
 
-  Widget _openRoles() {
+  Widget _openRoles(BuildContext context) {
     List<Widget> roles = List<Widget>();
     hive.openRoles.sort((a, b) => a.name.length.compareTo(b.name.length));
     hive.openRoles.forEach((role) {
-      roles.add(_openRole(role));
+      roles.add(_openRole(role, context));
     });
     return Container(
       margin: EdgeInsets.only(bottom: 20, top: 10),
@@ -107,7 +106,7 @@ class HiveDescription extends StatelessWidget {
     );
   }
 
-  Widget _openRole(OpenRole role) {
+  Widget _openRole(OpenRole role, BuildContext context) {
     return GestureDetector(
       child: Container(
         margin: EdgeInsets.only(right: 10, bottom: 10),
@@ -125,7 +124,10 @@ class HiveDescription extends StatelessWidget {
                     Icons.add,
                     color: Colors.grey.shade800,
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    showModalBottomSheet(
+                        context: context, builder: (context) => _confirm());
+                  },
                 ),
                 SizedBox(width: 10),
                 Container(
@@ -163,6 +165,7 @@ class HiveDescription extends StatelessWidget {
       roles.add(_takenRole(role, context));
     });
     return Container(
+      margin: EdgeInsets.only(top: 10),
       child: Column(
         children: roles,
       ),
@@ -171,6 +174,7 @@ class HiveDescription extends StatelessWidget {
 
   Widget _takenRole(TakenRole role, BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(bottom: 15),
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       decoration: BoxDecoration(
@@ -190,6 +194,13 @@ class HiveDescription extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+
+  Widget _confirm() {
+    return Container(
+      height: 100,
+      color: Colors.red,
     );
   }
 }
