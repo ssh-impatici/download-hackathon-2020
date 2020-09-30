@@ -18,7 +18,7 @@ mixin HivesModel on ConnectedModel {
   }
 
   Future<Position> getPosition() async {
-    LocationPermission permission = await checkPermission();
+    LocationPermission permission = await requestPermission();
 
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
@@ -166,9 +166,7 @@ mixin HivesModel on ConnectedModel {
 
   Future<Hive> joinHive({String hiveId, String roleId, String userId}) async {
     _setLoading(true);
-
     Hive joinedHive;
-    dynamic json;
 
     try {
       const url = '$apiEndpoint/joinHive';
@@ -182,7 +180,7 @@ mixin HivesModel on ConnectedModel {
         },
       );
 
-      json = response.data;
+      Map<String, dynamic> json = response.data;
 
       joinedHive = await _parseHive(json);
 
@@ -208,9 +206,7 @@ mixin HivesModel on ConnectedModel {
 
   Future<Hive> leaveHive({String hiveId, String roleId, String userId}) async {
     _setLoading(true);
-
     Hive leftHive;
-    dynamic json;
 
     try {
       const url = '$apiEndpoint/leaveHive';
@@ -224,7 +220,7 @@ mixin HivesModel on ConnectedModel {
         },
       );
 
-      json = response.data;
+      Map<String, dynamic> json = response.data;
 
       leftHive = await _parseHive(json);
 
