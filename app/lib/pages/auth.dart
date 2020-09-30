@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:hackathon/utils/enums.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -243,7 +244,25 @@ class _AuthPageState extends State<AuthPage> {
               ],
             ),
           ),
-          onTap: () => model.signInWithGoogle(),
+          onTap: () async {
+            AuthResult result = await model.signInWithGoogle();
+            switch (result) {
+              case AuthResult.SIGNEDIN:
+                // await mode.getHives()
+                Navigator.of(context).pushReplacementNamed('/home');
+                break;
+              case AuthResult.SIGNEDUP:
+                await model.getTopics();
+                Navigator.of(context).pushReplacementNamed('/info');
+                break;
+              case AuthResult.UNAUTHORIZED:
+                await showDialog(
+                    context: context,
+                    child: AlertDialog(title: Text(model.errorMessage)));
+                break;
+              default:
+            }
+          },
         ),
       );
     });
