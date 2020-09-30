@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:hackathon/pages/home.dart';
+import 'package:hackathon/pages/info.dart';
 import 'package:hackathon/pages/user.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 
@@ -26,7 +27,7 @@ class App extends StatelessWidget {
         theme: AppTheme.theme,
         routes: {
           '/': (context) => AuthPage(),
-          '/user': (context) => UserPage(true),
+          '/info': (context) => InfoPage(),
           '/home': (context) => HomePage()
         },
       ),
