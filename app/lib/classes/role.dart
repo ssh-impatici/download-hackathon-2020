@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:hackathon/classes/user.dart';
 
-class Role {
-  String id;
+class RoleScoring {
   String name;
   int score;
 
-  Role({
-    @required this.id,
+  RoleScoring({
     @required this.name,
-    this.score,
+    @required this.score,
   });
 }
 
 class OpenRole {
-  Role role;
+  String role;
   int quantity;
 
   OpenRole({
@@ -25,7 +23,7 @@ class OpenRole {
 
 class TakenRole {
   User user;
-  Role role;
+  String role;
 
   TakenRole({
     @required this.user,
