@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hackathon/classes/hive.dart';
 import 'package:hackathon/classes/topic.dart';
 
@@ -11,10 +12,10 @@ class User {
   List<Hive> hives;
 
   User({
-    this.id,
-    this.name,
-    this.surname,
-    this.email,
+    @required this.id,
+    @required this.name,
+    @required this.surname,
+    @required this.email,
     this.bio,
     this.topics,
     this.hives,

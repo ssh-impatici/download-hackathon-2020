@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/topic.dart';
 
@@ -13,10 +14,10 @@ class Hive {
   List<TakenRole> takenRoles;
 
   Hive({
-    this.id,
-    this.name,
+    @required this.id,
+    @required this.name,
     this.description,
-    this.active,
+    @required this.active,
     this.location,
     this.topics,
     this.openRoles,
