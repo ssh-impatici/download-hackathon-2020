@@ -50,7 +50,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
                       _openRoles(context),
                       _section('People'),
                       _takenRoles(context),
-                      _leave()
+                      _giveup()
                     ],
                   )
                 : CircularProgressIndicator(),
@@ -264,7 +264,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
                 ),
               ),
             ),
-            model.user.id == _hive.creator.id
+            model.user.id == _hive.creator.id || model.user.id == role.user.id
                 ? _remove(model.leaveHive, role)
                 : Container()
           ],
@@ -461,7 +461,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
     );
   }
 
-  Widget _leave() {
+  Widget _giveup() {
     return ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
       return Container(
@@ -474,8 +474,8 @@ class _HiveDescriptionState extends State<HiveDescription> {
                     padding: EdgeInsets.all(10),
                     child: Center(child: CircularProgressIndicator()))
                 : Text(
-                    'Confirm',
-                    style: TextStyle(color: Colors.white),
+                    'Leave',
+                    style: TextStyle(color: Colors.white, fontSize: 15),
                   ),
           ),
           onPressed: () => model.giveUpHive(hiveId: widget.hiveId),
