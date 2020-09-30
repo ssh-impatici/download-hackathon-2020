@@ -1,0 +1,1 @@
+enum AuthResult { UNAUTHORIZED, SIGNEDUP, SIGNEDIN }

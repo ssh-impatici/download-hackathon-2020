@@ -6,51 +6,131 @@ import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/classes/user.dart' as Model;
 import 'package:hackathon/scopedmodels/connected.dart';
+import 'package:hackathon/utils/enums.dart';
 
 mixin AuthModel on ConnectedModel {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  _setLoading(bool newState) {
+    loading = newState;
+    notifyListeners();
+  }
+
   // Firebase email/password auth methods
 
-  Future<User> createUserWithEmailAndPassword(
-      {String email, String password}) async {
-    UserCredential user = await _auth.createUserWithEmailAndPassword(
-        email: email, password: password);
-    return user.user;
+  Future<AuthResult> createUserWithEmailAndPassword({
+    String email,
+    String password,
+  }) async {
+    _setLoading(true);
+    AuthResult result;
+
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      result = AuthResult.SIGNEDUP;
+    } catch (e) {
+      result = AuthResult.UNAUTHORIZED;
+      errorMessage = e.toString();
+    }
+
+    _setLoading(false);
+    return result;
   }
 
-  Future<User> login({String email, String password}) async {
-    UserCredential user = await _auth.signInWithEmailAndPassword(
-        email: email, password: password);
-    return user.user;
+  Future<AuthResult> login({
+    String email,
+    String password,
+  }) async {
+    _setLoading(true);
+    AuthResult result;
+
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      user = await retrieveUserInfo();
+
+      if (user != null) {
+        result = AuthResult.SIGNEDIN;
+      } else {
+        result = AuthResult.SIGNEDUP;
+      }
+    } catch (e) {
+      result = AuthResult.UNAUTHORIZED;
+      errorMessage = e.toString();
+    }
+
+    _setLoading(false);
+    return result;
   }
 
-  logout() async {
-    await _auth.signOut();
+  Future<AuthResult> logout() async {
+    _setLoading(true);
+
+    try {
+      await _auth.signOut();
+    } catch (e) {
+      errorMessage = e.toString();
+    }
+
+    _setLoading(false);
+    return AuthResult.UNAUTHORIZED;
   }
 
   // Firebase google sign-in methods
 
-  Future<User> signInWithGoogle() async {
-    final GoogleSignInAccount googleSignInAccount =
-        await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
+  Future<AuthResult> signInWithGoogle() async {
+    _setLoading(true);
+    AuthResult result;
 
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleSignInAuthentication.accessToken,
-      idToken: googleSignInAuthentication.idToken,
-    );
+    try {
+      final GoogleSignInAccount googleSignInAccount =
+          await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
 
-    final UserCredential authResult =
-        await _auth.signInWithCredential(credential);
-    return authResult.user;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+
+      await _auth.signInWithCredential(credential);
+
+      user = await retrieveUserInfo();
+
+      if (user != null) {
+        result = AuthResult.SIGNEDIN;
+      } else {
+        result = AuthResult.SIGNEDUP;
+      }
+    } catch (e) {
+      result = AuthResult.UNAUTHORIZED;
+      errorMessage = e.toString();
+    }
+
+    _setLoading(false);
+    return result;
   }
 
-  signoutGoogle() async {
-    await _googleSignIn.signOut();
+  Future<AuthResult> signoutGoogle() async {
+    _setLoading(true);
+
+    try {
+      await _googleSignIn.signOut();
+    } catch (e) {
+      errorMessage = e.toString();
+    }
+
+    _setLoading(false);
+    return AuthResult.UNAUTHORIZED;
   }
 
   // Cloud Firestore user methods
@@ -83,6 +163,33 @@ mixin AuthModel on ConnectedModel {
     } else {
       return null;
     }
+  }
+
+  Future<AuthResult> addUserInfo(Model.User userInfo) async {
+    User user = _auth.currentUser;
+
+    if (user == null) {
+      return AuthResult.SIGNEDUP;
+    }
+
+    _setLoading(true);
+    AuthResult result;
+
+    try {
+      await _firestore.collection('users').doc(user.uid).set({
+        'name': userInfo.name,
+        'surname': userInfo.surname,
+        'email': user.email,
+        'bio': userInfo.bio,
+      });
+
+      result = AuthResult.SIGNEDIN;
+    } catch (e) {
+      result = AuthResult.SIGNEDUP;
+    }
+
+    _setLoading(false);
+    return result;
   }
 
   Future<List<Hive>> _retrieveHivesFromPaths(List<String> paths) async {
