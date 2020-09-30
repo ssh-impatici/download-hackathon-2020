@@ -10,14 +10,21 @@ module.exports = function(e) {
     if (req.method !== 'POST' || !req.body)
       return res.status(400).send("Please send a POST request");
 
-    const data = {...req.body};
+    const data = req.body;
+
     const hive = await db.doc(data.hiveRef).get();
     if (!hive.exists) return res.status(404).send("Hive not found");
+    // Check that user is not already joined
+    const takenRoles = hive.get("takenRoles");
+    if(takenRoles.find(role => role.userRef === data.userRef))
+      return res.status(401).send("User already joined");
+
     // Get role id and check if quantity is enough
     const roles = hive.get("openRoles");
-    console.log(roles);
+    
     const roleIndex = roles.findIndex(r => r.name == data.roleRef);
     if (roleIndex < 0) return res.status(404).send("Role not available");
+
     if (roles[roleIndex].quantity == 1) {
       // if quantity is 0 remove role from list
       roles.splice(roleIndex, 1);

@@ -1,26 +1,33 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:hackathon/widgets/auto-completion.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'dart:math';
 
-class InfoPage extends StatefulWidget {
+class CreateHivePage extends StatefulWidget {
   @override
-  _InfoPageState createState() => _InfoPageState();
+  _CreateHivePageState createState() => _CreateHivePageState();
 }
 
-class _InfoPageState extends State<InfoPage> {
-  //
+class _CreateHivePageState extends State<CreateHivePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
-  TextEditingController surnameController = TextEditingController();
-  TextEditingController bioController = TextEditingController();
-  //
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+
   String name;
-  String surname;
-  String bio;
-  List<String> topics = List<String>();
+  String description;
+  LatLng location = LatLng(
+    45.642389 + ((Random().nextInt(100) - 50) / 100),
+    9.5858929 + ((Random().nextInt(100) - 50) / 100),
+  );
+  String address;
+  List<OpenRole> openRoles = [];
+  List<String> topics = [];
 
   @override
   Widget build(BuildContext context) {
@@ -38,27 +45,33 @@ class _InfoPageState extends State<InfoPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                        padding: EdgeInsets.only(bottom: 20),
-                        child: Text('One more step',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold))),
+                      padding: EdgeInsets.only(bottom: 20),
+                      child: Text(
+                        'Create hive',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                     Container(
-                        padding: EdgeInsets.only(bottom: 20),
-                        child: Text(
-                            'We need some more additional infos about you!',
-                            style: TextStyle(fontSize: 16))),
+                      padding: EdgeInsets.only(bottom: 20),
+                      child: Text(
+                        'Fill the info below to create a new hive!',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
                     _title('Name'),
                     _name(),
                     SizedBox(height: 15),
-                    _title('Surname'),
-                    _surname(),
+                    _title('Description'),
+                    _description(),
                     SizedBox(height: 15),
-                    _title('Bio'),
-                    _bio(),
+                    _title('Location (optional)'),
+                    _address(),
                     SizedBox(height: 15),
-                    _title('Interests'),
+                    _title('Topics'),
                     _interests(model.topics),
                     _selected(topics),
                     _button()
@@ -91,7 +104,7 @@ class _InfoPageState extends State<InfoPage> {
           decoration: InputDecoration(hintText: 'Name'),
           // ignore: missing_return
           validator: (String value) {
-            if (value.isEmpty) return 'You must enter your name!';
+            if (value.isEmpty) return 'You must enter the hive name!';
           },
           onSaved: (String value) {
             name = value;
@@ -100,45 +113,37 @@ class _InfoPageState extends State<InfoPage> {
     );
   }
 
-  Widget _surname() {
+  Widget _description() {
     return Container(
       child: TextFormField(
           keyboardType: TextInputType.emailAddress,
-          controller: surnameController,
-          decoration: InputDecoration(hintText: 'Surname'),
+          controller: descriptionController,
+          decoration: InputDecoration(hintText: 'Description'),
           // ignore: missing_return
-          validator: (String value) {
-            if (value.isEmpty) return 'You must enter your surname!';
-          },
           onSaved: (String value) {
-            surname = value;
-            surnameController..text = value;
+            description = value;
+            descriptionController..text = value;
           }),
     );
   }
 
-  Widget _bio() {
+  Widget _address() {
     return Container(
       child: TextFormField(
-          keyboardType: TextInputType.emailAddress,
-          controller: bioController,
-          maxLines: 5,
-          decoration: InputDecoration(hintText: 'Something about you'),
-          // ignore: missing_return
-          validator: (String value) {
-            if (value.isEmpty)
-              return 'Let the others know something about you!';
-            if (value.length < 10)
-              return 'Try to provide a more complete description!';
-          },
-          onSaved: (String value) {
-            bio = value;
-            bioController..text = value;
-          }),
+        keyboardType: TextInputType.emailAddress,
+        controller: addressController,
+        decoration: InputDecoration(hintText: 'Address'),
+        // ignore: missing_return
+        onSaved: (String value) {
+          address = value;
+          addressController..text = value;
+        },
+      ),
     );
   }
 
   Widget _interests(List<Topic> options) {
+    print(options);
     return Container(
       child: AutoCompletion(options, addTopic),
     );
@@ -211,16 +216,28 @@ class _InfoPageState extends State<InfoPage> {
                     style: TextStyle(color: Colors.white),
                   ),
           ),
-          onPressed: () => _submit(model.addUserInfo, model.errorMessage),
+          onPressed: () => _submit(model),
         ),
       );
     });
   }
 
-  void _submit(Function callback, String msg) async {
-    if (!_formKey.currentState.validate()) return;
+  void _submit(MainModel model) async {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
     _formKey.currentState.save();
-    await callback(name: name, surname: surname, bio: bio, topics: topics)
+
+    await model
+        .createHive(
+          name: name,
+          description: description,
+          latitude: location.latitude,
+          longitude: location.longitude,
+          address: address,
+          openRoles: openRoles,
+          topics: topics,
+        )
         .then((value) => Navigator.of(context).pushReplacementNamed('/home'));
   }
 }
