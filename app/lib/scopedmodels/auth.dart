@@ -292,6 +292,7 @@ mixin AuthModel on ConnectedModel {
           creator: creator,
           active: data['active'],
           description: data['description'],
+          address: data['address'],
           latitude: data['latitude'],
           longitude: data['longitude'],
           openRoles: openRoles,

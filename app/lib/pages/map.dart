@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hackathon/classes/hive.dart';
+import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:hackathon/widgets/hive.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -127,7 +128,7 @@ class _MapPageState extends State<MapPage> {
               color: Colors.grey.withOpacity(0.5)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [_switch(), _myposition()],
+            children: [_switch(), _reload(), _myposition()],
           ),
         ),
       ),
@@ -135,13 +136,16 @@ class _MapPageState extends State<MapPage> {
   }
 
   Widget _switch() {
-    return Switch(
-      activeColor: Colors.grey.shade800.withOpacity(1),
-      activeTrackColor: Colors.grey.shade600.withOpacity(1),
-      value: bytopic,
-      onChanged: (value) {
-        setState(() => bytopic = value);
-      },
+    return Tooltip(
+      message: 'Topics Filter',
+      child: Switch(
+        activeColor: Colors.grey.shade800.withOpacity(1),
+        activeTrackColor: Colors.grey.shade600.withOpacity(1),
+        value: bytopic,
+        onChanged: (value) {
+          setState(() => bytopic = value);
+        },
+      ),
     );
   }
 
@@ -150,16 +154,51 @@ class _MapPageState extends State<MapPage> {
       bottom: 20,
       right: 20,
       child: FloatingActionButton(
-        heroTag: 'createHive',
-        backgroundColor: Colors.grey.shade800,
-        foregroundColor: Colors.grey.shade200,
-        child: Icon(
-          Icons.add,
-          size: 30,
+          heroTag: 'createHive',
+          backgroundColor: Colors.grey.shade800,
+          foregroundColor: Colors.grey.shade200,
+          child: Icon(
+            Icons.add,
+            size: 30,
+          ),
+          onPressed: () => widget.model.createHive(
+              name: "test name",
+              description: "test description",
+              address: "test address",
+              latitude: 9,
+              longitude: 5,openRoles: null, topics: ["Tecnologia"])),
+    );
+  }
+
+  Widget _reload() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 10.0),
+      child: Tooltip(
+        message: 'Refresh Hives',
+        child: InkWell(
+          borderRadius: BorderRadius.circular(4),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Icon(
+              Icons.refresh,
+              color: Colors.grey.shade800,
+              size: 30,
+            ),
+          ),
+          onTap: () async {
+            LatLngBounds bounds = await _mapController.getVisibleRegion();
+            double lat =
+                (bounds.northeast.latitude + bounds.southwest.latitude) / 2;
+            double lng =
+                (bounds.northeast.longitude + bounds.southwest.longitude) / 2;
+
+            LatLng latLng = LatLng(lat, lng);
+
+            widget.model.getMapHives(latLng: latLng).then((_) {
+              _initializeMarkers();
+            });
+          },
         ),
-        onPressed: () => {
-          // TODO: Add create hive behavior
-        },
       ),
     );
   }
@@ -167,17 +206,20 @@ class _MapPageState extends State<MapPage> {
   Widget _myposition() {
     return Container(
       margin: EdgeInsets.only(bottom: 10.0),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(4),
-        child: Container(
-          padding: EdgeInsets.all(10),
-          child: Icon(
-            Icons.gps_fixed,
-            color: Colors.grey.shade800,
-            size: 30,
+      child: Tooltip(
+        message: 'Current position',
+        child: InkWell(
+          borderRadius: BorderRadius.circular(4),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Icon(
+              Icons.gps_fixed,
+              color: Colors.grey.shade800,
+              size: 30,
+            ),
           ),
+          onTap: _moveToMyLocation,
         ),
-        onTap: _moveToMyLocation,
       ),
     );
   }

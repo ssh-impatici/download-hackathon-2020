@@ -61,7 +61,7 @@ module.exports = function(e) {
     if (req.method !== "POST")
       return res.status(400).send("Please send a POST request");
 
-    const data = JSON.parse(req.body);
+    const data = { ...req.body };
 
     let lat = null;
     let lon = null;
