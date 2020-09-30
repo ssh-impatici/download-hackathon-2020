@@ -43,6 +43,7 @@ mixin HivesModel on ConnectedModel {
         Position pos = await getPosition();
 
         if (pos == null) {
+          _setLoading(false);
           return null;
         } else {
           position = LatLng(pos.latitude, pos.longitude);
