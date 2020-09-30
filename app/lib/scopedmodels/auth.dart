@@ -203,66 +203,74 @@ mixin AuthModel on ConnectedModel {
   }
 
   Future<Hive> _retrieveHiveFromPath(String path) async {
-    DocumentSnapshot result = await _firestore.doc(path).get();
+    try {
+      DocumentSnapshot result = await _firestore.doc(path).get();
 
-    if (result != null) {
-      Map<String, dynamic> data = result.data();
+      if (result != null) {
+        Map<String, dynamic> data = result.data();
 
-      List<OpenRole> openRoles = [];
-      for (dynamic openRole in data['openRoles']) {
-        Role role = await _retrieveRoleFromPath(openRole['roleId']);
+        List<OpenRole> openRoles = [];
+        for (dynamic openRole in data['openRoles']) {
+          Role role = await _retrieveRoleFromPath(openRole['roleId']);
 
-        openRoles.add(OpenRole(
-          role: role,
-          quantity: openRole['quantity'],
-        ));
+          openRoles.add(OpenRole(
+            role: role,
+            quantity: openRole['quantity'],
+          ));
+        }
+
+        List<TakenRole> takenRoles = [];
+        for (dynamic takenRole in data['takenRoles']) {
+          Role role = await _retrieveRoleFromPath(takenRole['roleId']);
+          Model.User user = await _retrieveUserFromPath(takenRole['userId']);
+
+          takenRoles.add(TakenRole(
+            role: role,
+            user: user,
+          ));
+        }
+
+        List<Topic> topics = await _retrieveTopicsFromPaths(data['topics']);
+
+        return Hive(
+          id: result.id,
+          name: data['name'],
+          active: data['active'],
+          description: data['description'],
+          location: data['location'],
+          openRoles: openRoles,
+          takenRoles: takenRoles,
+          topics: topics,
+        );
+      } else {
+        return null;
       }
-
-      List<TakenRole> takenRoles = [];
-      for (dynamic takenRole in data['takenRoles']) {
-        Role role = await _retrieveRoleFromPath(takenRole['roleId']);
-        Model.User user = await _retrieveUserFromPath(takenRole['userId']);
-
-        takenRoles.add(TakenRole(
-          role: role,
-          user: user,
-        ));
-      }
-
-      List<Topic> topics = await _retrieveTopicsFromPaths(data['topics']);
-
-      return Hive(
-        id: result.id,
-        name: data['name'],
-        active: data['active'],
-        description: data['description'],
-        location: data['location'],
-        openRoles: openRoles,
-        takenRoles: takenRoles,
-        topics: topics,
-      );
-    } else {
+    } catch (e) {
       return null;
     }
   }
 
   Future<Model.User> _retrieveUserFromPath(String path) async {
-    DocumentSnapshot result = await _firestore.doc(path).get();
+    try {
+      DocumentSnapshot result = await _firestore.doc(path).get();
 
-    if (result != null) {
-      Map<String, dynamic> data = result.data();
+      if (result != null) {
+        Map<String, dynamic> data = result.data();
 
-      List<Topic> topics = await _retrieveTopicsFromPaths(data['topics']);
+        List<Topic> topics = await _retrieveTopicsFromPaths(data['topics']);
 
-      return Model.User(
-        id: result.id,
-        name: data['name'],
-        surname: data['surname'],
-        email: data['email'],
-        bio: data['bio'],
-        topics: topics,
-      );
-    } else {
+        return Model.User(
+          id: result.id,
+          name: data['name'],
+          surname: data['surname'],
+          email: data['email'],
+          bio: data['bio'],
+          topics: topics,
+        );
+      } else {
+        return null;
+      }
+    } catch (e) {
       return null;
     }
   }
@@ -278,19 +286,23 @@ mixin AuthModel on ConnectedModel {
   }
 
   Future<Topic> _retrieveTopicFromPath(String path) async {
-    DocumentSnapshot result = await _firestore.doc(path).get();
+    try {
+      DocumentSnapshot result = await _firestore.doc(path).get();
 
-    if (result != null) {
-      Map<String, dynamic> data = result.data();
+      if (result != null) {
+        Map<String, dynamic> data = result.data();
 
-      List<Role> roles = await _retrieveRolesFromPaths(data['roles']);
+        List<Role> roles = await _retrieveRolesFromPaths(data['roles']);
 
-      return Topic(
-        id: result.id,
-        name: data['name'],
-        roles: roles,
-      );
-    } else {
+        return Topic(
+          id: result.id,
+          name: data['name'],
+          roles: roles,
+        );
+      } else {
+        return null;
+      }
+    } catch (e) {
       return null;
     }
   }
@@ -306,16 +318,20 @@ mixin AuthModel on ConnectedModel {
   }
 
   Future<Role> _retrieveRoleFromPath(String path) async {
-    DocumentSnapshot result = await _firestore.doc(path).get();
+    try {
+      DocumentSnapshot result = await _firestore.doc(path).get();
 
-    if (result != null) {
-      Map<String, dynamic> data = result.data();
+      if (result != null) {
+        Map<String, dynamic> data = result.data();
 
-      return Role(
-        id: result.id,
-        name: data['name'],
-      );
-    } else {
+        return Role(
+          id: result.id,
+          name: data['name'],
+        );
+      } else {
+        return null;
+      }
+    } catch (e) {
       return null;
     }
   }

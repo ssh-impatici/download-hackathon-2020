@@ -15,18 +15,47 @@ mixin TopicsModel on ConnectedModel {
     _setLoading(true);
     List<Topic> toReturn;
 
-    QuerySnapshot snapshot = await _firestore.collection('topics').get();
+    try {
+      QuerySnapshot snapshot = await _firestore.collection('topics').get();
 
-    for (QueryDocumentSnapshot topic in snapshot.docs) {
-      Map<String, dynamic> data = topic.data();
+      for (QueryDocumentSnapshot topic in snapshot.docs) {
+        Map<String, dynamic> data = topic.data();
+
+        List<Role> roles = await _retrieveRolesFromPaths(data['roles']);
+
+        toReturn.add(Topic(
+          id: topic.id,
+          name: data['name'],
+          roles: roles,
+        ));
+      }
+    } catch (e) {
+      toReturn = null;
+    }
+
+    _setLoading(false);
+    return toReturn;
+  }
+
+  Future<Topic> getTopic(String id) async {
+    _setLoading(true);
+    Topic toReturn;
+
+    try {
+      DocumentSnapshot snapshot =
+          await _firestore.collection('topics').doc(id).get();
+
+      Map<String, dynamic> data = snapshot.data();
 
       List<Role> roles = await _retrieveRolesFromPaths(data['roles']);
 
-      toReturn.add(Topic(
-        id: topic.id,
+      toReturn = Topic(
+        id: snapshot.id,
         name: data['name'],
         roles: roles,
-      ));
+      );
+    } catch (e) {
+      toReturn = null;
     }
 
     _setLoading(false);
