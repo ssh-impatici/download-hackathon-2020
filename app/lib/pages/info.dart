@@ -60,6 +60,7 @@ class _InfoPageState extends State<InfoPage> {
                     SizedBox(height: 15),
                     _title('Interests'),
                     _interests(model.topics),
+                    _selected(topics),
                     _button()
                   ],
                 ),
@@ -148,6 +149,50 @@ class _InfoPageState extends State<InfoPage> {
     setState(() {
       topics.add(topic.id);
     });
+  }
+
+  void removeTopic(String string) {
+    setState(() {
+      topics.removeWhere((item) => item == string);
+    });
+  }
+
+  Widget _selected(List<String> selected) {
+    List<Widget> topics = [];
+    selected.forEach((topic) {
+      topics.add(
+        Container(
+            padding: EdgeInsets.all(6),
+            margin: EdgeInsets.only(bottom: 5, top: 5, right: 5),
+            decoration: BoxDecoration(
+                color: Colors.grey.shade900,
+                borderRadius: BorderRadius.circular(5)),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  topic,
+                  style: TextStyle(
+                      color: Colors.yellow.shade400,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold),
+                ),
+                GestureDetector(
+                  child: Icon(
+                    Icons.close,
+                    size: 14,
+                  ),
+                  onTap: () => removeTopic(topic),
+                ),
+              ],
+            )),
+      );
+    });
+
+    return Container(
+      padding: EdgeInsets.only(top: 15),
+      child: Wrap(children: topics),
+    );
   }
 
   Widget _button() {
