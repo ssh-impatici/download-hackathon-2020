@@ -10,29 +10,28 @@ module.exports = function(e) {
     if (req.method !== 'POST' || !req.body)
       return res.status(400).send("Please send a POST request");
 
-    const data = JSON.parse(req.body);
+    const data = req.body;
 
     const user = await db.doc(data.userRef).get();
     if (!user.exists) return res.status(404).send("User not found");
 
     const topics = user.get("topics");
-    const index = topics.findIndex(r => r.id == data.topic);
+    const topicIndex = topics.findIndex(r => r.id == data.topic);
 
-    const previous_reviews = topics[index].reviews
-    const previous_stars = topics[index].stars
+    const previous_reviews = topics[topicIndex].reviews
+    const previous_stars = topics[topicIndex].stars
 
-    // TODO Valutare solo sui topic relativi all'ambito svolto nell'alveare, non potrebbe modificarli tutti
-
-    const obj = {
-      "topics": [{
-        "id": data.topic,
-        "reviews": previous_reviews + 1,
-        "stars": (previous_stars * previous_reviews + data.stars) / (previous_reviews + 1)
-      }]
+    if (topicIndex < 0) {
+      return res.status(404).send("Topic not available");
+    } else {
+      topics[topicIndex].reviews = topics[topicIndex].reviews + 1;
+      topics[topicIndex].stars = (previous_stars * previous_reviews + data.stars) / (previous_reviews + 1);
+      await db.doc(data.userRef).update({
+        topics: topics
+      });
     }
 
-    // Update, need an existing users with fields!
-    await db.doc(data.userRef).update(obj);
+    // TODO Valutare solo sui topic relativi all'ambito svolto nell'alveare, non potrebbe modificarli tutti
 
     return res.status(201).send("Stars modified!");
   });

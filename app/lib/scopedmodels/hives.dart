@@ -245,10 +245,17 @@ mixin HivesModel on ConnectedModel {
   }
 
   Future<void> giveUpHive({String hiveId}) async {
-    List<TakenRole> roles =
-        user.hives.firstWhere((hive) => hive.id == hiveId).takenRoles;
+    if (user.hives == null || user.hives.isEmpty) {
+      return;
+    }
 
-    for (TakenRole role in roles) {
+    Hive hive = user.hives.firstWhere((hive) => hive.id == hiveId);
+
+    if (hive == null || hive.takenRoles == null || hive.takenRoles.isEmpty) {
+      return;
+    }
+
+    for (TakenRole role in hive.takenRoles) {
       await leaveHive(hiveId: hiveId, roleId: role.name, userId: user.id);
     }
   }

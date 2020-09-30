@@ -12,20 +12,25 @@ class HivesPage extends StatefulWidget {
 }
 
 class _HivesPageState extends State<HivesPage> {
-  //
   @override
   Widget build(BuildContext context) {
-    //
-    return SingleChildScrollView(
-      child: ScopedModelDescendant<MainModel>(
-        builder: (context, child, model) => Container(
-          child: Column(
-            children: listHiveWidgets(model.hivesList),
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return RefreshIndicator(
+      onRefresh: _refreshHives,
+      child: SingleChildScrollView(
+        child: ScopedModelDescendant<MainModel>(
+          builder: (context, child, model) => Container(
+            child: Column(
+              children: listHiveWidgets(model.hivesList),
+              crossAxisAlignment: CrossAxisAlignment.start,
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _refreshHives() async {
+    await ScopedModel.of<MainModel>(context).getHives();
   }
 
   List<Widget> listHiveWidgets(List<Hive> list) {

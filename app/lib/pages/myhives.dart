@@ -12,17 +12,22 @@ class MyHivesPage extends StatefulWidget {
 }
 
 class _MyHivesPageState extends State<MyHivesPage> {
-  //
   @override
   Widget build(BuildContext context) {
-    //
-    return SingleChildScrollView(
-      child: ScopedModelDescendant<MainModel>(
-        builder: (context, child, model) => Container(
-          child: Column(children: listHiveWidgets(model.user.hives)),
+    return RefreshIndicator(
+      onRefresh: _refreshMyHives,
+      child: SingleChildScrollView(
+        child: ScopedModelDescendant<MainModel>(
+          builder: (context, child, model) => Container(
+            child: Column(children: listHiveWidgets(model.user.hives)),
+          ),
         ),
       ),
     );
+  }
+
+  Future<void> _refreshMyHives() async {
+    await ScopedModel.of<MainModel>(context).retrieveUserInfo();
   }
 
   List<Widget> listHiveWidgets(List<Hive> list) {
