@@ -27,6 +27,19 @@ class _MyHivesPageState extends State<MyHivesPage> {
 
   List<Widget> listHiveWidgets(List<Hive> list) {
     List<Widget> hiveswidgets = List<Widget>();
+
+    // Page Title
+    hiveswidgets.add(
+      Container(
+        margin: EdgeInsets.only(top: 30, left: 20, bottom: 10),
+        child: Text(
+          'My Hives',
+          style: TextStyle(
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+
     list.forEach((hive) {
       hiveswidgets.add(hiveWidget(hive));
     });

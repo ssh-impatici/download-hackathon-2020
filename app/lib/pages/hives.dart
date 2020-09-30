@@ -19,7 +19,10 @@ class _HivesPageState extends State<HivesPage> {
     return SingleChildScrollView(
       child: ScopedModelDescendant<MainModel>(
         builder: (context, child, model) => Container(
-          child: Column(children: listHiveWidgets(model.hivesList)),
+          child: Column(
+            children: listHiveWidgets(model.hivesList),
+            crossAxisAlignment: CrossAxisAlignment.start,
+          ),
         ),
       ),
     );
@@ -27,6 +30,22 @@ class _HivesPageState extends State<HivesPage> {
 
   List<Widget> listHiveWidgets(List<Hive> list) {
     List<Widget> hiveswidgets = List<Widget>();
+
+    // Page Title
+    hiveswidgets.add(
+      Container(
+        margin: EdgeInsets.only(top: 30, left: 20, bottom: 10),
+        child: Text(
+          'Available Hives',
+          style: TextStyle(
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+
+    // Search Bar
+    // TODO
+
     list.forEach((hive) {
       hiveswidgets.add(hiveWidget(hive));
     });
