@@ -51,8 +51,8 @@ module.exports = function(e) {
 
     // ##### Add hive to user's hives
     const user = await db.doc(data.userRef).get();
-    const userHives = user.get("hives");
-
+    let userHives = user.get("hives");
+    if(!userHives) userHives = [];
     const hiveIndex = userHives.findIndex(hive => hive.hiveRef === data.hiveRef);
     if(hiveIndex > 0) 
       userHives[hiveIndex].roles.push(data.roleRef);
