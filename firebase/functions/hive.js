@@ -4,11 +4,11 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 const Fields = admin.firestore.FieldValue;
 
-module.exports = function (e) {
+module.exports = function(e) {
   e.joinHive = functions.https.onRequest(async (req, res) => {
     // ##### Remove from open roles
     if (req.method !== 'POST' || !req.body)
-      return res.status(400).send("must be POST and have a body");
+      return res.status(400).send("Please send a POST request");
 
     const data = JSON.parse(req.body);
     const hive = await db.doc(data.hiveRef).get();

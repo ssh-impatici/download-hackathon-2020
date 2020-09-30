@@ -16,11 +16,9 @@ module.exports = function(e) {
 
 module.exports = function(e) {
   e.getHivesMap = functions.https.onRequest(async (req, res) => {
-    // Check for POST request
-    if (req.method !== "POST")
-      return res.status(400).send('Please send a POST request');
-
     const data = JSON.parse(req.body);
+
+    // TODO Zoom
     let zoom = data.zoom
 
     const hives_filtered_1 = await db.collection('hives')
