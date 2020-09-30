@@ -194,6 +194,10 @@ mixin HivesModel on ConnectedModel {
         hive.openRoles = joinedHive.openRoles;
         hive.takenRoles = joinedHive.takenRoles;
       });
+      user.hives.where((hive) => hive.id == hiveId).forEach((hive) {
+        hive.openRoles = joinedHive.openRoles;
+        hive.takenRoles = joinedHive.takenRoles;
+      });
     } catch (e) {
       errorMessage = e.toString();
     }
@@ -229,6 +233,10 @@ mixin HivesModel on ConnectedModel {
         hive.takenRoles = leftHive.takenRoles;
       });
       hivesList.where((hive) => hive.id == hiveId).forEach((hive) {
+        hive.openRoles = leftHive.openRoles;
+        hive.takenRoles = leftHive.takenRoles;
+      });
+      user.hives.where((hive) => hive.id == hiveId).forEach((hive) {
         hive.openRoles = leftHive.openRoles;
         hive.takenRoles = leftHive.takenRoles;
       });

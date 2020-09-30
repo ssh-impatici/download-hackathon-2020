@@ -5,7 +5,7 @@ import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-enum FromScreen { MAP, LIST }
+enum FromScreen { MAP, LIST, MY_HIVES }
 
 class HiveDescription extends StatefulWidget {
   final String hiveId;
@@ -62,14 +62,29 @@ class _HiveDescriptionState extends State<HiveDescription> {
   _retrieveHive() {
     Hive hive;
 
-    if (widget.from == FromScreen.MAP) {
-      hive = ScopedModel.of<MainModel>(context)
-          .hivesMap
-          .firstWhere((hive) => hive.id == widget.hiveId);
-    } else {
-      hive = ScopedModel.of<MainModel>(context)
-          .hivesList
-          .firstWhere((hive) => hive.id == widget.hiveId);
+    switch (widget.from) {
+      case FromScreen.MAP:
+        {
+          hive = ScopedModel.of<MainModel>(context)
+              .hivesMap
+              .firstWhere((hive) => hive.id == widget.hiveId);
+          break;
+        }
+      case FromScreen.LIST:
+        {
+          hive = ScopedModel.of<MainModel>(context)
+              .hivesList
+              .firstWhere((hive) => hive.id == widget.hiveId);
+          break;
+        }
+      case FromScreen.MY_HIVES:
+        {
+          hive = ScopedModel.of<MainModel>(context)
+              .user
+              .hives
+              .firstWhere((hive) => hive.id == widget.hiveId);
+          break;
+        }
     }
 
     setState(() {
