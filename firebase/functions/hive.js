@@ -64,6 +64,7 @@ module.exports = function(e) {
 
     await db.collection('hives').add({
       active: true,
+      creator: data.creator,
       description: data.description,
       latitude: lat,
       longitude: lon,
