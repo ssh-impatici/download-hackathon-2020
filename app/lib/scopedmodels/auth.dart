@@ -160,9 +160,16 @@ mixin AuthModel on ConnectedModel {
         return null;
       }
 
-      List<Topic> topics = data['topics'] != null
-          ? await _retrieveTopicsFromNames(List<String>.from(data['topics']))
-          : null;
+      List<UserTopic> topics = [];
+
+      for (dynamic topic in data['topics']) {
+        topics.add(UserTopic(
+          id: topic['id'],
+          reviews: topic['reviews'],
+          stars: topic['stars'],
+        ));
+      }
+
       List<Hive> hives = data['hives'] != null
           ? await _retrieveHivesFromPaths(List<String>.from(data['hives']))
           : null;
@@ -202,7 +209,11 @@ mixin AuthModel on ConnectedModel {
         'surname': surname,
         'email': currentUser.email,
         'bio': bio,
-        'topics': topics,
+        'topics': topics
+            .map(
+              (topic) => {'id': topic, 'reviews': 0, 'stars': 0},
+            )
+            .toList(),
       });
 
       // Set the authenticated flag in connected model
@@ -249,6 +260,7 @@ mixin AuthModel on ConnectedModel {
       if (result != null) {
         Map<String, dynamic> data = result.data();
 
+        // Build open roles list
         List<OpenRole> openRoles = [];
         for (dynamic openRole in data['openRoles']) {
           openRoles.add(OpenRole(
@@ -257,6 +269,7 @@ mixin AuthModel on ConnectedModel {
           ));
         }
 
+        // Build taken roles list
         List<TakenRole> takenRoles = [];
         for (dynamic takenRole in data['takenRoles']) {
           Model.User user = await _retrieveUserFromPath(takenRole['userRef']);
@@ -267,8 +280,11 @@ mixin AuthModel on ConnectedModel {
           ));
         }
 
+        // Build creator and topics list
         Model.User creator = await _retrieveUserFromPath(data['creator']);
-        List<Topic> topics = await _retrieveTopicsFromNames(data['topics']);
+        List<Topic> topics = await _retrieveTopicsFromNames(
+          List<String>.from(data['topics']),
+        );
 
         return Hive(
           id: result.id,
@@ -297,7 +313,15 @@ mixin AuthModel on ConnectedModel {
       if (result != null) {
         Map<String, dynamic> data = result.data();
 
-        List<Topic> topics = await _retrieveTopicsFromNames(data['topics']);
+        List<UserTopic> topics = [];
+
+        for (dynamic topic in data['topics']) {
+          topics.add(UserTopic(
+            id: topic['id'],
+            reviews: topic['reviews'],
+            stars: topic['stars'],
+          ));
+        }
 
         return Model.User(
           id: result.id,

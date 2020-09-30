@@ -9,6 +9,11 @@ class RoleScoring {
     @required this.name,
     @required this.score,
   });
+
+  @override
+  String toString() {
+    return '$name: $score';
+  }
 }
 
 class OpenRole {
@@ -19,6 +24,11 @@ class OpenRole {
     @required this.name,
     this.quantity = 1,
   });
+
+  @override
+  String toString() {
+    return 'x$quantity $name';
+  }
 }
 
 class TakenRole {
@@ -29,4 +39,9 @@ class TakenRole {
     @required this.user,
     @required this.name,
   });
+
+  @override
+  String toString() {
+    return '$user - $name';
+  }
 }

@@ -27,4 +27,9 @@ class Hive {
     this.openRoles,
     this.takenRoles,
   });
+
+  @override
+  String toString() {
+    return this.name;
+  }
 }
