@@ -12,11 +12,11 @@ class RoleScoring {
 }
 
 class OpenRole {
-  String role;
+  String name;
   int quantity;
 
   OpenRole({
-    @required this.role,
+    @required this.name,
     this.quantity = 1,
   });
 }
