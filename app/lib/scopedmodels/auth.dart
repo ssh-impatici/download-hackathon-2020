@@ -165,6 +165,33 @@ mixin AuthModel on ConnectedModel {
     }
   }
 
+  Future<AuthResult> addUserInfo(Model.User userInfo) async {
+    User user = _auth.currentUser;
+
+    if (user == null) {
+      return AuthResult.SIGNEDUP;
+    }
+
+    _setLoading(true);
+    AuthResult result;
+
+    try {
+      await _firestore.collection('users').doc(user.uid).set({
+        'name': userInfo.name,
+        'surname': userInfo.surname,
+        'email': user.email,
+        'bio': userInfo.bio,
+      });
+
+      result = AuthResult.SIGNEDIN;
+    } catch (e) {
+      result = AuthResult.SIGNEDUP;
+    }
+
+    _setLoading(false);
+    return result;
+  }
+
   Future<List<Hive>> _retrieveHivesFromPaths(List<String> paths) async {
     List<Hive> toReturn = [];
 
