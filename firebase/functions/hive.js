@@ -1,6 +1,8 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const { user } = require('firebase-functions/lib/providers/auth');
+const {
+  user
+} = require('firebase-functions/lib/providers/auth');
 
 const db = admin.firestore();
 const Fields = admin.firestore.FieldValue;
@@ -18,15 +20,13 @@ module.exports = function(e) {
     // Check that user is not already joined
     const takenRoles = hive.get("takenRoles");
     if (takenRoles.find(role => role.userRef === data.userRef && role.name === data.roleRef))
-    return res.status(401).send("User already joined");
-    
+      return res.status(401).send("User already joined");
+
     // ##### Remove from open roles
     // Get role id and check if quantity is enough
     const roles = hive.get("openRoles");
-
     const roleIndex = roles.findIndex(r => r.name == data.roleRef);
     if (roleIndex < 0) return res.status(404).send("Role not available");
-
     if (roles[roleIndex].quantity == 1) {
       // If quantity is 0 remove role from list
       roles.splice(roleIndex, 1);
@@ -52,17 +52,18 @@ module.exports = function(e) {
     // ##### Add hive to user's hives
     const user = await db.doc(data.userRef).get();
     let userHives = user.get("hives");
-    if(!userHives) userHives = [];
+    if (!userHives) userHives = [];
     const hiveIndex = userHives.findIndex(hive => hive.hiveRef === data.hiveRef);
-    if(hiveIndex > 0) 
+    if (hiveIndex > 0)
       userHives[hiveIndex].roles.push(data.roleRef);
     else
       userHives.push({
         hiveRef: data.hiveRef,
         roles: [data.roleRef]
       });
-
-    await db.doc(data.userRef).update({ hives: userHives });
+    await db.doc(data.userRef).update({
+      hives: userHives
+    });
 
     var hiveRef_plain = data.hiveRef.replace("hives/", "");
 
@@ -124,12 +125,10 @@ module.exports = function(e) {
     // ##### Remove hive from user's hives
     let userHives = user.get("hives");
     let userIndex = userHives.findIndex(r => (r.hiveRef == data.hiveRef));
-
     if (userIndex < 0) {
       return res.status(404).send("Hive not available");
     } else {
       userHives[userIndex].roles.pop(data.roleRef)
-
       await db.doc(data.userRef).update({
         hives: userHives
       });
