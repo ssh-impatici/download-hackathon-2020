@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hackathon/classes/hive.dart';
 import 'package:hackathon/scopedmodels/main.dart';
+import 'package:hackathon/widgets/hive.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class MapPage extends StatefulWidget {
@@ -70,7 +71,10 @@ class _MapPageState extends State<MapPage> {
         infoWindow: InfoWindow(
           title: hive.name,
           onTap: () {
-            // TODO: Add on tap behavior
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HiveDescription(hive)),
+            );
           },
         ),
       );

@@ -116,6 +116,46 @@ mixin HivesModel on ConnectedModel {
     return toReturn;
   }
 
+  Future<Hive> createHive({
+    String name,
+    String description,
+    double latitude,
+    double longitude,
+    String address,
+    List<OpenRole> openRoles,
+    List<String> topics,
+  }) async {
+    _setLoading(true);
+    Hive toReturn;
+
+    try {
+      const url = '$apiEndpoint/createHive';
+
+      Response response = await Dio().post(
+        url,
+        data: {
+          'name': name,
+          'creator': 'users/${user.id}',
+          'description': description,
+          'latitude': latitude,
+          'longitude': longitude,
+          'openRoles': openRoles,
+          'topics': topics,
+          'address': address
+        },
+      );
+
+      Map<String, dynamic> json = response.data;
+
+      toReturn = await _parseHive(json);
+    } catch (e) {
+      errorMessage = e.toString();
+    }
+
+    _setLoading(false);
+    return toReturn;
+  }
+
   Future<Hive> _parseHive(Map<String, dynamic> data) async {
     // Build open roles list
     List<OpenRole> openRoles = [];
