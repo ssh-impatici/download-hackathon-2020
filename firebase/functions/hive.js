@@ -64,7 +64,7 @@ module.exports = function(e) {
         });
       })
   });
-  
+
   e.leaveHive = functions.https.onRequest(async (req, res) => {
 
     if (req.method !== 'POST' || !req.body)
@@ -114,8 +114,7 @@ module.exports = function(e) {
       hives: Fields.arrayRemove(data.hiveRef)
     })
 
-    console.log("DIOOOOOOOOOO");
-    var hiveRef_plain = data.hiveRef.substring(6);
+    var hiveRef_plain = data.hiveRef.replace("hives/", "");
 
     var dataToSent = db.collection("hives").doc(hiveRef_plain).get()
       .then(snap => {

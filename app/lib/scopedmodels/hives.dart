@@ -193,11 +193,11 @@ mixin HivesModel on ConnectedModel {
   Future<Hive> leaveHive({String hiveId, String roleId, String userId}) async {
     _setLoading(true);
 
-    Hive createdHive;
+    Hive leftHive;
     dynamic json;
 
     try {
-      const url = '$apiEndpoint/joinHive';
+      const url = '$apiEndpoint/leaveHive';
       Response response = await Dio().post(
         url,
         data: {
@@ -207,15 +207,14 @@ mixin HivesModel on ConnectedModel {
         },
       );
       json = response.data;
-      createdHive = await _parseHive(json);
+      leftHive = await _parseHive(json);
     } catch (e) {
       errorMessage = e.toString();
     }
 
     _setLoading(false);
-    return createdHive;
+    return leftHive;
   }
-
 
   Future<Hive> _parseHive(Map<String, dynamic> data) async {
     // Build open roles list
