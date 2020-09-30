@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/scopedmodels/main.dart';
+import 'package:hackathon/widgets/auto-completion.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class InfoPage extends StatefulWidget {
@@ -18,6 +20,7 @@ class _InfoPageState extends State<InfoPage> {
   String name;
   String surname;
   String bio;
+  List<Topic> topics = List<Topic>();
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +28,12 @@ class _InfoPageState extends State<InfoPage> {
       child: Scaffold(
         body: SingleChildScrollView(
           child: Form(
-              key: _formKey,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: Column(
+            key: _formKey,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+              width: MediaQuery.of(context).size.width,
+              child: ScopedModelDescendant<MainModel>(
+                builder: (context, child, model) => Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -56,11 +59,13 @@ class _InfoPageState extends State<InfoPage> {
                     _bio(),
                     SizedBox(height: 15),
                     _title('Interests'),
-                    _interests(),
+                    _interests(model.topics),
                     _button()
                   ],
                 ),
-              )),
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -132,8 +137,17 @@ class _InfoPageState extends State<InfoPage> {
     );
   }
 
-  Widget _interests() {
-    return Container();
+  Widget _interests(List<Topic> options) {
+    print(options);
+    return Container(
+      child: AutoCompletion(options, addTopic),
+    );
+  }
+
+  void addTopic(Topic topic) {
+    setState(() {
+      topics.add(topic);
+    });
   }
 
   Widget _button() {

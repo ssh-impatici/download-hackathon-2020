@@ -185,8 +185,8 @@ class _AuthPageState extends State<AuthPage> {
         Navigator.of(context).pushReplacementNamed('/home');
         break;
       case AuthResult.SIGNEDUP:
-        // await model.getTopics();
-        Navigator.of(context).pushReplacementNamed('/info');
+        await model.getTopics().then(
+            (value) => Navigator.of(context).pushReplacementNamed('/info'));
         break;
       case AuthResult.UNAUTHORIZED:
         await showDialog(
@@ -252,8 +252,9 @@ class _AuthPageState extends State<AuthPage> {
                 Navigator.of(context).pushReplacementNamed('/home');
                 break;
               case AuthResult.SIGNEDUP:
-                await model.getTopics();
-                Navigator.of(context).pushReplacementNamed('/info');
+                await model.getTopics().then(
+                    (_) => Navigator.of(context).pushReplacementNamed('/info'));
+
                 break;
               case AuthResult.UNAUTHORIZED:
                 await showDialog(

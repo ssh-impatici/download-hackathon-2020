@@ -7,6 +7,6 @@ mixin ConnectedModel on Model {
   bool loading = false;
   User user;
   String errorMessage;
-  List<Topic> topics;
-  List<Hive> hives;
+  List<Topic> topics = [];
+  List<Hive> hives = [];
 }
