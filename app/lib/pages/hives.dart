@@ -13,18 +13,6 @@ class HivesPage extends StatefulWidget {
 
 class _HivesPageState extends State<HivesPage> {
   //
-  List<Hive> mockhives = [
-    Hive(
-        active: true,
-        id: 'Hakcathon_ID',
-        name: 'Hackathon',
-        creator: null,
-        description: 'Awesome hackathon project for download.io event!',
-        openRoles: [],
-        takenRoles: [],
-        topics: [])
-  ];
-
   @override
   Widget build(BuildContext context) {
     //
@@ -126,17 +114,19 @@ class _HivesPageState extends State<HivesPage> {
               )
             ],
           )
-        : Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-            decoration: BoxDecoration(
-                color: Colors.yellow, borderRadius: BorderRadius.circular(10)),
-            child: Text(
-              list.first.name,
-              style: TextStyle(
-                  color: Colors.grey.shade800,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12),
-            ),
-          );
+        : list.isNotEmpty
+            ? Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                decoration: BoxDecoration(
+                    color: Colors.yellow,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Text(
+                  list.first.name,
+                  style: TextStyle(
+                      color: Colors.grey.shade800,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12),
+                ))
+            : Container();
   }
 }

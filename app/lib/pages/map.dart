@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hackathon/classes/hive.dart';
-import 'package:hackathon/classes/role.dart';
+import 'package:hackathon/pages/create.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:hackathon/widgets/hive.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -61,6 +61,10 @@ class _MapPageState extends State<MapPage> {
 
   _initializeMarkers() async {
     _markers.clear();
+
+    if (widget.model.hivesMap == null) {
+      return null;
+    }
 
     for (Hive hive in widget.model.hivesMap) {
       Marker toAdd = Marker(
@@ -154,19 +158,21 @@ class _MapPageState extends State<MapPage> {
       bottom: 20,
       right: 20,
       child: FloatingActionButton(
-          heroTag: 'createHive',
-          backgroundColor: Colors.grey.shade800,
-          foregroundColor: Colors.grey.shade200,
-          child: Icon(
-            Icons.add,
-            size: 30,
-          ),
-          onPressed: () => widget.model.createHive(
-              name: "test name",
-              description: "test description",
-              address: "test address",
-              latitude: 9,
-              longitude: 5,openRoles: null, topics: ["Tecnologia"])),
+        heroTag: 'createHive',
+        backgroundColor: Colors.grey.shade800,
+        foregroundColor: Colors.grey.shade200,
+        child: Icon(
+          Icons.add,
+          size: 30,
+        ),
+        onPressed: () async {
+          await widget.model.getTopics();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CreateHivePage()),
+          );
+        },
+      ),
     );
   }
 

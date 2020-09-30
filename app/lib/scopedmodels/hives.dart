@@ -45,7 +45,7 @@ mixin HivesModel on ConnectedModel {
         if (pos == null) {
           return null;
         } else {
-          position = LatLng(position.latitude, position.longitude);
+          position = LatLng(pos.latitude, pos.longitude);
         }
       }
 
@@ -193,29 +193,35 @@ mixin HivesModel on ConnectedModel {
   Future<Hive> _parseHive(Map<String, dynamic> data) async {
     // Build open roles list
     List<OpenRole> openRoles = [];
-    for (dynamic openRole in data['openRoles']) {
-      openRoles.add(OpenRole(
-        name: openRole['name'],
-        quantity: openRole['quantity'],
-      ));
+    if (data['openRoles'] != null) {
+      for (dynamic openRole in data['openRoles']) {
+        openRoles.add(OpenRole(
+          name: openRole['name'],
+          quantity: openRole['quantity'],
+        ));
+      }
     }
 
     // Build taken roles list
     List<TakenRole> takenRoles = [];
-    for (dynamic takenRole in data['takenRoles']) {
-      User user = await _retrieveUserFromPath(takenRole['userRef']);
+    if (data['takenRoles'] != null) {
+      for (dynamic takenRole in data['takenRoles']) {
+        User user = await _retrieveUserFromPath(takenRole['userRef']);
 
-      takenRoles.add(TakenRole(
-        name: takenRole['name'],
-        user: user,
-      ));
+        takenRoles.add(TakenRole(
+          name: takenRole['name'],
+          user: user,
+        ));
+      }
     }
 
     // Build creator and topics list
-    User creator = await _retrieveUserFromPath(data['creator']);
-    List<Topic> topics = await _retrieveTopicsFromNames(
-      List<String>.from(data['topics']),
-    );
+    User creator = data['creator'] != null
+        ? await _retrieveUserFromPath(data['creator'])
+        : null;
+    List<Topic> topics = data['topics'] != null
+        ? await _retrieveTopicsFromNames(List<String>.from(data['topics']))
+        : [];
 
     return Hive(
       id: data['hiveId'],
