@@ -244,6 +244,15 @@ mixin HivesModel on ConnectedModel {
     return leftHive;
   }
 
+  Future<void> giveUpHive({String hiveId}) async {
+    List<TakenRole> roles =
+        user.hives.firstWhere((hive) => hive.id == hiveId).takenRoles;
+
+    for (TakenRole role in roles) {
+      await leaveHive(hiveId: hiveId, roleId: role.name, userId: user.id);
+    }
+  }
+
   Future<Hive> _parseHive(Map<String, dynamic> data) async {
     // Build open roles list
     List<OpenRole> openRoles = [];
@@ -360,12 +369,5 @@ mixin HivesModel on ConnectedModel {
     } catch (e) {
       return null;
     }
-  }
-
-  Future<void> giveUpHive({String hiveId}) async {
-    List<TakenRole> _roles =
-        user.hives.firstWhere((hive) => hive.id == hiveId).takenRoles;
-
-    _roles.forEach((role) {});
   }
 }
