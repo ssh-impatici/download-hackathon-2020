@@ -11,42 +11,66 @@ const getDistance = (x1, x2, y1, y2) => {
 
 module.exports = function (e) {
   e.getHivesList = functions.https.onRequest(async (req, res) => {
-    const data = { ...req.query };
+    const data = {
+      userRef: req.query.userRef,
+      latitude: Number(req.query.latitude),
+      longitude: Number(req.query.longitude),
+      topic: req.query.topic
+    };
 
     let userTopics = await db.doc(data.userRef).get();
     userTopics = userTopics.get("topics").map(topic => topic.id);
 
     let virtualHives = await db.collection("hives").where('latitude', '==', null).get();
-    virtualHives = virtualHives.docs.map(doc => doc.data());
+    virtualHives = virtualHives.docs.map(doc => {
+      return {
+        ...doc.data(),
+        hiveId: doc.id
+      }
+    });
 
     let physicalHives = await db.collection("hives").where('latitude', '>', 0).get();
-    physicalHives = physicalHives.docs.map(doc => doc.data());
+    physicalHives = physicalHives.docs.map(doc => {
+      return {
+        ...doc.data(),
+        hiveId: doc.id
+      }
+    });
 
+    if (data.topic) {
+      virtualHives = virtualHives.filter(hive => hive.topics.includes(data.topic));
+      physicalHives = physicalHives.filter(hive => hive.topics.includes(data.topic));
+    }
+
+    // Sort virtual hives by common topics
     virtualHives = virtualHives.sort((a, b) => {
       let scoreA = a.topics.filter(item => userTopics.includes(item)).length;
       let scoreB = b.topics.filter(item => userTopics.includes(item)).length;
       return scoreB - scoreA
     });
 
-    physicalHives = physicalHives
-      // .filter(hive => hive.topics.filter(topic => userTopics.includes(topic)).length > 0)
-      .sort((a, b) => {
-        let distA = getDistance(a.latitude, data.latitude, a.longitude, data.longitude);
-        let distB = getDistance(b.latitude, data.latitude, b.longitude, data.longitude);
-        return distA - distB;
-      });
+    // Sort physical hives by distance
+    if (data.latitude && data.longitude) {
+      physicalHives = physicalHives
+        .sort((a, b) => {
+          let distA = getDistance(a.latitude, data.latitude, a.longitude, data.longitude);
+          let distB = getDistance(b.latitude, data.latitude, b.longitude, data.longitude);
+          return distA - distB;
+        });
+    }
 
+    // Construct final result
     let resultHives = [];
-    let iVirtual = 0;
-    let iPhysical = 0;
-    for (let i = 0; i < physicalHives.length + virtualHives.length; i++) {
-      if (iVirtual < virtualHives.length) {
+    let iVirtual = virtualHives.length;
+    let iPhysical = physicalHives.length;
+    while (iVirtual > 0 || iPhysical > 0) {
+      if (iVirtual > 0) {
         resultHives.push(virtualHives.shift());
-        iVirtual++;
+        iVirtual--;
       }
-      if (iPhysical < physicalHives.length) {
+      if (iPhysical > 0) {
         resultHives.push(physicalHives.shift());
-        iPhysical++;
+        iPhysical--;
       }
     }
 
