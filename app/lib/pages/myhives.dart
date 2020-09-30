@@ -49,8 +49,9 @@ class _MyHivesPageState extends State<MyHivesPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      HiveDescription(hive.id, FromScreen.LIST)),
+                builder: (context) =>
+                    HiveDescription(hive.id, FromScreen.MY_HIVES),
+              ),
             );
           },
           child: Container(

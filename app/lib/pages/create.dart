@@ -23,8 +23,8 @@ class _CreateHivePageState extends State<CreateHivePage> {
   String name;
   String description;
   LatLng location = LatLng(
-    45.642389 + ((Random().nextInt(100) - 50) / 100),
-    9.5858929 + ((Random().nextInt(100) - 50) / 100),
+    45.642389 + ((Random().nextInt(100) - 50) / 10000),
+    9.5858929 + ((Random().nextInt(100) - 50) / 10000),
   );
   String address;
   List<OpenRole> openRoles = [];
