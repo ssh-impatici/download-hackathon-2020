@@ -1,3 +1,4 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hackathon/classes/hive.dart';
 import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/classes/user.dart';
@@ -9,5 +10,5 @@ mixin ConnectedModel on Model {
   User user;
   String errorMessage;
   List<Topic> topics = [];
-  List<Hive> hives = [];
+  List<Hive> hivesMap = [];
 }

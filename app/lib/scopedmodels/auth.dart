@@ -279,7 +279,8 @@ mixin AuthModel on ConnectedModel {
         }
 
         Model.User creator = await _retrieveUserFromPath(data['creator']);
-        List<Topic> topics = await _retrieveTopicsFromNames(data['topics']);
+        List<Topic> topics =
+            await _retrieveTopicsFromNames(List<String>.from(data['topics']));
 
         return Hive(
           id: result.id,
