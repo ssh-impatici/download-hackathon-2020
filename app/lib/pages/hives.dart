@@ -48,7 +48,9 @@ class _HivesPageState extends State<HivesPage> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => HiveDescription(hive)),
+              MaterialPageRoute(
+                builder: (context) => HiveDescription(hive.id, FromScreen.LIST),
+              ),
             );
           },
           child: Container(
