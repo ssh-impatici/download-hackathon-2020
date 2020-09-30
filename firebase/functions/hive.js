@@ -128,7 +128,9 @@ module.exports = function(e) {
     if (userIndex < 0) {
       return res.status(404).send("Hive not available");
     } else {
-      userHives[userIndex].roles.pop(data.roleRef)
+      userHives[userIndex].roles = userHives[userIndex].roles.filter(function(value, index, arr) {
+        return value != data.roleRef;
+      })
       await db.doc(data.userRef).update({
         hives: userHives
       });
@@ -150,9 +152,7 @@ module.exports = function(e) {
     if (req.method !== "POST")
       return res.status(400).send("Please send a POST request");
 
-    const data = {
-      ...req.body
-    };
+    const data = req.body
 
     let lat = null;
     let lon = null;
