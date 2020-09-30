@@ -84,12 +84,17 @@ mixin AuthModel on ConnectedModel {
     _setLoading(true);
 
     try {
-      await _auth.signOut();
+      if (await _googleSignIn.isSignedIn()) {
+        await _googleSignIn.signOut();
+      }
+
+      if (_auth.currentUser != null) {
+        await _auth.signOut();
+      }
     } catch (e) {
       errorMessage = e.toString();
     } finally {
       authenticated = false;
-      user = null;
     }
 
     _setLoading(false);
@@ -134,22 +139,6 @@ mixin AuthModel on ConnectedModel {
 
     _setLoading(false);
     return result;
-  }
-
-  Future<AuthResult> signoutGoogle() async {
-    _setLoading(true);
-
-    try {
-      await _googleSignIn.signOut();
-    } catch (e) {
-      errorMessage = e.toString();
-    } finally {
-      authenticated = false;
-      user = null;
-    }
-
-    _setLoading(false);
-    return AuthResult.UNAUTHORIZED;
   }
 
   // Cloud Firestore user methods

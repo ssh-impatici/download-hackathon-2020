@@ -37,6 +37,7 @@ class _UserPageState extends State<UserPage> {
                         TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
               _topics(model.user.topics),
+              _button(),
             ],
           ),
         );
@@ -124,5 +125,31 @@ class _UserPageState extends State<UserPage> {
     return Container(
       child: Wrap(children: topics),
     );
+  }
+
+  Widget _button() {
+    return ScopedModelDescendant(
+        builder: (BuildContext context, Widget child, MainModel model) {
+      return Container(
+        padding: EdgeInsets.only(top: 20, bottom: 15),
+        child: RaisedButton(
+          color: Colors.grey.shade900,
+          child: Center(
+            child: model.loading
+                ? Container(
+                    padding: EdgeInsets.all(10),
+                    child: Center(child: CircularProgressIndicator()))
+                : Text(
+                    'Sign out',
+                    style: TextStyle(color: Colors.white),
+                  ),
+          ),
+          onPressed: () async {
+            await model.logout();
+            Navigator.of(context).pushReplacementNamed('/');
+          },
+        ),
+      );
+    });
   }
 }
