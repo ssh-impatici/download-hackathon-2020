@@ -3,4 +3,4 @@ admin.initializeApp();
 
 require('./hive.js')(exports);
 require('./search.js')(exports);
-require('./users.js')(exports);
+// require('./users.js')(exports);
