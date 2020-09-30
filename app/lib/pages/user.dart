@@ -140,13 +140,14 @@ class _UserPageState extends State<UserPage> {
                     padding: EdgeInsets.all(10),
                     child: Center(child: CircularProgressIndicator()))
                 : Text(
-                    'Sign out',
+                    'Logout',
                     style: TextStyle(color: Colors.white),
                   ),
           ),
           onPressed: () async {
-            await model.logout();
-            Navigator.of(context).pushReplacementNamed('/');
+            await model
+                .logout()
+                .then((_) => Navigator.of(context).pushReplacementNamed('/'));
           },
         ),
       );
