@@ -122,7 +122,7 @@ class _AuthPageState extends State<AuthPage> {
               maxLines: 1,
               controller: verifyController,
               decoration: InputDecoration(
-                  hintText: 'Password',
+                  hintText: 'Confirm Password',
                   labelStyle: TextStyle(color: Colors.black),
                   suffixIcon: IconButton(
                     icon: Icon(Icons.remove_red_eye),
@@ -180,8 +180,10 @@ class _AuthPageState extends State<AuthPage> {
 
     switch (result) {
       case AuthResult.SIGNEDIN:
-        // await mode.getHives()
-        Navigator.of(context).pushReplacementNamed('/home');
+        await model.getHives();
+        await model
+            .getMapHives()
+            .then((_) => Navigator.of(context).pushReplacementNamed('/home'));
         break;
       case AuthResult.SIGNEDUP:
         await model.getTopics().then(
@@ -247,8 +249,10 @@ class _AuthPageState extends State<AuthPage> {
             AuthResult result = await model.signInWithGoogle();
             switch (result) {
               case AuthResult.SIGNEDIN:
-                // await mode.getHives()
-                Navigator.of(context).pushReplacementNamed('/home');
+                await model.getHives();
+                await model.getMapHives().then(
+                    (_) => Navigator.of(context).pushReplacementNamed('/home'));
+
                 break;
               case AuthResult.SIGNEDUP:
                 await model.getTopics().then(

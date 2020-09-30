@@ -89,7 +89,7 @@ class _MapPageState extends State<MapPage> {
               borderRadius: BorderRadius.circular(25)),
           child: Icon(
             Icons.add,
-            color: Colors.grey.shade400,
+            color: Colors.grey.shade200,
             size: 30,
           ),
         ),
