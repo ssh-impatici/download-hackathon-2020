@@ -172,6 +172,7 @@ mixin HivesModel on ConnectedModel {
 
     try {
       const url = '$apiEndpoint/joinHive';
+
       Response response = await Dio().post(
         url,
         data: {
@@ -180,8 +181,19 @@ mixin HivesModel on ConnectedModel {
           'userRef': 'users/$userId'
         },
       );
+
       json = response.data;
+
       joinedHive = await _parseHive(json);
+
+      hivesMap.where((hive) => hive.id == hiveId).forEach((hive) {
+        hive.openRoles = joinedHive.openRoles;
+        hive.takenRoles = joinedHive.takenRoles;
+      });
+      hivesList.where((hive) => hive.id == hiveId).forEach((hive) {
+        hive.openRoles = joinedHive.openRoles;
+        hive.takenRoles = joinedHive.takenRoles;
+      });
     } catch (e) {
       errorMessage = e.toString();
     }
@@ -198,6 +210,7 @@ mixin HivesModel on ConnectedModel {
 
     try {
       const url = '$apiEndpoint/leaveHive';
+
       Response response = await Dio().post(
         url,
         data: {
@@ -206,8 +219,19 @@ mixin HivesModel on ConnectedModel {
           'userRef': 'users/$userId'
         },
       );
+
       json = response.data;
+
       leftHive = await _parseHive(json);
+
+      hivesMap.where((hive) => hive.id == hiveId).forEach((hive) {
+        hive.openRoles = leftHive.openRoles;
+        hive.takenRoles = leftHive.takenRoles;
+      });
+      hivesList.where((hive) => hive.id == hiveId).forEach((hive) {
+        hive.openRoles = leftHive.openRoles;
+        hive.takenRoles = leftHive.takenRoles;
+      });
     } catch (e) {
       errorMessage = e.toString();
     }
