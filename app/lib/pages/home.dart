@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
               child: PageView(
                 physics: NeverScrollableScrollPhysics(),
                 controller: _controller,
-                children: <Widget>[MapPage(), HivesPage(), UserPage()],
+                children: <Widget>[MapPage(model), HivesPage(), UserPage()],
               ),
             ),
           ),

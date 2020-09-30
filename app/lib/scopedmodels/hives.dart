@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hackathon/classes/hive.dart';
 import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/topic.dart';
@@ -19,6 +16,19 @@ mixin HivesModel on ConnectedModel {
     notifyListeners();
   }
 
+  Future<Position> getPosition() async {
+    LocationPermission permission = await checkPermission();
+
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      return null;
+    }
+
+    return await getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+  }
+
   Future<List<Hive>> getMapHives() async {
     _setLoading(true);
     List<Hive> toReturn = [];
@@ -26,16 +36,10 @@ mixin HivesModel on ConnectedModel {
     try {
       const url = '$apiEndpoint/getHivesMap';
 
-      LocationPermission permission = await checkPermission();
-
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
+      Position position = await getPosition();
+      if (position == null) {
         return null;
       }
-
-      Position position = await getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
 
       Response response = await Dio().get(
         url,
@@ -71,12 +75,10 @@ mixin HivesModel on ConnectedModel {
     try {
       const url = '$apiEndpoint/getHivesList';
 
-      LocationPermission permission = await checkPermission();
-
       List<dynamic> json;
 
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
+      Position position = await getPosition();
+      if (position == null) {
         Response response = await Dio().get(
           url,
           queryParameters: {
@@ -86,10 +88,6 @@ mixin HivesModel on ConnectedModel {
 
         json = response.data;
       } else {
-        Position position = await getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-        );
-
         Response response = await Dio().get(
           url,
           queryParameters: {
