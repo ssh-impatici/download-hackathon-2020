@@ -9,14 +9,13 @@ const getDistance = (x1, x2, y1, y2) => {
   return Math.sqrt(a * a + b * b);
 }
 
-module.exports = function (e) {
+module.exports = function(e) {
   e.getHivesList = functions.https.onRequest(async (req, res) => {
-    const data = JSON.parse(req.body);
-    if (!data) return res.status(400).send("Bad request: no body found");
+    const data = { ...req.query };
 
     let userTopics = await db.doc(data.userRef).get();
-    userTopics = userTopics.get("topics");
-    userTopics = userTopics.map(topic => Object.keys(topic)[0]);
+    userTopics = userTopics.get("topics").map(topic => topic.id);
+
     let virtualHives = await db.collection("hives").where('latitude', '==', null).get();
     virtualHives = virtualHives.docs.map(doc => doc.data());
 
@@ -29,20 +28,29 @@ module.exports = function (e) {
       return scoreB - scoreA
     });
 
-    console.log(virtualHives.length);
-
     physicalHives = physicalHives
-      .filter(hive => hive.topics.filter(item => {
-        // userTopics.includes(item).length > 0)
-        console.log(userTopics, item);
-      }))
+      // .filter(hive => hive.topics.filter(topic => userTopics.includes(topic)).length > 0)
       .sort((a, b) => {
-        let distA = getDistance(a.latitude, data.userPosition.latitude, a.longitude, data.userPosition.longitude)
-        let distB = getDistance(b.latitude, data.userPosition.latitude, b.longitude, data.userPosition.longitude);
+        let distA = getDistance(a.latitude, data.latitude, a.longitude, data.longitude);
+        let distB = getDistance(b.latitude, data.latitude, b.longitude, data.longitude);
         return distA - distB;
       });
 
-    return res.status(200).send();
+    let resultHives = [];
+    let iVirtual = 0;
+    let iPhysical = 0;
+    for (let i = 0; i < physicalHives.length + virtualHives.length; i++) {
+      if (iVirtual < virtualHives.length) {
+        resultHives.push(virtualHives.shift());
+        iVirtual++;
+      }
+      if (iPhysical < physicalHives.length) {
+        resultHives.push(physicalHives.shift());
+        iPhysical++;
+      }
+    }
+
+    return res.status(200).send(resultHives);
   });
 
   e.getHivesMap = functions.https.onRequest(async (req, res) => {
@@ -50,13 +58,28 @@ module.exports = function (e) {
     let zoom = Number(req.query.zoom);
     let lat = Number(req.query.latitude);
     let long = Number(req.query.longitude);
+    let topic = String(req.query.topic);
 
     console.log(lat + zoom);
-    let hives = await db.collection('hives')
-      .where('latitude', '<=', lat + zoom)
-      .where('latitude', '>=', lat - zoom)
-      .limit(100)
-      .get()
+
+    let hives = null;
+
+    if (topic != "undefined") {
+      hives = await db.collection('hives')
+        .where('latitude', '<=', lat + zoom)
+        .where('latitude', '>=', lat - zoom)
+        .where('topics', 'array-contains', topic) // Filter by topic
+        .limit(100)
+        .get()
+    } else {
+      hives = await db.collection('hives')
+        .where('latitude', '<=', lat + zoom)
+        .where('latitude', '>=', lat - zoom)
+        .limit(100)
+        .get()
+    }
+
+    // TODO Return HivesId e manca il creator user (ma in teoria c'è se esistesse il ref)
 
     hives = hives.docs.map(doc => doc.data())
     res.status(200).send(hives.filter(
