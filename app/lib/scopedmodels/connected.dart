@@ -11,4 +11,5 @@ mixin ConnectedModel on Model {
   String errorMessage;
   List<Topic> topics = [];
   List<Hive> hivesMap = [];
+  List<Hive> hivesList = [];
 }

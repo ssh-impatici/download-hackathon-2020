@@ -48,42 +48,9 @@ mixin HivesModel on ConnectedModel {
 
       List<dynamic> json = response.data;
 
+      // Loop through the hives
       for (Map<String, dynamic> element in json) {
-        List<OpenRole> openRoles = [];
-        for (dynamic openRole in element['openRoles']) {
-          openRoles.add(OpenRole(
-            name: openRole['name'],
-            quantity: openRole['quantity'],
-          ));
-        }
-
-        List<TakenRole> takenRoles = [];
-        for (dynamic takenRole in element['takenRoles']) {
-          User user = await _retrieveUserFromPath(takenRole['userRef']);
-
-          takenRoles.add(TakenRole(
-            name: takenRole['name'],
-            user: user,
-          ));
-        }
-
-        User creator = await _retrieveUserFromPath(element['creator']);
-        List<Topic> topics = await _retrieveTopicsFromNames(
-          List<String>.from(element['topics']),
-        );
-
-        toReturn.add(Hive(
-          id: element['id'],
-          creator: creator,
-          name: element['name'],
-          active: element['active'],
-          description: element['description'],
-          latitude: element['latitude'],
-          longitude: element['longitude'],
-          openRoles: openRoles,
-          takenRoles: takenRoles,
-          topics: topics,
-        ));
+        toReturn.add(await _parseHive(element));
       }
     } catch (e) {
       errorMessage = e.toString();
@@ -99,50 +66,97 @@ mixin HivesModel on ConnectedModel {
 
   Future<List<Hive>> getHives() async {
     _setLoading(true);
-    List<Hive> toReturn;
+    List<Hive> toReturn = [];
 
     try {
       const url = '$apiEndpoint/getHivesList';
 
       LocationPermission permission = await checkPermission();
 
-      Map<String, dynamic> json;
+      List<dynamic> json;
 
       if (permission == LocationPermission.denied ||
           permission == LocationPermission.deniedForever) {
-        Response response = await Dio().request(
+        Response response = await Dio().get(
           url,
-          data: jsonEncode({'userRef': 'users/${user.id}'}),
+          queryParameters: {
+            'userRef': 'users/${user.id}',
+          },
         );
 
-        json = jsonDecode(response.data.toString());
+        json = response.data;
       } else {
         Position position = await getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high,
         );
 
-        Response response = await Dio().request(
+        Response response = await Dio().get(
           url,
-          data: jsonEncode({
+          queryParameters: {
             'userRef': 'users/${user.id}',
-            'userPosition': {
-              'latitude': position.latitude,
-              'longitude': position.longitude,
-            }
-          }),
+            'latitude': position.latitude,
+            'longitude': position.longitude,
+          },
         );
 
-        json = jsonDecode(response.data.toString());
+        json = response.data;
       }
 
-      // TODO: Parse response
+      // Loop through the hives
+      for (Map<String, dynamic> element in json) {
+        toReturn.add(await _parseHive(element));
+      }
     } catch (e) {
       errorMessage = e.toString();
       toReturn = null;
     }
 
+    // Set the hives list in connected to the retrieved ones
+    hivesList = toReturn;
+
     _setLoading(false);
     return toReturn;
+  }
+
+  Future<Hive> _parseHive(Map<String, dynamic> data) async {
+    // Build open roles list
+    List<OpenRole> openRoles = [];
+    for (dynamic openRole in data['openRoles']) {
+      openRoles.add(OpenRole(
+        name: openRole['name'],
+        quantity: openRole['quantity'],
+      ));
+    }
+
+    // Build taken roles list
+    List<TakenRole> takenRoles = [];
+    for (dynamic takenRole in data['takenRoles']) {
+      User user = await _retrieveUserFromPath(takenRole['userRef']);
+
+      takenRoles.add(TakenRole(
+        name: takenRole['name'],
+        user: user,
+      ));
+    }
+
+    // Build creator and topics list
+    User creator = await _retrieveUserFromPath(data['creator']);
+    List<Topic> topics = await _retrieveTopicsFromNames(
+      List<String>.from(data['topics']),
+    );
+
+    return Hive(
+      id: data['hiveId'],
+      name: data['name'],
+      creator: creator,
+      active: data['active'],
+      description: data['description'],
+      latitude: data['latitude'],
+      longitude: data['longitude'],
+      openRoles: openRoles,
+      takenRoles: takenRoles,
+      topics: topics,
+    );
   }
 
   Future<User> _retrieveUserFromPath(String path) async {

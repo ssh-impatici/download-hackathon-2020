@@ -260,6 +260,7 @@ mixin AuthModel on ConnectedModel {
       if (result != null) {
         Map<String, dynamic> data = result.data();
 
+        // Build open roles list
         List<OpenRole> openRoles = [];
         for (dynamic openRole in data['openRoles']) {
           openRoles.add(OpenRole(
@@ -268,6 +269,7 @@ mixin AuthModel on ConnectedModel {
           ));
         }
 
+        // Build taken roles list
         List<TakenRole> takenRoles = [];
         for (dynamic takenRole in data['takenRoles']) {
           Model.User user = await _retrieveUserFromPath(takenRole['userRef']);
@@ -278,9 +280,11 @@ mixin AuthModel on ConnectedModel {
           ));
         }
 
+        // Build creator and topics list
         Model.User creator = await _retrieveUserFromPath(data['creator']);
-        List<Topic> topics =
-            await _retrieveTopicsFromNames(List<String>.from(data['topics']));
+        List<Topic> topics = await _retrieveTopicsFromNames(
+          List<String>.from(data['topics']),
+        );
 
         return Hive(
           id: result.id,
