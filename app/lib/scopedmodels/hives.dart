@@ -357,4 +357,11 @@ mixin HivesModel on ConnectedModel {
       return null;
     }
   }
+
+  Future<void> giveUpHive({String hiveId}) async {
+    List<TakenRole> _roles =
+        user.hives.firstWhere((hive) => hive.id == hiveId).takenRoles;
+
+    _roles.forEach((role) {});
+  }
 }

@@ -49,7 +49,8 @@ class _HiveDescriptionState extends State<HiveDescription> {
                           : Container(),
                       _openRoles(context),
                       _section('People'),
-                      _takenRoles(context)
+                      _takenRoles(context),
+                      _leave()
                     ],
                   )
                 : CircularProgressIndicator(),
@@ -443,5 +444,28 @@ class _HiveDescriptionState extends State<HiveDescription> {
             fontSize: 15),
       ),
     );
+  }
+
+  Widget _leave() {
+    return ScopedModelDescendant<MainModel>(
+        builder: (BuildContext context, Widget child, MainModel model) {
+      return Container(
+        padding: EdgeInsets.only(top: 20, bottom: 15),
+        child: RaisedButton(
+          color: Colors.grey.shade900,
+          child: Center(
+            child: model.loading
+                ? Container(
+                    padding: EdgeInsets.all(10),
+                    child: Center(child: CircularProgressIndicator()))
+                : Text(
+                    'Confirm',
+                    style: TextStyle(color: Colors.white),
+                  ),
+          ),
+          onPressed: () => model.giveUpHive(hiveId: widget.hiveId),
+        ),
+      );
+    });
   }
 }
