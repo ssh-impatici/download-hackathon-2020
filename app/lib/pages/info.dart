@@ -20,7 +20,7 @@ class _InfoPageState extends State<InfoPage> {
   String name;
   String surname;
   String bio;
-  List<Topic> topics = List<Topic>();
+  List<String> topics = List<String>();
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +146,7 @@ class _InfoPageState extends State<InfoPage> {
 
   void addTopic(Topic topic) {
     setState(() {
-      topics.add(topic);
+      topics.add(topic.id);
     });
   }
 
@@ -173,5 +173,10 @@ class _InfoPageState extends State<InfoPage> {
     });
   }
 
-  void _submit(Function callback, String msg) {}
+  void _submit(Function callback, String msg) async {
+    if (!_formKey.currentState.validate()) return;
+    _formKey.currentState.save();
+    await callback(name: name, surname: surname, bio: bio, topics: topics)
+        .then((value) => Navigator.of(context).pushReplacementNamed('/home'));
+  }
 }

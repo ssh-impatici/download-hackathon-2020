@@ -28,7 +28,13 @@ class _AutoCompletionState extends State<AutoCompletion> {
   Widget _field() {
     return Container(
       child: AutoCompleteTextField<Topic>(
-        itemBuilder: (context, item) => Text(item.id),
+        itemBuilder: (context, item) => Container(
+          child: Text(
+            item.id,
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        ),
         itemFilter: (item, query) =>
             item.id.toLowerCase().startsWith(query.toLowerCase()),
         itemSorter: (a, b) => a.id.compareTo(b.id),
