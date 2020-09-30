@@ -11,7 +11,9 @@ const getDistance = (x1, x2, y1, y2) => {
 
 module.exports = function(e) {
   e.getHivesList = functions.https.onRequest(async (req, res) => {
-    const data = { ...req.query };
+    const data = {
+      ...req.query
+    };
 
     let userTopics = await db.doc(data.userRef).get();
     userTopics = userTopics.get("topics").map(topic => topic.id);
@@ -79,9 +81,13 @@ module.exports = function(e) {
         .get()
     }
 
-    // TODO Return HivesId e manca il creator user (ma in teoria c'è se esistesse il ref)
+    hives = hives.docs.map(doc => {
+      return {
+        ...doc.data(),
+        hiveId: doc.id
+      }
+    })
 
-    hives = hives.docs.map(doc => doc.data())
     res.status(200).send(hives.filter(
       a => (a.longitude <= (long + zoom)) && (a.longitude >= (long - zoom))
     ));
