@@ -261,14 +261,13 @@ class _AuthPageState extends State<AuthPage> {
                 AuthResult result = await model.signInWithGoogle();
                 switch (result) {
                   case AuthResult.SIGNEDIN:
-                    await model.getHives().then((_) => null);
-                    await model.getMapHives().then((_) =>
-                        Navigator.of(context).pushReplacementNamed('/home'));
+                    await model.getHives();
+                    await model.getMapHives();
+                    Navigator.of(context).pushReplacementNamed('/home');
                     break;
                   case AuthResult.SIGNEDUP:
-                    await model.getTopics().then((_) =>
-                        Navigator.of(context).pushReplacementNamed('/info'));
-
+                    await model.getTopics();
+                    Navigator.of(context).pushReplacementNamed('/info');
                     break;
                   case AuthResult.UNAUTHORIZED:
                     await showDialog(
