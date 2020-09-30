@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/scopedmodels/main.dart';
-import 'package:hackathon/widgets/auto-completion.dart';
+import 'package:hackathon/widgets/topic-auto-completion.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class InfoPage extends StatefulWidget {
@@ -140,7 +140,7 @@ class _InfoPageState extends State<InfoPage> {
 
   Widget _interests(List<Topic> options) {
     return Container(
-      child: AutoCompletion(options, addTopic),
+      child: TopicAutoCompletion(options, addTopic),
     );
   }
 

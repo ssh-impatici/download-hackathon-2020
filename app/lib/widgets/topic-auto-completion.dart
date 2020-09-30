@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:hackathon/classes/topic.dart';
 
-class AutoCompletion extends StatefulWidget {
+class TopicAutoCompletion extends StatefulWidget {
   //
   final List options;
   final Function callback;
-  AutoCompletion(this.options, this.callback);
+  final String hint;
+  TopicAutoCompletion(this.options, this.callback, {this.hint});
 
   @override
-  _AutoCompletionState createState() => _AutoCompletionState();
+  _TopicAutoCompletionState createState() => _TopicAutoCompletionState();
 }
 
-class _AutoCompletionState extends State<AutoCompletion> {
+class _TopicAutoCompletionState extends State<TopicAutoCompletion> {
   //
   GlobalKey<AutoCompleteTextFieldState<Topic>> _key = GlobalKey();
   //
@@ -28,6 +29,9 @@ class _AutoCompletionState extends State<AutoCompletion> {
   Widget _field() {
     return Container(
       child: AutoCompleteTextField<Topic>(
+        decoration: InputDecoration(
+          hintText: widget.hint,
+        ),
         itemBuilder: (context, item) => Container(
           child: Text(
             item.id,

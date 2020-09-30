@@ -4,7 +4,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/scopedmodels/main.dart';
-import 'package:hackathon/widgets/auto-completion.dart';
+import 'package:hackathon/widgets/topic-auto-completion.dart';
+import 'package:hackathon/widgets/open-role-dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'dart:math';
 
@@ -27,7 +28,10 @@ class _CreateHivePageState extends State<CreateHivePage> {
   );
   String address;
   List<OpenRole> openRoles = [];
-  List<String> topics = [];
+  List<Topic> topics = [];
+
+  String _topicsErrorMessage;
+  String _openRolesErrorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +77,31 @@ class _CreateHivePageState extends State<CreateHivePage> {
                     SizedBox(height: 15),
                     _title('Topics'),
                     _interests(model.topics),
-                    _selected(topics),
-                    _button()
+                    _topicsErrorMessage != null
+                        ? _errorMessage(_topicsErrorMessage)
+                        : Container(),
+                    _selectedTopics(topics),
+                    SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        _title('Open roles'),
+                        InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: addOpenRole,
+                          child: Icon(
+                            Icons.add_circle,
+                          ),
+                        ),
+                      ],
+                    ),
+                    _openRolesErrorMessage != null
+                        ? _errorMessage(_openRolesErrorMessage)
+                        : Container(),
+                    _openRoles(openRoles),
+                    _button(),
                   ],
                 ),
               ),
@@ -83,6 +110,32 @@ class _CreateHivePageState extends State<CreateHivePage> {
         ),
       ),
     );
+  }
+
+  addOpenRole() async {
+    OpenRole result = await showDialog(
+      context: context,
+      builder: (ctx) => OpenRoleDialog(topics),
+    );
+
+    if (result != null) {
+      bool match = false;
+
+      openRoles.forEach((openRole) {
+        if (openRole.name == result.name) {
+          openRole.quantity++;
+          match = true;
+        }
+      });
+
+      if (!match) {
+        openRoles.add(result);
+      }
+
+      setState(() {
+        _openRolesErrorMessage = null;
+      });
+    }
   }
 
   Widget _title(String title) {
@@ -99,31 +152,33 @@ class _CreateHivePageState extends State<CreateHivePage> {
   Widget _name() {
     return Container(
       child: TextFormField(
-          keyboardType: TextInputType.emailAddress,
-          controller: nameController,
-          decoration: InputDecoration(hintText: 'Name'),
-          // ignore: missing_return
-          validator: (String value) {
-            if (value.isEmpty) return 'You must enter the hive name!';
-          },
-          onSaved: (String value) {
-            name = value;
-            nameController..text = value;
-          }),
+        keyboardType: TextInputType.emailAddress,
+        controller: nameController,
+        decoration: InputDecoration(hintText: 'Name'),
+        // ignore: missing_return
+        validator: (String value) {
+          if (value.isEmpty) return 'You must enter the hive name!';
+        },
+        onSaved: (String value) {
+          name = value;
+          nameController..text = value;
+        },
+      ),
     );
   }
 
   Widget _description() {
     return Container(
       child: TextFormField(
-          keyboardType: TextInputType.emailAddress,
-          controller: descriptionController,
-          decoration: InputDecoration(hintText: 'Description'),
-          // ignore: missing_return
-          onSaved: (String value) {
-            description = value;
-            descriptionController..text = value;
-          }),
+        keyboardType: TextInputType.emailAddress,
+        controller: descriptionController,
+        decoration: InputDecoration(hintText: 'Description'),
+        // ignore: missing_return
+        onSaved: (String value) {
+          description = value;
+          descriptionController..text = value;
+        },
+      ),
     );
   }
 
@@ -142,26 +197,43 @@ class _CreateHivePageState extends State<CreateHivePage> {
     );
   }
 
-  Widget _interests(List<Topic> options) {
-    print(options);
+  Widget _errorMessage(String errorMessage) {
     return Container(
-      child: AutoCompletion(options, addTopic),
+      margin: EdgeInsets.only(top: 6.0),
+      child: Row(
+        children: [
+          Text(
+            errorMessage,
+            style: TextStyle(
+              color: Colors.red,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _interests(List<Topic> options) {
+    return Container(
+      child: TopicAutoCompletion(options, addTopic),
     );
   }
 
   void addTopic(Topic topic) {
     setState(() {
-      topics.add(topic.id);
+      topics.add(topic);
+      _topicsErrorMessage = null;
     });
   }
 
-  void removeTopic(String string) {
+  void removeTopic(Topic toRemove) {
     setState(() {
-      topics.removeWhere((item) => item == string);
+      topics.removeWhere((item) => item.id == toRemove.id);
     });
   }
 
-  Widget _selected(List<String> selected) {
+  Widget _selectedTopics(List<Topic> selected) {
     List<Widget> topics = [];
     selected.forEach((topic) {
       topics.add(
@@ -175,7 +247,7 @@ class _CreateHivePageState extends State<CreateHivePage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  topic,
+                  topic.id,
                   style: TextStyle(
                       color: Colors.yellow.shade400,
                       fontSize: 15,
@@ -196,6 +268,53 @@ class _CreateHivePageState extends State<CreateHivePage> {
     return Container(
       padding: EdgeInsets.only(top: 15),
       child: Wrap(children: topics),
+    );
+  }
+
+  Widget _openRoles(List<OpenRole> openRoles) {
+    List<Widget> roles = List<Widget>();
+
+    openRoles.forEach((role) {
+      roles.add(_openRole(role, context));
+    });
+
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      child: Column(
+        children: roles,
+      ),
+    );
+  }
+
+  Widget _openRole(OpenRole role, BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 15),
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10), color: Colors.grey.shade800),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            role.toString(),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          ),
+          InkWell(
+            borderRadius: BorderRadius.circular(50),
+            onTap: () {
+              setState(() {
+                openRoles.removeWhere((element) => element.name == role.name);
+              });
+            },
+            child: Icon(
+              Icons.delete,
+              color: Colors.red,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -228,16 +347,36 @@ class _CreateHivePageState extends State<CreateHivePage> {
     }
     _formKey.currentState.save();
 
+    if (topics == null || topics.isEmpty) {
+      setState(() {
+        _topicsErrorMessage = 'Please pick at least one topic';
+      });
+
+      return;
+    }
+
+    if (openRoles == null || openRoles.isEmpty) {
+      setState(() {
+        _openRolesErrorMessage = 'Please add at least one open role';
+      });
+
+      return;
+    }
+
     await model
         .createHive(
           name: name,
           description: description,
-          latitude: location.latitude,
-          longitude: location.longitude,
+          latitude:
+              address != null && address.isNotEmpty ? location.latitude : null,
+          longitude:
+              address != null && address.isNotEmpty ? location.longitude : null,
           address: address,
           openRoles: openRoles,
-          topics: topics,
+          topics: topics.map((topic) => topic.id).toList(),
         )
-        .then((value) => Navigator.of(context).pushReplacementNamed('/home'));
+        .then((_) => model.getMapHives())
+        .then((_) => model.getHives())
+        .then((_) => Navigator.of(context).pop());
   }
 }
