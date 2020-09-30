@@ -20,4 +20,6 @@ class User {
     this.topics,
     this.hives,
   });
+
+  String get fullName => '$name $surname';
 }
