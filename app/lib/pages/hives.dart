@@ -114,17 +114,19 @@ class _HivesPageState extends State<HivesPage> {
               )
             ],
           )
-        : Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-            decoration: BoxDecoration(
-                color: Colors.yellow, borderRadius: BorderRadius.circular(10)),
-            child: Text(
-              list.first.name,
-              style: TextStyle(
-                  color: Colors.grey.shade800,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12),
-            ),
-          );
+        : list.isNotEmpty
+            ? Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                decoration: BoxDecoration(
+                    color: Colors.yellow,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Text(
+                  list.first.name,
+                  style: TextStyle(
+                      color: Colors.grey.shade800,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12),
+                ))
+            : Container();
   }
 }
