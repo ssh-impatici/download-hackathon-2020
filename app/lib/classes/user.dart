@@ -22,4 +22,9 @@ class User {
   });
 
   String get fullName => '$name $surname';
+
+  @override
+  String toString() {
+    return fullName;
+  }
 }

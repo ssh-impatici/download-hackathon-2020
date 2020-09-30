@@ -8,6 +8,11 @@ class Topic {
     @required this.id,
     @required this.roles,
   });
+
+  @override
+  String toString() {
+    return this.id;
+  }
 }
 
 class UserTopic {
@@ -20,4 +25,9 @@ class UserTopic {
     @required this.reviews,
     @required this.stars,
   });
+
+  @override
+  String toString() {
+    return this.id;
+  }
 }
