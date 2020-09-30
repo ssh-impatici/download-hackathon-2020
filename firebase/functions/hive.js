@@ -10,7 +10,7 @@ module.exports = function(e) {
     if (req.method !== 'POST' || !req.body)
       return res.status(400).send("Please send a POST request");
 
-    const data = JSON.parse(req.body);
+    const data = {...req.body};
     const hive = await db.doc(data.hiveRef).get();
     if (!hive.exists) return res.status(404).send("Hive not found");
     // Get role id and check if quantity is enough

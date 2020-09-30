@@ -167,6 +167,10 @@ class _MapPageState extends State<MapPage> {
               address: "test address",
               latitude: 9,
               longitude: 5,openRoles: null, topics: ["Tecnologia"])),
+          // onPressed: () => widget.model.joinHive(
+          //     hiveId: 'r6E0nOG8TAUO72Uo7j7C',
+          //     roleId: 'Programmatore backend', 
+          //     userId: 'qwthI61cuZZvddELKcgdHvQAK8X2'))
     );
   }
 
