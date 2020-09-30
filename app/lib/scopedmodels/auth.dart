@@ -165,7 +165,7 @@ mixin AuthModel on ConnectedModel {
     }
   }
 
-  Future<AuthResult> addUserInfo(Model.User userInfo) async {
+  Future<AuthResult> addUserInfo({Model.User userInfo}) async {
     User user = _auth.currentUser;
 
     if (user == null) {

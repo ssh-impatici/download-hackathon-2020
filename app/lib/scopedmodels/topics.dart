@@ -37,7 +37,11 @@ mixin TopicsModel on ConnectedModel {
     return toReturn;
   }
 
-  Future<Topic> getTopic(String id) async {
+  Future<Topic> getTopic({String id}) async {
+    if (id == null) {
+      return null;
+    }
+
     _setLoading(true);
     Topic toReturn;
 
