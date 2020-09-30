@@ -24,9 +24,6 @@ class _OpenRoleDialogState extends State<OpenRoleDialog> {
 
   @override
   Widget build(BuildContext context) {
-    List<dynamic> roles =
-        widget.topics.map((topic) => topic.roles).expand((i) => i).toList();
-
     return AlertDialog(
       title: Text("New open role"),
       content: Form(
@@ -35,13 +32,8 @@ class _OpenRoleDialogState extends State<OpenRoleDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: 15.0),
-            RoleAutoCompletion(
-              roles,
-              addRole,
-              hint: 'Which role?',
-            ),
+            _rolePicker(),
             _roleErrorMessage != null ? _roleError() : Container(),
-            _role != null ? _pickedRole() : Container(),
             SizedBox(height: 15.0),
             TextFormField(
               controller: _quantityController,
@@ -88,6 +80,35 @@ class _OpenRoleDialogState extends State<OpenRoleDialog> {
     });
   }
 
+  Widget _rolePicker() {
+    List<dynamic> roles =
+        widget.topics.map((topic) => topic.roles).expand((i) => i).toList();
+    List<Widget> choices = List();
+
+    roles.forEach((item) {
+      bool isSelected = _role == item;
+
+      choices.add(
+        Container(
+          padding: const EdgeInsets.all(2.0),
+          child: ChoiceChip(
+            label: Text(item),
+            selected: isSelected,
+            backgroundColor: Colors.grey,
+            selectedColor: Colors.yellow,
+            onSelected: (selected) {
+              setState(() {
+                _role = item;
+              });
+            },
+          ),
+        ),
+      );
+    });
+
+    return Wrap(children: choices);
+  }
+
   Widget _roleError() {
     return Container(
       margin: EdgeInsets.only(top: 4.0),
@@ -101,24 +122,6 @@ class _OpenRoleDialogState extends State<OpenRoleDialog> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _pickedRole() {
-    return Container(
-      margin: EdgeInsets.only(top: 12.0),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      padding: EdgeInsets.symmetric(
-        horizontal: 16.0,
-        vertical: 12.0,
-      ),
-      child: Text(
-        _role,
-        style: TextStyle(color: Colors.white),
       ),
     );
   }
