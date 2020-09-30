@@ -85,7 +85,7 @@ class _UserPageState extends State<UserPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            child: Text('Bio',
+            child: Text('Something about me..',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             padding: EdgeInsets.only(top: 10),
           ),
