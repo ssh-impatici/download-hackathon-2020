@@ -1,13 +1,11 @@
-import 'package:hackathon/classes/role.dart';
+import 'package:flutter/material.dart';
 
 class Topic {
   String id;
-  String name;
-  List<Role> roles;
+  List<String> roles;
 
   Topic({
-    this.id,
-    this.name,
-    this.roles,
+    @required this.id,
+    @required this.roles,
   });
 }
