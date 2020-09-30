@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hackathon/classes/hive.dart';
+import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:hackathon/widgets/hive.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -153,17 +154,23 @@ class _MapPageState extends State<MapPage> {
       bottom: 20,
       right: 20,
       child: FloatingActionButton(
-        heroTag: 'createHive',
-        backgroundColor: Colors.grey.shade800,
-        foregroundColor: Colors.grey.shade200,
-        child: Icon(
-          Icons.add,
-          size: 30,
-        ),
-        onPressed: () => {
-          // TODO: Add create hive behavior
-        },
-      ),
+          heroTag: 'createHive',
+          backgroundColor: Colors.grey.shade800,
+          foregroundColor: Colors.grey.shade200,
+          child: Icon(
+            Icons.add,
+            size: 30,
+          ),
+          onPressed: () => widget.model.createHive(
+              name: "test name",
+              description: "test description",
+              address: "test address",
+              latitude: 9,
+              longitude: 5,openRoles: null, topics: ["Tecnologia"])),
+          // onPressed: () => widget.model.joinHive(
+          //     hiveId: 'r6E0nOG8TAUO72Uo7j7C',
+          //     roleId: 'Programmatore backend', 
+          //     userId: 'qwthI61cuZZvddELKcgdHvQAK8X2'))
     );
   }
 
