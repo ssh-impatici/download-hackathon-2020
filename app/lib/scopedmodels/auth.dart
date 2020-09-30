@@ -148,8 +148,16 @@ mixin AuthModel on ConnectedModel {
     if (result != null) {
       Map<String, dynamic> data = result.data();
 
-      List<Topic> topics = await _retrieveTopicsFromNames(data['topics']);
-      List<Hive> hives = await _retrieveHivesFromPaths(data['hives']);
+      if (data == null) {
+        return null;
+      }
+
+      List<Topic> topics = data['topics'] != null
+          ? await _retrieveTopicsFromNames(List<String>.from(data['topics']))
+          : null;
+      List<Hive> hives = data['hives'] != null
+          ? await _retrieveHivesFromPaths(List<String>.from(data['hives']))
+          : null;
 
       return Model.User(
         id: result.id,
@@ -199,6 +207,10 @@ mixin AuthModel on ConnectedModel {
   }
 
   Future<List<Hive>> _retrieveHivesFromPaths(List<String> paths) async {
+    if (paths == null) {
+      return null;
+    }
+
     List<Hive> toReturn = [];
 
     for (String path in paths) {
@@ -282,6 +294,10 @@ mixin AuthModel on ConnectedModel {
   }
 
   Future<List<Topic>> _retrieveTopicsFromNames(List<String> names) async {
+    if (names == null) {
+      return null;
+    }
+
     List<Topic> toReturn = [];
 
     for (String name in names) {
