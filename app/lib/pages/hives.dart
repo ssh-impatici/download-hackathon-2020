@@ -88,12 +88,38 @@ class _HivesPageState extends State<HivesPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        child: Text(
-                          hive.name,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20),
+                        margin: EdgeInsets.only(bottom: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            hive.address == null
+                                ? Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.yellow,
+                                      borderRadius: BorderRadius.circular(4.0),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 6.0,
+                                      vertical: 4.0,
+                                    ),
+                                    margin: EdgeInsets.only(right: 8.0),
+                                    child: Icon(
+                                      Icons.location_off,
+                                      size: 14.0,
+                                      color: Colors.black,
+                                    ),
+                                  )
+                                : Container(),
+                            Container(
+                              child: Text(
+                                hive.name,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 20),
+                              ),
+                            ),
+                          ],
                         ),
-                        padding: EdgeInsets.only(bottom: 15),
                       ),
                       Container(
                         child: Text(
