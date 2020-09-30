@@ -4,7 +4,7 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 const Fields = admin.firestore.FieldValue;
 
-module.exports = function (e) {
+module.exports = function(e) {
   e.joinHive = functions.https.onRequest(async (req, res) => {
     // ##### Remove from open roles
     if (req.method !== 'POST' || !req.body)
@@ -47,30 +47,31 @@ module.exports = function (e) {
     return res.status(201).send("Taken role created");
   });
 
-  e.createHive = functions.https.onRequest(async (request, response) => {
+  e.createHive = functions.https.onRequest(async (req, res) => {
     // Check for POST request
-    if (request.method !== "POST")
-      return response.status(400).send('Please send a POST request');
+    if (req.method !== "POST")
+      return res.status(400).send("Please send a POST request");
 
-    const data = JSON.parse(request.body);
+    const data = JSON.parse(req.body);
 
-    let loc = null;
-    if (data.location != null) {
-      // GeoPoint
-      loc = new admin.firestore.GeoPoint(data.location.latitude, data.location.longitude)
+    let lat = null;
+    let lon = null;
+    if (data.latitude != null && data.longitude != null) {
+      lat = data.latitude
+      lon = data.longitude
     }
 
     await db.collection('hives').add({
       active: true,
-      creator: data.creator,
       description: data.description,
-      location: loc,
+      latitude: lat,
+      longitude: lon,
       name: data.name,
       openRoles: data.openRoles,
       takenRoles: [],
       topics: data.topics
     });
 
-    return response.status(200).send("Hive created!");
+    return res.status(200).send("Hive created!");
   });
 }
