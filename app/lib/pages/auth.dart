@@ -55,7 +55,7 @@ class _AuthPageState extends State<AuthPage> {
     return Container(
       padding: EdgeInsets.only(top: 50, bottom: 30),
       child: Text(
-        'Hackathon',
+        'Beelder',
         style: TextStyle(
             fontSize: 22,
             color: Colors.grey.shade200,
