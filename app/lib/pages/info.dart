@@ -112,7 +112,7 @@ class _InfoPageState extends State<InfoPage> {
           },
           onSaved: (String value) {
             surname = value;
-            nameController..text = value;
+            surnameController..text = value;
           }),
     );
   }
@@ -139,7 +139,6 @@ class _InfoPageState extends State<InfoPage> {
   }
 
   Widget _interests(List<Topic> options) {
-    print(options);
     return Container(
       child: AutoCompletion(options, addTopic),
     );
