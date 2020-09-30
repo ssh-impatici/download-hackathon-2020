@@ -1,12 +1,12 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const { user } = require('firebase-functions/lib/providers/auth');
 
 const db = admin.firestore();
 const Fields = admin.firestore.FieldValue;
 
 module.exports = function(e) {
   e.joinHive = functions.https.onRequest(async (req, res) => {
-
     if (req.method !== 'POST' || !req.body)
       return res.status(400).send("Please send a POST request");
 
@@ -15,12 +15,12 @@ module.exports = function(e) {
     const hive = await db.doc(data.hiveRef).get();
     if (!hive.exists) return res.status(404).send("Hive not found");
 
-    // ##### Remove from open roles
     // Check that user is not already joined
     const takenRoles = hive.get("takenRoles");
-    if (takenRoles.find(role => role.userRef === data.userRef))
-      return res.status(401).send("User already joined");
-
+    if (takenRoles.find(role => role.userRef === data.userRef && role.name === data.roleRef))
+    return res.status(401).send("User already joined");
+    
+    // ##### Remove from open roles
     // Get role id and check if quantity is enough
     const roles = hive.get("openRoles");
 
@@ -50,13 +50,23 @@ module.exports = function(e) {
     });
 
     // ##### Add hive to user's hives
-    await db.doc(data.userRef).update({
-      hives: Fields.arrayUnion(data.hiveRef)
-    })
+    const user = await db.doc(data.userRef).get();
+    let userHives = user.get("hives");
+    if(!userHives) userHives = [];
+    const hiveIndex = userHives.findIndex(hive => hive.hiveRef === data.hiveRef);
+    if(hiveIndex > 0) 
+      userHives[hiveIndex].roles.push(data.roleRef);
+    else
+      userHives.push({
+        hiveRef: data.hiveRef,
+        roles: [data.roleRef]
+      });
 
-    var hiveRef_plain = data.hiveRef.substring(6);
+    await db.doc(data.userRef).update({ hives: userHives });
 
-    var dataToSent = db.collection("hives").doc(hiveRef_plain).get()
+    var hiveRef_plain = data.hiveRef.replace("hives/", "");
+
+    db.collection("hives").doc(hiveRef_plain).get()
       .then(snap => {
         return res.status(201).send({
           hiveId: hiveRef_plain,
@@ -66,7 +76,6 @@ module.exports = function(e) {
   });
 
   e.leaveHive = functions.https.onRequest(async (req, res) => {
-
     if (req.method !== 'POST' || !req.body)
       return res.status(400).send("Please send a POST request");
 
@@ -128,7 +137,7 @@ module.exports = function(e) {
 
     var hiveRef_plain = data.hiveRef.replace("hives/", "");
 
-    var dataToSent = db.collection("hives").doc(hiveRef_plain).get()
+    db.collection("hives").doc(hiveRef_plain).get()
       .then(snap => {
         return res.status(201).send({
           hiveId: hiveRef_plain,

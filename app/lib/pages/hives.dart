@@ -16,9 +16,11 @@ class _HivesPageState extends State<HivesPage> {
   @override
   Widget build(BuildContext context) {
     //
-    return ScopedModelDescendant<MainModel>(
-      builder: (context, child, model) => Container(
-        child: Column(children: listHiveWidgets(model.hivesList)),
+    return SingleChildScrollView(
+      child: ScopedModelDescendant<MainModel>(
+        builder: (context, child, model) => Container(
+          child: Column(children: listHiveWidgets(model.hivesList)),
+        ),
       ),
     );
   }

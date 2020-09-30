@@ -113,6 +113,14 @@ class _CreateHivePageState extends State<CreateHivePage> {
   }
 
   addOpenRole() async {
+    if (topics == null || topics.isEmpty) {
+      setState(() {
+        _openRolesErrorMessage = 'Please pick at least one topic before';
+      });
+
+      return;
+    }
+
     OpenRole result = await showDialog(
       context: context,
       builder: (ctx) => OpenRoleDialog(topics),

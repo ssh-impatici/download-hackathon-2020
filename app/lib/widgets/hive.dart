@@ -138,7 +138,8 @@ class _HiveDescriptionState extends State<HiveDescription> {
                   ),
                   onTap: () {
                     showModalBottomSheet(
-                        context: context, builder: (context) => _confirm(role));
+                        context: context,
+                        builder: (context) => _confirmJoin(role));
                   },
                 ),
                 SizedBox(width: 10),
@@ -187,43 +188,56 @@ class _HiveDescriptionState extends State<HiveDescription> {
   Widget _takenRole(TakenRole role, BuildContext context) {
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) => Container(
+        margin: EdgeInsets.only(bottom: 15),
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.grey.shade800),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              margin: EdgeInsets.only(bottom: 15),
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey.shade800),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    role.name,
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    role.user.fullName,
-                    style: TextStyle(fontSize: 15),
-                  )
-                ],
+            Expanded(
+              child: Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      role.name,
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      role.user.fullName,
+                      style: TextStyle(fontSize: 15),
+                    )
+                  ],
+                ),
               ),
             ),
-            model.user.id == widget.hive.creator.id ? _remove() : Container()
+            model.user.id == widget.hive.creator.id
+                ? _remove(model.leaveHive, role)
+                : Container()
           ],
         ),
       ),
     );
   }
 
-  Widget _remove() {
-    return Container();
+  Widget _remove(Function remove, TakenRole role) {
+    return Flexible(
+      child: InkWell(
+          child: Icon(Icons.remove),
+          onTap: () {
+            showModalBottomSheet(
+                context: context, builder: (context) => _confirmRemove(role));
+          }),
+    );
   }
 
-  Widget _confirm(OpenRole role) {
+  Widget _confirmJoin(OpenRole role) {
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) => Container(
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
@@ -317,29 +331,103 @@ class _HiveDescriptionState extends State<HiveDescription> {
     );
   }
 
-  Widget _button(String title, Color color, bool loading) {
-    return Flexible(
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 8),
-        margin: EdgeInsets.symmetric(horizontal: 10),
-        decoration:
-            BoxDecoration(borderRadius: BorderRadius.circular(5), color: color),
-        child: loading
-            ? Container(
-                height: 30,
-                width: 30,
-                child: CircularProgressIndicator(
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Colors.grey.shade900)),
-              )
-            : Text(
-                title,
-                textAlign: TextAlign.center,
+  Widget _confirmRemove(TakenRole role) {
+    return ScopedModelDescendant<MainModel>(
+      builder: (context, child, model) => Container(
+        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+        color: Colors.grey.shade900,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.only(bottom: 15),
+              child: Text(
+                'Removing ${role.user.fullName}',
                 style: TextStyle(
-                    color: Colors.grey.shade900,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 15),
+                    fontSize: 17),
               ),
+            ),
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      'Do you want to remove this bee',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 20),
+                    child: Text(
+                      role.user.fullName + ' ?',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: InkWell(
+                            child: _button('Cancel', Colors.grey, false),
+                            onTap: () => Navigator.pop(context),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: InkWell(
+                            child: _button(
+                                'Confirm', Colors.yellow, model.loading),
+                            onTap: () {
+                              setState(() {
+                                model
+                                    .leaveHive(
+                                        hiveId: widget.hive.id,
+                                        roleId: role.name,
+                                        userId: role.user.id)
+                                    .then((_) => Navigator.pop(context));
+                                widget.hive.takenRoles.remove(role);
+                                widget.hive.openRoles
+                                    .add(OpenRole(name: role.name));
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _button(String title, Color color, bool loading) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8),
+      margin: EdgeInsets.symmetric(horizontal: 10),
+      decoration:
+          BoxDecoration(borderRadius: BorderRadius.circular(5), color: color),
+      child: Text(
+        loading ? 'Bzz Bzz ..' : title,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            color: Colors.grey.shade900,
+            fontWeight: FontWeight.bold,
+            fontSize: 15),
       ),
     );
   }
