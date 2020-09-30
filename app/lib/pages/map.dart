@@ -62,6 +62,10 @@ class _MapPageState extends State<MapPage> {
   _initializeMarkers() async {
     _markers.clear();
 
+    if (widget.model.hivesMap == null) {
+      return null;
+    }
+
     for (Hive hive in widget.model.hivesMap) {
       Marker toAdd = Marker(
         markerId: MarkerId(hive.id),
