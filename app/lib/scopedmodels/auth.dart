@@ -187,9 +187,9 @@ mixin AuthModel on ConnectedModel {
     String bio,
     List<String> topics,
   }) async {
-    User user = _auth.currentUser;
+    User currentUser = _auth.currentUser;
 
-    if (user == null) {
+    if (currentUser == null) {
       return AuthResult.SIGNEDUP;
     }
 
@@ -197,15 +197,25 @@ mixin AuthModel on ConnectedModel {
     AuthResult result;
 
     try {
-      await _firestore.collection('users').doc(user.uid).set({
+      await _firestore.collection('users').doc(currentUser.uid).set({
         'name': name,
         'surname': surname,
-        'email': user.email,
+        'email': currentUser.email,
         'bio': bio,
         'topics': topics,
       });
 
-      result = AuthResult.SIGNEDIN;
+      // Set the authenticated flag in connected model
+      authenticated = true;
+
+      // Set the user info in connected model
+      user = await retrieveUserInfo();
+
+      if (user != null) {
+        result = AuthResult.SIGNEDIN;
+      } else {
+        result = AuthResult.SIGNEDUP;
+      }
     } catch (e) {
       result = AuthResult.SIGNEDUP;
     }
