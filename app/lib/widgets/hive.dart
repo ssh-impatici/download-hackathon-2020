@@ -27,31 +27,33 @@ class _HiveDescriptionState extends State<HiveDescription> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 50),
-          child: _hive != null
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _title(),
-                    _section('Author'),
-                    _author(),
-                    _section('Hive Descrpition'),
-                    _description(),
-                    _hive.address != null ? _section('Address') : Container(),
-                    _place(),
-                    _hive.openRoles.isNotEmpty
-                        ? _section('Open Roles')
-                        : Container(),
-                    _openRoles(context),
-                    _section('People'),
-                    _takenRoles(context)
-                  ],
-                )
-              : CircularProgressIndicator(),
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 50),
+            child: _hive != null
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _title(),
+                      _section('Author'),
+                      _author(),
+                      _section('Hive Descrpition'),
+                      _description(),
+                      _hive.address != null ? _section('Address') : Container(),
+                      _place(),
+                      _hive.openRoles.isNotEmpty
+                          ? _section('Open Roles')
+                          : Container(),
+                      _openRoles(context),
+                      _section('People'),
+                      _takenRoles(context)
+                    ],
+                  )
+                : CircularProgressIndicator(),
+          ),
         ),
       ),
     );
