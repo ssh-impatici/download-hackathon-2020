@@ -2,6 +2,7 @@ import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/topic.dart';
 
 class Hive {
+  String id;
   String name;
   String description;
   bool active;
@@ -12,6 +13,7 @@ class Hive {
   List<TakenRole> takenRoles;
 
   Hive({
+    this.id,
     this.name,
     this.description,
     this.active,

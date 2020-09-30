@@ -195,9 +195,9 @@ mixin AuthModel on ConnectedModel {
   Future<List<Hive>> _retrieveHivesFromPaths(List<String> paths) async {
     List<Hive> toReturn = [];
 
-    paths.forEach((path) async {
+    for (String path in paths) {
       toReturn.add(await _retrieveHiveFromPath(path));
-    });
+    }
 
     return toReturn;
   }
@@ -232,6 +232,7 @@ mixin AuthModel on ConnectedModel {
       List<Topic> topics = await _retrieveTopicsFromPaths(data['topics']);
 
       return Hive(
+        id: result.id,
         name: data['name'],
         active: data['active'],
         description: data['description'],
@@ -269,9 +270,9 @@ mixin AuthModel on ConnectedModel {
   Future<List<Topic>> _retrieveTopicsFromPaths(List<String> paths) async {
     List<Topic> toReturn = [];
 
-    paths.forEach((path) async {
+    for (String path in paths) {
       toReturn.add(await _retrieveTopicFromPath(path));
-    });
+    }
 
     return toReturn;
   }
@@ -284,7 +285,11 @@ mixin AuthModel on ConnectedModel {
 
       List<Role> roles = await _retrieveRolesFromPaths(data['roles']);
 
-      return Topic(name: data['name'], roles: roles);
+      return Topic(
+        id: result.id,
+        name: data['name'],
+        roles: roles,
+      );
     } else {
       return null;
     }
@@ -293,9 +298,9 @@ mixin AuthModel on ConnectedModel {
   Future<List<Role>> _retrieveRolesFromPaths(List<String> paths) async {
     List<Role> toReturn = [];
 
-    paths.forEach((path) async {
+    for (String path in paths) {
       toReturn.add(await _retrieveRoleFromPath(path));
-    });
+    }
 
     return toReturn;
   }
@@ -306,7 +311,10 @@ mixin AuthModel on ConnectedModel {
     if (result != null) {
       Map<String, dynamic> data = result.data();
 
-      return Role(name: data['name']);
+      return Role(
+        id: result.id,
+        name: data['name'],
+      );
     } else {
       return null;
     }

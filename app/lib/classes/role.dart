@@ -1,9 +1,10 @@
 import 'package:hackathon/classes/user.dart';
 
 class Role {
+  String id;
   String name;
 
-  Role({this.name});
+  Role({this.id, this.name});
 }
 
 class OpenRole {
