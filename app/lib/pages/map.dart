@@ -127,7 +127,7 @@ class _MapPageState extends State<MapPage> {
               color: Colors.grey.withOpacity(0.5)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [_switch(), _myposition()],
+            children: [_switch(), _reload(), _myposition()],
           ),
         ),
       ),
@@ -135,13 +135,16 @@ class _MapPageState extends State<MapPage> {
   }
 
   Widget _switch() {
-    return Switch(
-      activeColor: Colors.grey.shade800.withOpacity(1),
-      activeTrackColor: Colors.grey.shade600.withOpacity(1),
-      value: bytopic,
-      onChanged: (value) {
-        setState(() => bytopic = value);
-      },
+    return Tooltip(
+      message: 'Topics Filter',
+      child: Switch(
+        activeColor: Colors.grey.shade800.withOpacity(1),
+        activeTrackColor: Colors.grey.shade600.withOpacity(1),
+        value: bytopic,
+        onChanged: (value) {
+          setState(() => bytopic = value);
+        },
+      ),
     );
   }
 
@@ -164,20 +167,56 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
+  Widget _reload() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 10.0),
+      child: Tooltip(
+        message: 'Refresh Hives',
+        child: InkWell(
+          borderRadius: BorderRadius.circular(4),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Icon(
+              Icons.refresh,
+              color: Colors.grey.shade800,
+              size: 30,
+            ),
+          ),
+          onTap: () async {
+            LatLngBounds bounds = await _mapController.getVisibleRegion();
+            double lat =
+                (bounds.northeast.latitude + bounds.southwest.latitude) / 2;
+            double lng =
+                (bounds.northeast.longitude + bounds.southwest.longitude) / 2;
+
+            LatLng latLng = LatLng(lat, lng);
+
+            widget.model.getMapHives(latLng: latLng).then((_) {
+              _initializeMarkers();
+            });
+          },
+        ),
+      ),
+    );
+  }
+
   Widget _myposition() {
     return Container(
       margin: EdgeInsets.only(bottom: 10.0),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(4),
-        child: Container(
-          padding: EdgeInsets.all(10),
-          child: Icon(
-            Icons.gps_fixed,
-            color: Colors.grey.shade800,
-            size: 30,
+      child: Tooltip(
+        message: 'Current position',
+        child: InkWell(
+          borderRadius: BorderRadius.circular(4),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Icon(
+              Icons.gps_fixed,
+              color: Colors.grey.shade800,
+              size: 30,
+            ),
           ),
+          onTap: _moveToMyLocation,
         ),
-        onTap: _moveToMyLocation,
       ),
     );
   }
