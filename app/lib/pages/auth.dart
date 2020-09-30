@@ -272,8 +272,9 @@ class _AuthPageState extends State<AuthPage> {
                     break;
                   case AuthResult.UNAUTHORIZED:
                     await showDialog(
-                        context: context,
-                        child: AlertDialog(title: Text(model.errorMessage)));
+                      context: context,
+                      child: AlertDialog(title: Text(model.errorMessage)),
+                    );
                     break;
                   default:
                 }
