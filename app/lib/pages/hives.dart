@@ -13,18 +13,6 @@ class HivesPage extends StatefulWidget {
 
 class _HivesPageState extends State<HivesPage> {
   //
-  List<Hive> mockhives = [
-    Hive(
-        active: true,
-        id: 'Hakcathon_ID',
-        name: 'Hackathon',
-        creator: null,
-        description: 'Awesome hackathon project for download.io event!',
-        openRoles: [],
-        takenRoles: [],
-        topics: [])
-  ];
-
   @override
   Widget build(BuildContext context) {
     //
