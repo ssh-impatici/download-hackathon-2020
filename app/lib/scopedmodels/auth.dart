@@ -217,7 +217,7 @@ mixin AuthModel on ConnectedModel {
         'bio': bio,
         'topics': topics
             .map(
-              (topic) => {'id': topic, 'reviews': 0, 'stars': 0},
+              (topic) => {'id': topic, 'reviews': 0, 'stars': 0.0},
             )
             .toList(),
       });

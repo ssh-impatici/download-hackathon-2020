@@ -18,7 +18,7 @@ class Topic {
 class UserTopic {
   String id;
   int reviews;
-  int stars;
+  double stars;
 
   UserTopic({
     @required this.id,
