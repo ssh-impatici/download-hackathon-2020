@@ -169,14 +169,22 @@ class _AuthPageState extends State<AuthPage> {
   void _submit(MainModel model) async {
     if (!_formKey.currentState.validate()) return;
     _formKey.currentState.save();
+
     AuthResult result = AuthResult.UNAUTHORIZED;
 
-    if (mode == AuthMode.LOGIN)
-      result = await model.login(email: email, password: password);
+    if (mode == AuthMode.LOGIN) {
+      result = await model.login(
+        email: email.trim(),
+        password: password.trim(),
+      );
+    }
 
-    if (mode == AuthMode.SINGUP)
+    if (mode == AuthMode.SINGUP) {
       result = await model.createUserWithEmailAndPassword(
-          email: email, password: password);
+        email: email.trim(),
+        password: password.trim(),
+      );
+    }
 
     switch (result) {
       case AuthResult.SIGNEDIN:
