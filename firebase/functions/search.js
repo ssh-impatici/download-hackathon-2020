@@ -4,7 +4,7 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 
 module.exports = function (e) {
-  e.searchMap = functions.https.onRequest(async (req, res) => {
+  e.getHivesList = functions.https.onRequest(async (req, res) => {
 
   });
 }

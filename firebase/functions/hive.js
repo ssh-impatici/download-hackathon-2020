@@ -2,12 +2,13 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
 const db = admin.firestore();
+const Fields = admin.firestore.FieldValue;
 
 module.exports = function (e) {
-  e.addHiveTakenRole = functions.https.onRequest(async (req, res) => {
-    // ## Remove from open roles
+  e.joinHive = functions.https.onRequest(async (req, res) => {
+    // ##### Remove from open roles
     if (req.method !== 'POST' || !req.body)
-      return res.status(401).send("must be POST and have a body");
+      return res.status(400).send("must be POST and have a body");
 
     const data = JSON.parse(req.body);
     const hive = await db.doc(data.hiveRef).get();
@@ -15,20 +16,19 @@ module.exports = function (e) {
     // Get role id and check if quantity is enough
     const roles = hive.get("openRoles");
     const roleIndex = roles.findIndex(r => r.roleId == data.roleRef);
-    let quantity = roles[roleIndex].quantity;
-    if (quantity <= 0) return res.status(500).send("Quantity <= 0");
-    else if (quantity == 1) {
+    if (roleIndex < 0) return res.status(404).send("Role not available");
+    if (roles[roleIndex].quantity == 1) {
       // if quantity is 0 remove role from list
       roles.splice(roleIndex, 1);
     } else {
       // if quantity is enough subtract it
-      roles[roleIndex].quantity = quantity - 1;
+      roles[roleIndex].quantity -= 1;
     }
     await db.doc(data.hiveRef).update({
       openRoles: roles
     });
 
-    // ## Add to taken roles
+    // ##### Add to taken roles
     await db.doc(data.hiveRef).update({
       takenRoles: [
         ...hive.get("takenRoles"),
@@ -38,6 +38,11 @@ module.exports = function (e) {
         }
       ]
     });
+
+    // ##### Add hive to user's hives
+    await db.doc(data.userRef).update({
+      hives: Fields.arrayUnion(data.hiveRef)
+    })
 
     return res.status(201).send("Taken role created");
   });
@@ -57,6 +62,7 @@ module.exports = function (e) {
 
     await db.collection('hives').add({
       active: true,
+      creator: data.creator,
       description: data.description,
       location: loc,
       name: data.name,
