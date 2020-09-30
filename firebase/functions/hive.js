@@ -75,6 +75,9 @@ module.exports = function(e) {
     const hive = await db.doc(data.hiveRef).get();
     if (!hive.exists) return res.status(404).send("Hive not found");
 
+    const user = await db.doc(data.userRef).get();
+    if (!user.exists) return res.status(404).send("User not found");
+
     // ##### Remove from taken roles
     let roles = hive.get("takenRoles");
     console.log(roles);
@@ -109,10 +112,19 @@ module.exports = function(e) {
       });
     }
 
-    // ##### Remove hive to user's hives
-    await db.doc(data.userRef).update({
-      hives: Fields.arrayRemove(data.hiveRef)
-    })
+    // ##### Remove hive from user's hives
+    let userHives = user.get("hives");
+    let userIndex = userHives.findIndex(r => (r.hiveRef == data.hiveRef));
+
+    if (userIndex < 0) {
+      return res.status(404).send("Hive not available");
+    } else {
+      userHives[userIndex].roles.pop(data.roleRef)
+
+      await db.doc(data.userRef).update({
+        hives: userHives
+      });
+    }
 
     var hiveRef_plain = data.hiveRef.replace("hives/", "");
 
