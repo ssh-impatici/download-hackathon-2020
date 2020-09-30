@@ -57,23 +57,37 @@ module.exports = function(e) {
 
     let lat = null;
     let lon = null;
+    let addr = null;
     if (data.latitude != null && data.longitude != null) {
       lat = data.latitude
       lon = data.longitude
+      addr = data.address
     }
 
+    let docId = null
     await db.collection('hives').add({
       active: true,
       creator: data.creator,
       description: data.description,
+      address: addr,
       latitude: lat,
       longitude: lon,
       name: data.name,
       openRoles: data.openRoles,
       takenRoles: [],
       topics: data.topics
-    });
+    }).then(function(docRef) {
+      console.log("Document written with ID: ", docRef.id);
+      docId = docRef.id;
+      db.collection("hives").doc(docRef.id).get()
+        .then(snap => {
+          console.log('Here is the document you wrote to', snap.data());
+          return res.status(201).send({
+            hiveId: docId,
+            hiveData: snap.data()
+          });
+        })
 
-    return res.status(200).send("Hive created!");
+    });
   });
 }

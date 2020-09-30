@@ -9,7 +9,7 @@ const getDistance = (x1, x2, y1, y2) => {
   return Math.sqrt(a * a + b * b);
 }
 
-module.exports = function (e) {
+module.exports = function(e) {
   e.getHivesList = functions.https.onRequest(async (req, res) => {
     const data = {
       userRef: req.query.userRef,
@@ -108,7 +108,7 @@ module.exports = function (e) {
         ...doc.data(),
         hiveId: doc.id
       }
-    })
+    });
 
     res.status(200).send(hives.filter(
       a => (a.longitude <= (long + zoom)) && (a.longitude >= (long - zoom))
