@@ -4,7 +4,7 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 const Fields = admin.firestore.FieldValue;
 
-module.exports = function(e) {
+module.exports = function (e) {
   e.joinHive = functions.https.onRequest(async (req, res) => {
     // ##### Remove from open roles
     if (req.method !== 'POST' || !req.body)
@@ -15,7 +15,8 @@ module.exports = function(e) {
     if (!hive.exists) return res.status(404).send("Hive not found");
     // Get role id and check if quantity is enough
     const roles = hive.get("openRoles");
-    const roleIndex = roles.findIndex(r => r.roleId == data.roleRef);
+    console.log(roles);
+    const roleIndex = roles.findIndex(r => r.name == data.roleRef);
     if (roleIndex < 0) return res.status(404).send("Role not available");
     if (roles[roleIndex].quantity == 1) {
       // if quantity is 0 remove role from list
@@ -33,8 +34,8 @@ module.exports = function(e) {
       takenRoles: [
         ...hive.get("takenRoles"),
         {
-          roleId: data.roleRef,
-          userId: data.userRef
+          name: data.roleRef,
+          userRef: data.userRef
         }
       ]
     });
@@ -44,7 +45,7 @@ module.exports = function(e) {
       hives: Fields.arrayUnion(data.hiveRef)
     })
 
-    return res.status(201).send("Taken role created");
+    return res.status(201).send("Hive joined!");
   });
 
   e.createHive = functions.https.onRequest(async (req, res) => {
