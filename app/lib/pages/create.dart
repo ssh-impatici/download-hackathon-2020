@@ -119,7 +119,18 @@ class _CreateHivePageState extends State<CreateHivePage> {
     );
 
     if (result != null) {
-      openRoles.add(result);
+      bool match = false;
+
+      openRoles.forEach((openRole) {
+        if (openRole.name == result.name) {
+          openRole.quantity++;
+          match = true;
+        }
+      });
+
+      if (!match) {
+        openRoles.add(result);
+      }
 
       setState(() {
         _openRolesErrorMessage = null;
@@ -356,12 +367,16 @@ class _CreateHivePageState extends State<CreateHivePage> {
         .createHive(
           name: name,
           description: description,
-          latitude: location.latitude,
-          longitude: location.longitude,
+          latitude:
+              address != null && address.isNotEmpty ? location.latitude : null,
+          longitude:
+              address != null && address.isNotEmpty ? location.longitude : null,
           address: address,
           openRoles: openRoles,
-          topics: topics.map((topic) => topic.id),
+          topics: topics.map((topic) => topic.id).toList(),
         )
-        .then((value) => Navigator.of(context).pushReplacementNamed('/home'));
+        .then((_) => model.getMapHives())
+        .then((_) => model.getHives())
+        .then((_) => Navigator.of(context).pop());
   }
 }

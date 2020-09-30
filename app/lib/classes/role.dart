@@ -25,9 +25,20 @@ class OpenRole {
     this.quantity = 1,
   });
 
+  OpenRole.fromJson(Map<String, dynamic> json)
+      : name = json['name'],
+        quantity = json['quantity'];
+
   @override
   String toString() {
     return 'x$quantity $name';
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'quantity': quantity,
+    };
   }
 }
 
