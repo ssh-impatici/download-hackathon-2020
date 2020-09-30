@@ -214,7 +214,11 @@ mixin AuthModel on ConnectedModel {
     List<Hive> toReturn = [];
 
     for (String path in paths) {
-      toReturn.add(await _retrieveHiveFromPath(path));
+      Hive toAdd = await _retrieveHiveFromPath(path);
+
+      if (toAdd != null) {
+        toReturn.add(toAdd);
+      }
     }
 
     return toReturn;
@@ -301,7 +305,11 @@ mixin AuthModel on ConnectedModel {
     List<Topic> toReturn = [];
 
     for (String name in names) {
-      toReturn.add(await _retrieveTopicFromPath('topics/$name'));
+      Topic toAdd = await _retrieveTopicFromPath('topics/$name');
+
+      if (toAdd != null) {
+        toReturn.add(toAdd);
+      }
     }
 
     return toReturn;
@@ -316,7 +324,7 @@ mixin AuthModel on ConnectedModel {
 
         return Topic(
           id: result.id,
-          roles: data['roles'],
+          roles: List<String>.from(data['roles']),
         );
       } else {
         return null;
