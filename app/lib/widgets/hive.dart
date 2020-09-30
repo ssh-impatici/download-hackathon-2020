@@ -53,7 +53,7 @@ class HiveDescription extends StatelessWidget {
       child: Text(
         title,
         style: TextStyle(
-            color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+            color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -61,20 +61,28 @@ class HiveDescription extends StatelessWidget {
   Widget _author() {
     return hive.creator != null
         ? Container(
-            child: Text(hive.creator.fullName),
-            margin: EdgeInsets.only(bottom: 10),
+            child: Text(
+              hive.creator.fullName,
+              style: TextStyle(fontSize: 16),
+            ),
+            margin: EdgeInsets.only(bottom: 20),
           )
         : Container();
   }
 
   Widget _description() {
     return Container(
-      child: Text(hive.description),
+      margin: EdgeInsets.only(bottom: 20),
+      child: Text(
+        hive.description,
+        style: TextStyle(fontSize: 16, height: 1.5),
+      ),
     );
   }
 
   Widget _place() {
     return Container(
+      margin: EdgeInsets.only(bottom: 20),
       child: Text(hive.longitude.truncate().toString()),
     );
   }
@@ -95,7 +103,7 @@ class HiveDescription extends StatelessWidget {
   Widget _openRole(OpenRole role) {
     return GestureDetector(
         child: Container(
-      margin: EdgeInsets.only(right: 10, bottom: 10),
+      margin: EdgeInsets.only(right: 10, bottom: 10, top: 10),
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
       decoration: BoxDecoration(
           color: Colors.yellow, borderRadius: BorderRadius.circular(10)),
