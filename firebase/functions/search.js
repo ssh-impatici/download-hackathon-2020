@@ -9,7 +9,7 @@ const getDistance = (x1, x2, y1, y2) => {
   return Math.sqrt(a * a + b * b);
 }
 
-module.exports = function (e) {
+module.exports = function(e) {
   e.getHivesList = functions.https.onRequest(async (req, res) => {
     const data = JSON.parse(req.body);
     if (!data) return res.status(400).send("Bad request: no body found");
@@ -50,13 +50,28 @@ module.exports = function (e) {
     let zoom = Number(req.query.zoom);
     let lat = Number(req.query.latitude);
     let long = Number(req.query.longitude);
+    let topic = String(req.query.topic);
 
     console.log(lat + zoom);
-    let hives = await db.collection('hives')
-      .where('latitude', '<=', lat + zoom)
-      .where('latitude', '>=', lat - zoom)
-      .limit(100)
-      .get()
+
+    let hives = null;
+
+    if (topic != "undefined") {
+      hives = await db.collection('hives')
+        .where('latitude', '<=', lat + zoom)
+        .where('latitude', '>=', lat - zoom)
+        .where('topics', 'array-contains', topic) // Filter by topic
+        .limit(100)
+        .get()
+    } else {
+      hives = await db.collection('hives')
+        .where('latitude', '<=', lat + zoom)
+        .where('latitude', '>=', lat - zoom)
+        .limit(100)
+        .get()
+    }
+
+    // TODO Return HivesId e manca il creator user (ma in teoria c'è se esistesse il ref)
 
     hives = hives.docs.map(doc => doc.data())
     res.status(200).send(hives.filter(
