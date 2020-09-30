@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/topic.dart';
-import 'package:hackathon/widgets/role-auto-completion.dart';
-import 'package:hackathon/widgets/topic-auto-completion.dart';
 
 class OpenRoleDialog extends StatefulWidget {
   final List<Topic> topics;
