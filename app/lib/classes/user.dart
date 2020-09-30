@@ -8,7 +8,7 @@ class User {
   String surname;
   String email;
   String bio;
-  List<Topic> topics;
+  List<UserTopic> topics;
   List<Hive> hives;
 
   User({
@@ -22,4 +22,9 @@ class User {
   });
 
   String get fullName => '$name $surname';
+
+  @override
+  String toString() {
+    return fullName;
+  }
 }

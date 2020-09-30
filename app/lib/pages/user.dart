@@ -101,7 +101,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  Widget _topics(List<Topic> userTopics) {
+  Widget _topics(List<UserTopic> userTopics) {
     List<Widget> topics = [];
     userTopics.forEach((topic) {
       topics.add(

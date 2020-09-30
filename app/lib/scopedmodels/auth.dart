@@ -160,9 +160,16 @@ mixin AuthModel on ConnectedModel {
         return null;
       }
 
-      List<Topic> topics = data['topics'] != null
-          ? await _retrieveTopicsFromNames(List<String>.from(data['topics']))
-          : null;
+      List<UserTopic> topics = [];
+
+      for (dynamic topic in data['topics']) {
+        topics.add(UserTopic(
+          id: topic['id'],
+          reviews: topic['reviews'],
+          stars: topic['stars'],
+        ));
+      }
+
       List<Hive> hives = data['hives'] != null
           ? await _retrieveHivesFromPaths(List<String>.from(data['hives']))
           : null;
@@ -187,9 +194,9 @@ mixin AuthModel on ConnectedModel {
     String bio,
     List<String> topics,
   }) async {
-    User user = _auth.currentUser;
+    User currentUser = _auth.currentUser;
 
-    if (user == null) {
+    if (currentUser == null) {
       return AuthResult.SIGNEDUP;
     }
 
@@ -197,15 +204,29 @@ mixin AuthModel on ConnectedModel {
     AuthResult result;
 
     try {
-      await _firestore.collection('users').doc(user.uid).set({
+      await _firestore.collection('users').doc(currentUser.uid).set({
         'name': name,
         'surname': surname,
-        'email': user.email,
+        'email': currentUser.email,
         'bio': bio,
-        'topics': topics,
+        'topics': topics
+            .map(
+              (topic) => {'id': topic, 'reviews': 0, 'stars': 0},
+            )
+            .toList(),
       });
 
-      result = AuthResult.SIGNEDIN;
+      // Set the authenticated flag in connected model
+      authenticated = true;
+
+      // Set the user info in connected model
+      user = await retrieveUserInfo();
+
+      if (user != null) {
+        result = AuthResult.SIGNEDIN;
+      } else {
+        result = AuthResult.SIGNEDUP;
+      }
     } catch (e) {
       result = AuthResult.SIGNEDUP;
     }
@@ -287,7 +308,15 @@ mixin AuthModel on ConnectedModel {
       if (result != null) {
         Map<String, dynamic> data = result.data();
 
-        List<Topic> topics = await _retrieveTopicsFromNames(data['topics']);
+        List<UserTopic> topics = [];
+
+        for (dynamic topic in data['topics']) {
+          topics.add(UserTopic(
+            id: topic['id'],
+            reviews: topic['reviews'],
+            stars: topic['stars'],
+          ));
+        }
 
         return Model.User(
           id: result.id,

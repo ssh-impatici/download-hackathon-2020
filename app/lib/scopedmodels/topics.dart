@@ -12,7 +12,7 @@ mixin TopicsModel on ConnectedModel {
 
   Future<List<Topic>> getTopics() async {
     _setLoading(true);
-    List<Topic> toReturn = List<Topic>();
+    List<Topic> toReturn = [];
 
     try {
       QuerySnapshot snapshot = await _firestore.collection('topics').get();

@@ -20,6 +20,8 @@ dependencies:
   google_maps_flutter: ^0.5.33
   cloud_firestore: ^0.14.0+2
   autocomplete_textfield: ^1.7.3
+  dio: ^3.0.10
+  geolocator: ^6.0.0+4
 
 dev_dependencies:
   flutter_test:
