@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hackathon/scopedmodels/main.dart';
+import 'package:hackathon/utils/enums.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 enum AuthMode { LOGIN, SINGUP }
@@ -148,30 +149,51 @@ class _AuthPageState extends State<AuthPage> {
       return Container(
         padding: EdgeInsets.only(top: 20, bottom: 15),
         child: RaisedButton(
-            color: Colors.grey.shade900,
-            child: Center(
-              child: model.loading
-                  ? Container(
-                      padding: EdgeInsets.all(10),
-                      child: Center(child: CircularProgressIndicator()))
-                  : Text(
-                      mode == AuthMode.LOGIN ? 'Log in' : 'Sign in',
-                      style: TextStyle(color: Colors.white),
-                    ),
-            ),
-            onPressed: () => _submit(mode == AuthMode.LOGIN
-                ? model.login
-                : model.createUserWithEmailAndPassword)),
+          color: Colors.grey.shade900,
+          child: Center(
+            child: model.loading
+                ? Container(
+                    padding: EdgeInsets.all(10),
+                    child: Center(child: CircularProgressIndicator()))
+                : Text(
+                    mode == AuthMode.LOGIN ? 'Log in' : 'Sign in',
+                    style: TextStyle(color: Colors.white),
+                  ),
+          ),
+          onPressed: () => _submit(model),
+        ),
       );
     });
   }
 
-  void _submit(Function callback) async {
+  void _submit(MainModel model) async {
     if (!_formKey.currentState.validate()) return;
     _formKey.currentState.save();
-    await callback(email: email, password: password);
-    // TODO : navigate if success
-    Navigator.of(context).pushReplacementNamed('/home');
+    AuthResult result = AuthResult.UNAUTHORIZED;
+
+    if (mode == AuthMode.LOGIN)
+      result = await model.login(email: email, password: password);
+
+    if (mode == AuthMode.SINGUP)
+      result = await model.createUserWithEmailAndPassword(
+          email: email, password: password);
+
+    switch (result) {
+      case AuthResult.SIGNEDIN:
+        // await mode.getHives()
+        Navigator.of(context).pushReplacementNamed('/home');
+        break;
+      case AuthResult.SIGNEDUP:
+        // await model.getTopics();
+        Navigator.of(context).pushReplacementNamed('/info');
+        break;
+      case AuthResult.UNAUTHORIZED:
+        await showDialog(
+            context: context,
+            child: AlertDialog(title: Text(model.errorMessage)));
+        break;
+      default:
+    }
   }
 
   void _changePasswordVisibility() {
