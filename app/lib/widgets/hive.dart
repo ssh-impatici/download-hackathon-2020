@@ -5,50 +5,99 @@ import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+enum FromScreen { MAP, LIST, MY_HIVES }
+
 class HiveDescription extends StatefulWidget {
-  final Hive hive;
-  HiveDescription(this.hive);
+  final String hiveId;
+  final FromScreen from;
+  HiveDescription(this.hiveId, this.from);
 
   @override
   _HiveDescriptionState createState() => _HiveDescriptionState();
 }
 
 class _HiveDescriptionState extends State<HiveDescription> {
+  Hive _hive;
+
+  @override
+  void initState() {
+    _retrieveHive();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 50),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _title(),
-              _section('Author'),
-              _author(),
-              _section('Hive Descrpition'),
-              _description(),
-              widget.hive.address != null ? _section('Address') : Container(),
-              _place(),
-              widget.hive.openRoles.isNotEmpty
-                  ? _section('Open Roles')
-                  : Container(),
-              _openRoles(context),
-              _section('People'),
-              _takenRoles(context)
-            ],
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 50),
+            child: _hive != null
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _title(),
+                      _section('Author'),
+                      _author(),
+                      _section('Hive Descrpition'),
+                      _description(),
+                      _hive.address != null ? _section('Address') : Container(),
+                      _place(),
+                      _hive.openRoles.isNotEmpty
+                          ? _section('Open Roles')
+                          : Container(),
+                      _openRoles(context),
+                      _section('People'),
+                      _takenRoles(context),
+                      _giveUp()
+                    ],
+                  )
+                : CircularProgressIndicator(),
           ),
         ),
       ),
     );
   }
 
+  _retrieveHive() {
+    Hive hive;
+
+    switch (widget.from) {
+      case FromScreen.MAP:
+        {
+          hive = ScopedModel.of<MainModel>(context)
+              .hivesMap
+              .firstWhere((hive) => hive.id == widget.hiveId);
+          break;
+        }
+      case FromScreen.LIST:
+        {
+          hive = ScopedModel.of<MainModel>(context)
+              .hivesList
+              .firstWhere((hive) => hive.id == widget.hiveId);
+          break;
+        }
+      case FromScreen.MY_HIVES:
+        {
+          hive = ScopedModel.of<MainModel>(context)
+              .user
+              .hives
+              .firstWhere((hive) => hive.id == widget.hiveId);
+          break;
+        }
+    }
+
+    setState(() {
+      _hive = hive;
+    });
+  }
+
   Widget _title() {
     return Container(
       margin: EdgeInsets.only(bottom: 25, top: 10),
       child: Text(
-        widget.hive.name,
+        _hive.name,
         style: TextStyle(
             color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
       ),
@@ -67,10 +116,10 @@ class _HiveDescriptionState extends State<HiveDescription> {
   }
 
   Widget _author() {
-    return widget.hive.creator != null
+    return _hive.creator != null
         ? Container(
             child: Text(
-              widget.hive.creator.fullName,
+              _hive.creator.fullName,
               style: TextStyle(fontSize: 15),
             ),
             margin: EdgeInsets.only(bottom: 20),
@@ -82,28 +131,27 @@ class _HiveDescriptionState extends State<HiveDescription> {
     return Container(
       margin: EdgeInsets.only(bottom: 20),
       child: Text(
-        widget.hive.description,
+        _hive.description,
         style: TextStyle(fontSize: 15, height: 1.5),
       ),
     );
   }
 
   Widget _place() {
-    if (widget.hive.address == null) {
+    if (_hive.address == null) {
       return Container();
     }
 
     return Container(
       margin: EdgeInsets.only(bottom: 20),
-      child: Text(widget.hive.address),
+      child: Text(_hive.address),
     );
   }
 
   Widget _openRoles(BuildContext context) {
     List<Widget> roles = List<Widget>();
-    widget.hive.openRoles
-        .sort((a, b) => a.name.length.compareTo(b.name.length));
-    widget.hive.openRoles.forEach((role) {
+    _hive.openRoles.sort((a, b) => a.name.length.compareTo(b.name.length));
+    _hive.openRoles.forEach((role) {
       roles.add(_openRole(role, context));
     });
     return Container(
@@ -138,8 +186,9 @@ class _HiveDescriptionState extends State<HiveDescription> {
                   ),
                   onTap: () {
                     showModalBottomSheet(
-                        context: context,
-                        builder: (context) => _confirmJoin(role));
+                      context: context,
+                      builder: (context) => _confirmJoin(role),
+                    );
                   },
                 ),
                 SizedBox(width: 10),
@@ -172,9 +221,8 @@ class _HiveDescriptionState extends State<HiveDescription> {
   }
 
   Widget _takenRoles(BuildContext context) {
-    print(widget.hive.takenRoles);
     List<Widget> roles = List<Widget>();
-    widget.hive.takenRoles.forEach((role) {
+    _hive.takenRoles.forEach((role) {
       roles.add(_takenRole(role, context));
     });
     return Container(
@@ -217,7 +265,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
                 ),
               ),
             ),
-            model.user.id == widget.hive.creator.id
+            model.user.id == _hive.creator.id || model.user.id == role.user.id
                 ? _remove(model.leaveHive, role)
                 : Container()
           ],
@@ -229,11 +277,14 @@ class _HiveDescriptionState extends State<HiveDescription> {
   Widget _remove(Function remove, TakenRole role) {
     return Flexible(
       child: InkWell(
-          child: Icon(Icons.remove),
-          onTap: () {
-            showModalBottomSheet(
-                context: context, builder: (context) => _confirmRemove(role));
-          }),
+        child: Icon(Icons.remove),
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) => _confirmRemove(role),
+          );
+        },
+      ),
     );
   }
 
@@ -250,7 +301,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
             Container(
               margin: EdgeInsets.only(bottom: 15),
               child: Text(
-                'Joining ${widget.hive.name}',
+                'Joining ${_hive.name}',
                 style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -295,27 +346,13 @@ class _HiveDescriptionState extends State<HiveDescription> {
                             child: _button(
                                 'Confirm', Colors.yellow, model.loading),
                             onTap: () {
-                              setState(() {
-                                model
-                                    .joinHive(
-                                        hiveId: widget.hive.id,
-                                        roleId: role.name,
-                                        userId: model.user.id)
-                                    .then((_) => Navigator.pop(context));
-                                int num = widget.hive.openRoles
-                                    .firstWhere((openrole) =>
-                                        openrole.name == role.name)
-                                    .quantity;
-                                if (num > 1) {
-                                  widget.hive.openRoles.remove(role);
-                                  role.quantity = role.quantity - 1;
-                                  widget.hive.openRoles.add(role);
-                                } else {
-                                  widget.hive.openRoles.remove(role);
-                                }
-                                widget.hive.takenRoles.add(TakenRole(
-                                    name: role.name, user: model.user));
-                              });
+                              model
+                                  .joinHive(
+                                      hiveId: _hive.id,
+                                      roleId: role.name,
+                                      userId: model.user.id)
+                                  .then((_) => _retrieveHive())
+                                  .then((_) => Navigator.pop(context));
                             },
                           ),
                         )
@@ -389,17 +426,13 @@ class _HiveDescriptionState extends State<HiveDescription> {
                             child: _button(
                                 'Confirm', Colors.yellow, model.loading),
                             onTap: () {
-                              setState(() {
-                                model
-                                    .leaveHive(
-                                        hiveId: widget.hive.id,
-                                        roleId: role.name,
-                                        userId: role.user.id)
-                                    .then((_) => Navigator.pop(context));
-                                widget.hive.takenRoles.remove(role);
-                                widget.hive.openRoles
-                                    .add(OpenRole(name: role.name));
-                              });
+                              model
+                                  .leaveHive(
+                                      hiveId: _hive.id,
+                                      roleId: role.name,
+                                      userId: role.user.id)
+                                  .then((_) => _retrieveHive())
+                                  .then((_) => Navigator.pop(context));
                             },
                           ),
                         ),
@@ -428,6 +461,103 @@ class _HiveDescriptionState extends State<HiveDescription> {
             color: Colors.grey.shade900,
             fontWeight: FontWeight.bold,
             fontSize: 15),
+      ),
+    );
+  }
+
+  Widget _giveUp() {
+    return ScopedModelDescendant<MainModel>(
+        builder: (BuildContext context, Widget child, MainModel model) {
+      return Container(
+        padding: EdgeInsets.only(top: 20, bottom: 15),
+        child: RaisedButton(
+          color: Colors.grey.shade900,
+          child: Center(
+            child: model.loading
+                ? Container(
+                    padding: EdgeInsets.all(10),
+                    child: Center(child: CircularProgressIndicator()))
+                : Text(
+                    'Leave',
+                    style: TextStyle(color: Colors.white, fontSize: 15),
+                  ),
+          ),
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              builder: (context) => _confirmGiveUp(),
+            );
+          },
+        ),
+      );
+    });
+  }
+
+  Widget _confirmGiveUp() {
+    return ScopedModelDescendant<MainModel>(
+      builder: (context, child, model) => Container(
+        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+        color: Colors.grey.shade900,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.only(bottom: 15),
+              child: Text(
+                'Leaving ${_hive.name}',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17),
+              ),
+            ),
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      'Do you want to leave the hive?',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: InkWell(
+                            child: _button('Cancel', Colors.grey, false),
+                            onTap: () => Navigator.pop(context),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: InkWell(
+                            child: _button(
+                                'Confirm', Colors.yellow, model.loading),
+                            onTap: () {
+                              model
+                                  .giveUpHive(hiveId: widget.hiveId)
+                                  .then((_) => _retrieveHive())
+                                  .then((_) => Navigator.pop(context));
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

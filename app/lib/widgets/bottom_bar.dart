@@ -25,6 +25,9 @@ class _BottomBarState extends State<BottomBar> {
       case 2:
         widget.animateToPage(2);
         break;
+      case 3:
+        widget.animateToPage(3);
+        break;
     }
   }
 
@@ -38,12 +41,16 @@ class _BottomBarState extends State<BottomBar> {
           title: Text('Map'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.list),
-          title: Text('Hives'),
+          icon: Icon(Icons.search),
+          title: Text('Explore'),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
           title: Text('Profile'),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.list),
+          title: Text('My Hives'),
         ),
       ],
       currentIndex: _selectedIndex,

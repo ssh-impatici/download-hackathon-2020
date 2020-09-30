@@ -12,7 +12,6 @@ import 'package:hackathon/widgets/hive.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class MapPage extends StatefulWidget {
-  //
   final MainModel model;
   MapPage(this.model);
 
@@ -37,13 +36,7 @@ class _MapPageState extends State<MapPage> {
     _mapController = controller;
 
     // Automatically move the map camera to the user position
-    widget.model.getPosition().then((value) {
-      if (value == null) {
-        return;
-      }
-
-      _moveToMyLocation();
-    });
+    _moveToMyLocation();
   }
 
   @override
@@ -78,7 +71,9 @@ class _MapPageState extends State<MapPage> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => HiveDescription(hive)),
+              MaterialPageRoute(
+                builder: (context) => HiveDescription(hive.id, FromScreen.MAP),
+              ),
             );
           },
         ),
@@ -132,7 +127,7 @@ class _MapPageState extends State<MapPage> {
               color: Colors.grey.withOpacity(0.5)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [_switch(), _reload(), _myposition()],
+            children: [_switch(), _reload(), _myPosition()],
           ),
         ),
       ),
@@ -209,7 +204,7 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-  Widget _myposition() {
+  Widget _myPosition() {
     return Container(
       margin: EdgeInsets.only(bottom: 10.0),
       child: Tooltip(

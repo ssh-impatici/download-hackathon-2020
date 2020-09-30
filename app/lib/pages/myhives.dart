@@ -6,12 +6,12 @@ import 'package:hackathon/scopedmodels/main.dart';
 import 'package:hackathon/widgets/hive.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class HivesPage extends StatefulWidget {
+class MyHivesPage extends StatefulWidget {
   @override
-  _HivesPageState createState() => _HivesPageState();
+  _MyHivesPageState createState() => _MyHivesPageState();
 }
 
-class _HivesPageState extends State<HivesPage> {
+class _MyHivesPageState extends State<MyHivesPage> {
   //
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class _HivesPageState extends State<HivesPage> {
     return SingleChildScrollView(
       child: ScopedModelDescendant<MainModel>(
         builder: (context, child, model) => Container(
-          child: Column(children: listHiveWidgets(model.hivesList)),
+          child: Column(children: listHiveWidgets(model.user.hives)),
         ),
       ),
     );
@@ -49,7 +49,8 @@ class _HivesPageState extends State<HivesPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => HiveDescription(hive.id, FromScreen.LIST),
+                builder: (context) =>
+                    HiveDescription(hive.id, FromScreen.MY_HIVES),
               ),
             );
           },

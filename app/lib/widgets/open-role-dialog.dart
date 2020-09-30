@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/topic.dart';
-import 'package:hackathon/widgets/role-auto-completion.dart';
-import 'package:hackathon/widgets/topic-auto-completion.dart';
 
 class OpenRoleDialog extends StatefulWidget {
   final List<Topic> topics;
@@ -25,7 +23,7 @@ class _OpenRoleDialogState extends State<OpenRoleDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("New open role"),
+      title: Text("Available Roles"),
       content: Form(
         key: _formKey,
         child: Column(
@@ -92,9 +90,13 @@ class _OpenRoleDialogState extends State<OpenRoleDialog> {
         Container(
           padding: const EdgeInsets.all(2.0),
           child: ChoiceChip(
-            label: Text(item),
+            label: Text(
+              item,
+              style: TextStyle(
+                  color: Colors.grey.shade800, fontWeight: FontWeight.bold),
+            ),
             selected: isSelected,
-            backgroundColor: Colors.grey,
+            backgroundColor: Colors.grey.shade300,
             selectedColor: Colors.yellow,
             onSelected: (selected) {
               setState(() {
@@ -105,7 +107,6 @@ class _OpenRoleDialogState extends State<OpenRoleDialog> {
         ),
       );
     });
-
     return Wrap(children: choices);
   }
 

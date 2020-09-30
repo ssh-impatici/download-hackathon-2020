@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hackathon/pages/hives.dart';
 import 'package:hackathon/pages/map.dart';
+import 'package:hackathon/pages/myhives.dart';
 import 'package:hackathon/pages/user.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:hackathon/widgets/bottom_bar.dart';
@@ -27,7 +28,12 @@ class _HomePageState extends State<HomePage> {
               child: PageView(
                 physics: NeverScrollableScrollPhysics(),
                 controller: _controller,
-                children: <Widget>[MapPage(model), HivesPage(), UserPage()],
+                children: <Widget>[
+                  MapPage(model),
+                  HivesPage(),
+                  UserPage(),
+                  MyHivesPage()
+                ],
               ),
             ),
           ),

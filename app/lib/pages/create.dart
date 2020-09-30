@@ -23,8 +23,8 @@ class _CreateHivePageState extends State<CreateHivePage> {
   String name;
   String description;
   LatLng location = LatLng(
-    45.642389 + ((Random().nextInt(100) - 50) / 100),
-    9.5858929 + ((Random().nextInt(100) - 50) / 100),
+    45.642389 + ((Random().nextInt(100) - 50) / 10000),
+    9.5858929 + ((Random().nextInt(100) - 50) / 10000),
   );
   String address;
   List<OpenRole> openRoles = [];
@@ -51,7 +51,7 @@ class _CreateHivePageState extends State<CreateHivePage> {
                     Container(
                       padding: EdgeInsets.only(bottom: 20),
                       child: Text(
-                        'Create hive',
+                        'Create Hive',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 22,
@@ -88,13 +88,15 @@ class _CreateHivePageState extends State<CreateHivePage> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         _title('Open roles'),
-                        InkWell(
-                          borderRadius: BorderRadius.circular(50),
-                          onTap: addOpenRole,
-                          child: Icon(
-                            Icons.add_circle,
-                          ),
-                        ),
+                        topics.isEmpty
+                            ? Container()
+                            : InkWell(
+                                borderRadius: BorderRadius.circular(50),
+                                onTap: addOpenRole,
+                                child: Icon(
+                                  Icons.add_circle,
+                                ),
+                              ),
                       ],
                     ),
                     _openRolesErrorMessage != null
@@ -287,7 +289,7 @@ class _CreateHivePageState extends State<CreateHivePage> {
     });
 
     return Container(
-      margin: EdgeInsets.only(top: 10),
+      margin: EdgeInsets.only(top: 20),
       child: Column(
         children: roles,
       ),
@@ -318,7 +320,7 @@ class _CreateHivePageState extends State<CreateHivePage> {
             },
             child: Icon(
               Icons.delete,
-              color: Colors.red,
+              color: Colors.yellow,
             ),
           ),
         ],
