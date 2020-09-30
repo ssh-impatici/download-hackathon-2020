@@ -211,33 +211,33 @@ mixin AuthModel on ConnectedModel {
 
         List<OpenRole> openRoles = [];
         for (dynamic openRole in data['openRoles']) {
-          Role role = await _retrieveRoleFromPath(openRole['roleId']);
-
           openRoles.add(OpenRole(
-            role: role,
+            role: openRole['role'],
             quantity: openRole['quantity'],
           ));
         }
 
         List<TakenRole> takenRoles = [];
         for (dynamic takenRole in data['takenRoles']) {
-          Role role = await _retrieveRoleFromPath(takenRole['roleId']);
           Model.User user = await _retrieveUserFromPath(takenRole['userId']);
 
           takenRoles.add(TakenRole(
-            role: role,
+            role: takenRole['role'],
             user: user,
           ));
         }
 
+        Model.User creator = await _retrieveUserFromPath(data['creator']);
         List<Topic> topics = await _retrieveTopicsFromPaths(data['topics']);
 
         return Hive(
           id: result.id,
           name: data['name'],
+          creator: creator,
           active: data['active'],
           description: data['description'],
-          location: data['location'],
+          latitude: data['latitude'],
+          longitude: data['longitude'],
           openRoles: openRoles,
           takenRoles: takenRoles,
           topics: topics,
@@ -292,41 +292,10 @@ mixin AuthModel on ConnectedModel {
       if (result != null) {
         Map<String, dynamic> data = result.data();
 
-        List<Role> roles = await _retrieveRolesFromPaths(data['roles']);
-
         return Topic(
           id: result.id,
           name: data['name'],
-          roles: roles,
-        );
-      } else {
-        return null;
-      }
-    } catch (e) {
-      return null;
-    }
-  }
-
-  Future<List<Role>> _retrieveRolesFromPaths(List<String> paths) async {
-    List<Role> toReturn = [];
-
-    for (String path in paths) {
-      toReturn.add(await _retrieveRoleFromPath(path));
-    }
-
-    return toReturn;
-  }
-
-  Future<Role> _retrieveRoleFromPath(String path) async {
-    try {
-      DocumentSnapshot result = await _firestore.doc(path).get();
-
-      if (result != null) {
-        Map<String, dynamic> data = result.data();
-
-        return Role(
-          id: result.id,
-          name: data['name'],
+          roles: data['roles'],
         );
       } else {
         return null;
