@@ -33,8 +33,12 @@ mixin AuthModel on ConnectedModel {
         password: password,
       );
 
+      // Set the authenticated flag in connected model
+      authenticated = true;
+
       result = AuthResult.SIGNEDUP;
     } catch (e) {
+      authenticated = false;
       result = AuthResult.UNAUTHORIZED;
       errorMessage = e.toString();
     }
@@ -56,6 +60,9 @@ mixin AuthModel on ConnectedModel {
         password: password,
       );
 
+      // Set the authenticated flag in connected model
+      authenticated = true;
+
       user = await retrieveUserInfo();
 
       if (user != null) {
@@ -64,6 +71,7 @@ mixin AuthModel on ConnectedModel {
         result = AuthResult.SIGNEDUP;
       }
     } catch (e) {
+      authenticated = false;
       result = AuthResult.UNAUTHORIZED;
       errorMessage = e.toString();
     }
@@ -76,9 +84,17 @@ mixin AuthModel on ConnectedModel {
     _setLoading(true);
 
     try {
-      await _auth.signOut();
+      if (await _googleSignIn.isSignedIn()) {
+        await _googleSignIn.signOut();
+      }
+
+      if (_auth.currentUser != null) {
+        await _auth.signOut();
+      }
     } catch (e) {
       errorMessage = e.toString();
+    } finally {
+      authenticated = false;
     }
 
     _setLoading(false);
@@ -104,6 +120,10 @@ mixin AuthModel on ConnectedModel {
 
       await _auth.signInWithCredential(credential);
 
+      // Set the authenticated flag in connected model
+      authenticated = true;
+
+      // Set the user info in connected model
       user = await retrieveUserInfo();
 
       if (user != null) {
@@ -112,25 +132,13 @@ mixin AuthModel on ConnectedModel {
         result = AuthResult.SIGNEDUP;
       }
     } catch (e) {
+      authenticated = false;
       result = AuthResult.UNAUTHORIZED;
       errorMessage = e.toString();
     }
 
     _setLoading(false);
     return result;
-  }
-
-  Future<AuthResult> signoutGoogle() async {
-    _setLoading(true);
-
-    try {
-      await _googleSignIn.signOut();
-    } catch (e) {
-      errorMessage = e.toString();
-    }
-
-    _setLoading(false);
-    return AuthResult.UNAUTHORIZED;
   }
 
   // Cloud Firestore user methods
@@ -214,7 +222,11 @@ mixin AuthModel on ConnectedModel {
     List<Hive> toReturn = [];
 
     for (String path in paths) {
-      toReturn.add(await _retrieveHiveFromPath(path));
+      Hive toAdd = await _retrieveHiveFromPath(path);
+
+      if (toAdd != null) {
+        toReturn.add(toAdd);
+      }
     }
 
     return toReturn;
@@ -301,7 +313,11 @@ mixin AuthModel on ConnectedModel {
     List<Topic> toReturn = [];
 
     for (String name in names) {
-      toReturn.add(await _retrieveTopicFromPath('topics/$name'));
+      Topic toAdd = await _retrieveTopicFromPath('topics/$name');
+
+      if (toAdd != null) {
+        toReturn.add(toAdd);
+      }
     }
 
     return toReturn;
@@ -316,7 +332,7 @@ mixin AuthModel on ConnectedModel {
 
         return Topic(
           id: result.id,
-          roles: data['roles'],
+          roles: List<String>.from(data['roles']),
         );
       } else {
         return null;

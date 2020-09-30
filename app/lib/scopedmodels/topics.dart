@@ -22,7 +22,7 @@ mixin TopicsModel on ConnectedModel {
 
         toReturn.add(Topic(
           id: topic.id,
-          roles: data['roles'],
+          roles: List<String>.from(data['roles']),
         ));
       }
     } catch (e) {
@@ -52,7 +52,7 @@ mixin TopicsModel on ConnectedModel {
 
       toReturn = Topic(
         id: snapshot.id,
-        roles: data['roles'],
+        roles: List<String>.from(data['roles']),
       );
     } catch (e) {
       toReturn = null;

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:hackathon/utils/enums.dart';
 import 'package:scoped_model/scoped_model.dart';
