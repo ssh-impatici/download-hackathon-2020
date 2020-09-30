@@ -162,17 +162,23 @@ mixin AuthModel on ConnectedModel {
 
       List<UserTopic> topics = [];
 
-      for (dynamic topic in data['topics']) {
-        topics.add(UserTopic(
-          id: topic['id'],
-          reviews: topic['reviews'],
-          stars: topic['stars'],
-        ));
+      if (data['topics'] != null) {
+        for (dynamic topic in data['topics']) {
+          topics.add(UserTopic(
+            id: topic['id'],
+            reviews: topic['reviews'],
+            stars: topic['stars'],
+          ));
+        }
       }
 
-      List<Hive> hives = data['hives'] != null
-          ? await _retrieveHivesFromPaths(List<String>.from(data['hives']))
-          : null;
+      List<Hive> hives = [];
+
+      if (data['hives'] != null) {
+        for (dynamic hiveData in data['hives']) {
+          hives.add(await _retrieveHiveFromPath(hiveData['hiveRef']));
+        }
+      }
 
       return Model.User(
         id: result.id,
@@ -233,24 +239,6 @@ mixin AuthModel on ConnectedModel {
 
     _setLoading(false);
     return result;
-  }
-
-  Future<List<Hive>> _retrieveHivesFromPaths(List<String> paths) async {
-    if (paths == null) {
-      return null;
-    }
-
-    List<Hive> toReturn = [];
-
-    for (String path in paths) {
-      Hive toAdd = await _retrieveHiveFromPath(path);
-
-      if (toAdd != null) {
-        toReturn.add(toAdd);
-      }
-    }
-
-    return toReturn;
   }
 
   Future<Hive> _retrieveHiveFromPath(String path) async {
