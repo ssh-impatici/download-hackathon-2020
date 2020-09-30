@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hackathon/classes/hive.dart';
 import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/scopedmodels/main.dart';
@@ -373,20 +374,19 @@ class _CreateHivePageState extends State<CreateHivePage> {
       return;
     }
 
-    await model
-        .createHive(
-          name: name,
-          description: description,
-          latitude:
-              address != null && address.isNotEmpty ? location.latitude : null,
-          longitude:
-              address != null && address.isNotEmpty ? location.longitude : null,
-          address: address,
-          openRoles: openRoles,
-          topics: topics.map((topic) => topic.id).toList(),
-        )
-        .then((_) => model.getMapHives())
-        .then((_) => model.getHives())
-        .then((_) => Navigator.of(context).pop());
+    Hive created = await model.createHive(
+      name: name,
+      description: description,
+      latitude:
+          address != null && address.isNotEmpty ? location.latitude : null,
+      longitude:
+          address != null && address.isNotEmpty ? location.longitude : null,
+      address: address,
+      openRoles: openRoles,
+      topics: topics.map((topic) => topic.id).toList(),
+    );
+    await model.getMapHives();
+    await model.getHives();
+    Navigator.of(context).pop(created);
   }
 }

@@ -162,10 +162,19 @@ class _MapPageState extends State<MapPage> {
         ),
         onPressed: () async {
           await widget.model.getTopics();
-          Navigator.push(
+
+          Hive created = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CreateHivePage()),
           );
+
+          await _initializeMarkers();
+
+          if (created != null &&
+              created.latitude != null &&
+              created.longitude != null) {
+            _moveToLocation(LatLng(created.latitude, created.longitude));
+          }
         },
       ),
     );
@@ -237,10 +246,13 @@ class _MapPageState extends State<MapPage> {
       return null;
     }
 
-    // double zoomLevel = await _mapController.getZoomLevel();
+    _moveToLocation(LatLng(position.latitude, position.longitude));
+  }
+
+  _moveToLocation(LatLng position) {
     _mapController.animateCamera(CameraUpdate.newCameraPosition(
       CameraPosition(
-        target: LatLng(position.latitude, position.longitude),
+        target: position,
         zoom: 15.0,
       ),
     ));
