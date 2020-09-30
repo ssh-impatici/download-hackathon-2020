@@ -29,6 +29,9 @@ mixin TopicsModel on ConnectedModel {
       toReturn = null;
     }
 
+    // Set the topics list in connected to the retrieved one
+    topics = toReturn;
+
     _setLoading(false);
     return toReturn;
   }
