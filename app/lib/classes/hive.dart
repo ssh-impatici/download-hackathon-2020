@@ -9,6 +9,7 @@ class Hive {
   User creator;
   String description;
   bool active;
+  String address;
   double latitude;
   double longitude;
   List<Topic> topics;
@@ -21,6 +22,7 @@ class Hive {
     @required this.name,
     this.description,
     @required this.active,
+    this.address,
     this.latitude,
     this.longitude,
     this.topics,

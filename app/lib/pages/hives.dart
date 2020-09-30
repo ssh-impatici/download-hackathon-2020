@@ -46,36 +46,58 @@ class _HivesPageState extends State<HivesPage> {
   Widget hiveWidget(Hive hive) {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.grey.shade800, borderRadius: BorderRadius.circular(10)),
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+        color: Colors.grey.shade800,
+        borderRadius: BorderRadius.circular(10),
+      ),
       margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       width: MediaQuery.of(context).size.width,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HiveDescription(hive)),
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  child: Text(
-                    hive.name,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        child: Text(
+                          hive.name,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                        padding: EdgeInsets.only(bottom: 15),
+                      ),
+                      Container(
+                        child: Text(
+                            hive.creator != null ? hive.creator.fullName : ''),
+                        padding: EdgeInsets.only(bottom: 20),
+                      ),
+                      _openRoles(hive.openRoles)
+                    ],
                   ),
-                  padding: EdgeInsets.only(bottom: 15),
                 ),
-                Container(
-                  child:
-                      Text(hive.creator != null ? hive.creator.fullName : ''),
-                  padding: EdgeInsets.only(bottom: 20),
-                ),
-                _openRoles(hive.openRoles)
+                Flexible(
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.yellow,
+                  ),
+                )
               ],
             ),
           ),
-          Flexible(child: _button(hive))
-        ],
+        ),
       ),
     );
   }
@@ -116,18 +138,5 @@ class _HivesPageState extends State<HivesPage> {
                   fontSize: 12),
             ),
           );
-  }
-
-  Widget _button(Hive hive) {
-    return IconButton(
-      onPressed: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => HiveDescription(hive)));
-      },
-      icon: Icon(
-        Icons.arrow_forward_ios,
-        color: Colors.yellow,
-      ),
-    );
   }
 }

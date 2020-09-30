@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hackathon/classes/hive.dart';
 import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/topic.dart';
@@ -29,16 +30,23 @@ mixin HivesModel on ConnectedModel {
     );
   }
 
-  Future<List<Hive>> getMapHives() async {
+  Future<List<Hive>> getMapHives({LatLng latLng}) async {
     _setLoading(true);
     List<Hive> toReturn = [];
 
     try {
       const url = '$apiEndpoint/getHivesMap';
 
-      Position position = await getPosition();
+      LatLng position = latLng;
+
       if (position == null) {
-        return null;
+        Position pos = await getPosition();
+
+        if (pos == null) {
+          return null;
+        } else {
+          position = LatLng(position.latitude, position.longitude);
+        }
       }
 
       Response response = await Dio().get(
@@ -215,6 +223,7 @@ mixin HivesModel on ConnectedModel {
       creator: creator,
       active: data['active'],
       description: data['description'],
+      address: data['address'],
       latitude: data['latitude'],
       longitude: data['longitude'],
       openRoles: openRoles,

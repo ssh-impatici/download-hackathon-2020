@@ -230,43 +230,50 @@ class _AuthPageState extends State<AuthPage> {
       return Container(
         alignment: Alignment.center,
         padding: EdgeInsets.symmetric(vertical: 20),
-        child: GestureDetector(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            decoration: BoxDecoration(color: Colors.grey.shade900),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image(
-                    image: AssetImage('assets/images/google.png'), height: 20),
-                SizedBox(width: 20),
-                Text('Sign in with Google')
-              ],
+        child: Container(
+          decoration: BoxDecoration(color: Colors.grey.shade900),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image(
+                      image: AssetImage('assets/images/google.png'),
+                      height: 20,
+                    ),
+                    SizedBox(width: 20),
+                    Text('Sign in with Google')
+                  ],
+                ),
+              ),
+              onTap: () async {
+                AuthResult result = await model.signInWithGoogle();
+                switch (result) {
+                  case AuthResult.SIGNEDIN:
+                    await model.getHives();
+                    await model.getMapHives().then((_) =>
+                        Navigator.of(context).pushReplacementNamed('/home'));
+
+                    break;
+                  case AuthResult.SIGNEDUP:
+                    await model.getTopics().then((_) =>
+                        Navigator.of(context).pushReplacementNamed('/info'));
+
+                    break;
+                  case AuthResult.UNAUTHORIZED:
+                    await showDialog(
+                        context: context,
+                        child: AlertDialog(title: Text(model.errorMessage)));
+                    break;
+                  default:
+                }
+              },
             ),
           ),
-          onTap: () async {
-            AuthResult result = await model.signInWithGoogle();
-            switch (result) {
-              case AuthResult.SIGNEDIN:
-                await model.getHives();
-                await model.getMapHives().then(
-                    (_) => Navigator.of(context).pushReplacementNamed('/home'));
-
-                break;
-              case AuthResult.SIGNEDUP:
-                await model.getTopics().then(
-                    (_) => Navigator.of(context).pushReplacementNamed('/info'));
-
-                break;
-              case AuthResult.UNAUTHORIZED:
-                await showDialog(
-                    context: context,
-                    child: AlertDialog(title: Text(model.errorMessage)));
-                break;
-              default:
-            }
-          },
         ),
       );
     });
