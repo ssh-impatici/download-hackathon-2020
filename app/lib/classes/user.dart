@@ -8,7 +8,7 @@ class User {
   String surname;
   String email;
   String bio;
-  List<Topic> topics;
+  List<UserTopic> topics;
   List<Hive> hives;
 
   User({
