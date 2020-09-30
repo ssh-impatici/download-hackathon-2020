@@ -148,7 +148,7 @@ mixin AuthModel on ConnectedModel {
     if (result != null) {
       Map<String, dynamic> data = result.data();
 
-      List<Topic> topics = await _retrieveTopicsFromPaths(data['topics']);
+      List<Topic> topics = await _retrieveTopicsFromNames(data['topics']);
       List<Hive> hives = await _retrieveHivesFromPaths(data['hives']);
 
       return Model.User(
@@ -165,7 +165,12 @@ mixin AuthModel on ConnectedModel {
     }
   }
 
-  Future<AuthResult> addUserInfo({Model.User userInfo}) async {
+  Future<AuthResult> addUserInfo({
+    String name,
+    String surname,
+    String bio,
+    List<String> topics,
+  }) async {
     User user = _auth.currentUser;
 
     if (user == null) {
@@ -177,10 +182,11 @@ mixin AuthModel on ConnectedModel {
 
     try {
       await _firestore.collection('users').doc(user.uid).set({
-        'name': userInfo.name,
-        'surname': userInfo.surname,
+        'name': name,
+        'surname': surname,
         'email': user.email,
-        'bio': userInfo.bio,
+        'bio': bio,
+        'topics': topics,
       });
 
       result = AuthResult.SIGNEDIN;
@@ -212,7 +218,7 @@ mixin AuthModel on ConnectedModel {
         List<OpenRole> openRoles = [];
         for (dynamic openRole in data['openRoles']) {
           openRoles.add(OpenRole(
-            role: openRole['role'],
+            name: openRole['name'],
             quantity: openRole['quantity'],
           ));
         }
@@ -228,7 +234,7 @@ mixin AuthModel on ConnectedModel {
         }
 
         Model.User creator = await _retrieveUserFromPath(data['creator']);
-        List<Topic> topics = await _retrieveTopicsFromPaths(data['topics']);
+        List<Topic> topics = await _retrieveTopicsFromNames(data['topics']);
 
         return Hive(
           id: result.id,
@@ -257,7 +263,7 @@ mixin AuthModel on ConnectedModel {
       if (result != null) {
         Map<String, dynamic> data = result.data();
 
-        List<Topic> topics = await _retrieveTopicsFromPaths(data['topics']);
+        List<Topic> topics = await _retrieveTopicsFromNames(data['topics']);
 
         return Model.User(
           id: result.id,
@@ -275,11 +281,11 @@ mixin AuthModel on ConnectedModel {
     }
   }
 
-  Future<List<Topic>> _retrieveTopicsFromPaths(List<String> paths) async {
+  Future<List<Topic>> _retrieveTopicsFromNames(List<String> names) async {
     List<Topic> toReturn = [];
 
-    for (String path in paths) {
-      toReturn.add(await _retrieveTopicFromPath(path));
+    for (String name in names) {
+      toReturn.add(await _retrieveTopicFromPath('topics/$name'));
     }
 
     return toReturn;
@@ -294,7 +300,6 @@ mixin AuthModel on ConnectedModel {
 
         return Topic(
           id: result.id,
-          name: data['name'],
           roles: data['roles'],
         );
       } else {

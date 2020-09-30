@@ -22,7 +22,6 @@ mixin TopicsModel on ConnectedModel {
 
         toReturn.add(Topic(
           id: topic.id,
-          name: data['name'],
           roles: data['roles'],
         ));
       }
@@ -50,7 +49,6 @@ mixin TopicsModel on ConnectedModel {
 
       toReturn = Topic(
         id: snapshot.id,
-        name: data['name'],
         roles: data['roles'],
       );
     } catch (e) {

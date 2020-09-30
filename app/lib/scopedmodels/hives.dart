@@ -47,7 +47,7 @@ mixin HivesModel on ConnectedModel {
       if (result != null) {
         Map<String, dynamic> data = result.data();
 
-        List<Topic> topics = await _retrieveTopicsFromPaths(data['topics']);
+        List<Topic> topics = await _retrieveTopicsFromNames(data['topics']);
 
         return User(
           id: result.id,
@@ -65,11 +65,11 @@ mixin HivesModel on ConnectedModel {
     }
   }
 
-  Future<List<Topic>> _retrieveTopicsFromPaths(List<String> paths) async {
+  Future<List<Topic>> _retrieveTopicsFromNames(List<String> names) async {
     List<Topic> toReturn = [];
 
-    for (String path in paths) {
-      toReturn.add(await _retrieveTopicFromPath(path));
+    for (String name in names) {
+      toReturn.add(await _retrieveTopicFromPath('topics/$name'));
     }
 
     return toReturn;
@@ -84,7 +84,6 @@ mixin HivesModel on ConnectedModel {
 
         return Topic(
           id: result.id,
-          name: data['name'],
           roles: data['roles'],
         );
       } else {
