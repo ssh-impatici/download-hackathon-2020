@@ -33,8 +33,12 @@ mixin AuthModel on ConnectedModel {
         password: password,
       );
 
+      // Set the authenticated flag in connected model
+      authenticated = true;
+
       result = AuthResult.SIGNEDUP;
     } catch (e) {
+      authenticated = false;
       result = AuthResult.UNAUTHORIZED;
       errorMessage = e.toString();
     }
@@ -56,6 +60,9 @@ mixin AuthModel on ConnectedModel {
         password: password,
       );
 
+      // Set the authenticated flag in connected model
+      authenticated = true;
+
       user = await retrieveUserInfo();
 
       if (user != null) {
@@ -64,6 +71,7 @@ mixin AuthModel on ConnectedModel {
         result = AuthResult.SIGNEDUP;
       }
     } catch (e) {
+      authenticated = false;
       result = AuthResult.UNAUTHORIZED;
       errorMessage = e.toString();
     }
@@ -79,6 +87,9 @@ mixin AuthModel on ConnectedModel {
       await _auth.signOut();
     } catch (e) {
       errorMessage = e.toString();
+    } finally {
+      authenticated = false;
+      user = null;
     }
 
     _setLoading(false);
@@ -104,6 +115,10 @@ mixin AuthModel on ConnectedModel {
 
       await _auth.signInWithCredential(credential);
 
+      // Set the authenticated flag in connected model
+      authenticated = true;
+
+      // Set the user info in connected model
       user = await retrieveUserInfo();
 
       if (user != null) {
@@ -112,6 +127,7 @@ mixin AuthModel on ConnectedModel {
         result = AuthResult.SIGNEDUP;
       }
     } catch (e) {
+      authenticated = false;
       result = AuthResult.UNAUTHORIZED;
       errorMessage = e.toString();
     }
@@ -127,6 +143,9 @@ mixin AuthModel on ConnectedModel {
       await _googleSignIn.signOut();
     } catch (e) {
       errorMessage = e.toString();
+    } finally {
+      authenticated = false;
+      user = null;
     }
 
     _setLoading(false);
