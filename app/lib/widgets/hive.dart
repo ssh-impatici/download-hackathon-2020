@@ -50,7 +50,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
                       _openRoles(context),
                       _section('People'),
                       _takenRoles(context),
-                      _giveup()
+                      _giveUp()
                     ],
                   )
                 : CircularProgressIndicator(),
@@ -186,8 +186,9 @@ class _HiveDescriptionState extends State<HiveDescription> {
                   ),
                   onTap: () {
                     showModalBottomSheet(
-                        context: context,
-                        builder: (context) => _confirmJoin(role));
+                      context: context,
+                      builder: (context) => _confirmJoin(role),
+                    );
                   },
                 ),
                 SizedBox(width: 10),
@@ -276,11 +277,14 @@ class _HiveDescriptionState extends State<HiveDescription> {
   Widget _remove(Function remove, TakenRole role) {
     return Flexible(
       child: InkWell(
-          child: Icon(Icons.remove),
-          onTap: () {
-            showModalBottomSheet(
-                context: context, builder: (context) => _confirmRemove(role));
-          }),
+        child: Icon(Icons.remove),
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) => _confirmRemove(role),
+          );
+        },
+      ),
     );
   }
 
@@ -461,7 +465,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
     );
   }
 
-  Widget _giveup() {
+  Widget _giveUp() {
     return ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
       return Container(
@@ -478,9 +482,83 @@ class _HiveDescriptionState extends State<HiveDescription> {
                     style: TextStyle(color: Colors.white, fontSize: 15),
                   ),
           ),
-          onPressed: () => model.giveUpHive(hiveId: widget.hiveId),
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              builder: (context) => _confirmGiveUp(),
+            );
+          },
         ),
       );
     });
+  }
+
+  Widget _confirmGiveUp() {
+    return ScopedModelDescendant<MainModel>(
+      builder: (context, child, model) => Container(
+        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+        color: Colors.grey.shade900,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.only(bottom: 15),
+              child: Text(
+                'Leaving ${_hive.name}',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17),
+              ),
+            ),
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      'Do you want to leave the hive?',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: InkWell(
+                            child: _button('Cancel', Colors.grey, false),
+                            onTap: () => Navigator.pop(context),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: InkWell(
+                            child: _button(
+                                'Confirm', Colors.yellow, model.loading),
+                            onTap: () {
+                              model
+                                  .giveUpHive(hiveId: widget.hiveId)
+                                  .then((_) => _retrieveHive())
+                                  .then((_) => Navigator.pop(context));
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
