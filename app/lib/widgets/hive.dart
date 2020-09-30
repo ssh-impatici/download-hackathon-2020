@@ -81,6 +81,10 @@ class HiveDescription extends StatelessWidget {
   }
 
   Widget _place() {
+    if (hive.longitude == null) {
+      return null;
+    }
+
     return Container(
       margin: EdgeInsets.only(bottom: 20),
       child: Text(hive.longitude.truncate().toString()),
