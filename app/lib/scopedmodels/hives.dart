@@ -163,8 +163,33 @@ mixin HivesModel on ConnectedModel {
     return toReturn;
   }
 
-  // still have to test this
   Future<Hive> joinHive({String hiveId, String roleId, String userId}) async {
+    _setLoading(true);
+
+    Hive joinedHive;
+    dynamic json;
+
+    try {
+      const url = '$apiEndpoint/joinHive';
+      Response response = await Dio().post(
+        url,
+        data: {
+          'hiveRef': 'hives/$hiveId',
+          'roleRef': roleId,
+          'userRef': 'users/$userId'
+        },
+      );
+      json = response.data;
+      joinedHive = await _parseHive(json);
+    } catch (e) {
+      errorMessage = e.toString();
+    }
+
+    _setLoading(false);
+    return joinedHive;
+  }
+
+  Future<Hive> leaveHive({String hiveId, String roleId, String userId}) async {
     _setLoading(true);
 
     Hive createdHive;
@@ -189,6 +214,7 @@ mixin HivesModel on ConnectedModel {
     _setLoading(false);
     return createdHive;
   }
+
 
   Future<Hive> _parseHive(Map<String, dynamic> data) async {
     // Build open roles list
