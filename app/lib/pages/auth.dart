@@ -184,8 +184,8 @@ class _AuthPageState extends State<AuthPage> {
         Navigator.of(context).pushReplacementNamed('/home');
         break;
       case AuthResult.SIGNEDUP:
-        // await model.getTopics();
-        Navigator.of(context).pushReplacementNamed('/info');
+        await model.getTopics().then(
+            (value) => Navigator.of(context).pushReplacementNamed('/info'));
         break;
       case AuthResult.UNAUTHORIZED:
         await showDialog(
@@ -243,7 +243,26 @@ class _AuthPageState extends State<AuthPage> {
               ],
             ),
           ),
-          onTap: () => model.signInWithGoogle(),
+          onTap: () async {
+            AuthResult result = await model.signInWithGoogle();
+            switch (result) {
+              case AuthResult.SIGNEDIN:
+                // await mode.getHives()
+                Navigator.of(context).pushReplacementNamed('/home');
+                break;
+              case AuthResult.SIGNEDUP:
+                await model.getTopics().then(
+                    (_) => Navigator.of(context).pushReplacementNamed('/info'));
+
+                break;
+              case AuthResult.UNAUTHORIZED:
+                await showDialog(
+                    context: context,
+                    child: AlertDialog(title: Text(model.errorMessage)));
+                break;
+              default:
+            }
+          },
         ),
       );
     });

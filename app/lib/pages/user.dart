@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -26,17 +27,17 @@ class _UserPageState extends State<UserPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _title('Lorenzo Conti'),
-              _email('lorenzoconti@gmail.com'),
-              _bio(
-                  'Hey I am a beautiful bee that loves flowes and trees and I really really want to feed my queen. I am looking for the most beautiful hive on earth with some sexy worker bees.'),
+              _title(model.user.fullName),
+              _email(model.user.email),
+              _bio(model.user.bio),
               Container(
                 padding: EdgeInsets.only(top: 10, bottom: 20),
                 child: Text('Interests',
                     style:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
-              _topics(),
+              _topics(model.user.topics),
+              _button(),
             ],
           ),
         );
@@ -100,17 +101,9 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  var usertopics = <String>[
-    'Machine Learning',
-    'Dancer',
-    'Chef',
-    'Nerd',
-    'Videogamer'
-  ];
-
-  Widget _topics() {
+  Widget _topics(List<Topic> userTopics) {
     List<Widget> topics = [];
-    usertopics.forEach((topic) {
+    userTopics.forEach((topic) {
       topics.add(
         Container(
           padding: EdgeInsets.all(6),
@@ -119,7 +112,7 @@ class _UserPageState extends State<UserPage> {
               color: Colors.grey.shade900,
               borderRadius: BorderRadius.circular(5)),
           child: Text(
-            topic,
+            topic.id,
             style: TextStyle(
                 color: Colors.yellow.shade400,
                 fontSize: 15,
@@ -132,5 +125,32 @@ class _UserPageState extends State<UserPage> {
     return Container(
       child: Wrap(children: topics),
     );
+  }
+
+  Widget _button() {
+    return ScopedModelDescendant(
+        builder: (BuildContext context, Widget child, MainModel model) {
+      return Container(
+        padding: EdgeInsets.only(top: 20, bottom: 15),
+        child: RaisedButton(
+          color: Colors.grey.shade900,
+          child: Center(
+            child: model.loading
+                ? Container(
+                    padding: EdgeInsets.all(10),
+                    child: Center(child: CircularProgressIndicator()))
+                : Text(
+                    'Logout',
+                    style: TextStyle(color: Colors.white),
+                  ),
+          ),
+          onPressed: () async {
+            await model
+                .logout()
+                .then((_) => Navigator.of(context).pushReplacementNamed('/'));
+          },
+        ),
+      );
+    });
   }
 }

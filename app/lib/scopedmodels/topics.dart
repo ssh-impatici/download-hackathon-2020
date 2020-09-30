@@ -12,7 +12,7 @@ mixin TopicsModel on ConnectedModel {
 
   Future<List<Topic>> getTopics() async {
     _setLoading(true);
-    List<Topic> toReturn;
+    List<Topic> toReturn = List<Topic>();
 
     try {
       QuerySnapshot snapshot = await _firestore.collection('topics').get();
@@ -22,7 +22,7 @@ mixin TopicsModel on ConnectedModel {
 
         toReturn.add(Topic(
           id: topic.id,
-          roles: data['roles'],
+          roles: List<String>.from(data['roles']),
         ));
       }
     } catch (e) {
@@ -52,7 +52,7 @@ mixin TopicsModel on ConnectedModel {
 
       toReturn = Topic(
         id: snapshot.id,
-        roles: data['roles'],
+        roles: List<String>.from(data['roles']),
       );
     } catch (e) {
       toReturn = null;

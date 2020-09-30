@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/scopedmodels/main.dart';
+import 'package:hackathon/widgets/auto-completion.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class InfoPage extends StatefulWidget {
@@ -18,6 +20,7 @@ class _InfoPageState extends State<InfoPage> {
   String name;
   String surname;
   String bio;
+  List<String> topics = List<String>();
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +28,12 @@ class _InfoPageState extends State<InfoPage> {
       child: Scaffold(
         body: SingleChildScrollView(
           child: Form(
-              key: _formKey,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: Column(
+            key: _formKey,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+              width: MediaQuery.of(context).size.width,
+              child: ScopedModelDescendant<MainModel>(
+                builder: (context, child, model) => Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -56,11 +59,14 @@ class _InfoPageState extends State<InfoPage> {
                     _bio(),
                     SizedBox(height: 15),
                     _title('Interests'),
-                    _interests(),
+                    _interests(model.topics),
+                    _selected(topics),
                     _button()
                   ],
                 ),
-              )),
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -132,8 +138,61 @@ class _InfoPageState extends State<InfoPage> {
     );
   }
 
-  Widget _interests() {
-    return Container();
+  Widget _interests(List<Topic> options) {
+    print(options);
+    return Container(
+      child: AutoCompletion(options, addTopic),
+    );
+  }
+
+  void addTopic(Topic topic) {
+    setState(() {
+      topics.add(topic.id);
+    });
+  }
+
+  void removeTopic(String string) {
+    setState(() {
+      topics.removeWhere((item) => item == string);
+    });
+  }
+
+  Widget _selected(List<String> selected) {
+    List<Widget> topics = [];
+    selected.forEach((topic) {
+      topics.add(
+        Container(
+            padding: EdgeInsets.all(6),
+            margin: EdgeInsets.only(bottom: 5, top: 5, right: 5),
+            decoration: BoxDecoration(
+                color: Colors.grey.shade900,
+                borderRadius: BorderRadius.circular(5)),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  topic,
+                  style: TextStyle(
+                      color: Colors.yellow.shade400,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold),
+                ),
+                GestureDetector(
+                  child: Icon(
+                    Icons.close,
+                    size: 14,
+                  ),
+                  onTap: () => removeTopic(topic),
+                ),
+              ],
+            )),
+      );
+    });
+
+    return Container(
+      padding: EdgeInsets.only(top: 15),
+      child: Wrap(children: topics),
+    );
   }
 
   Widget _button() {
@@ -159,5 +218,10 @@ class _InfoPageState extends State<InfoPage> {
     });
   }
 
-  void _submit(Function callback, String msg) {}
+  void _submit(Function callback, String msg) async {
+    if (!_formKey.currentState.validate()) return;
+    _formKey.currentState.save();
+    await callback(name: name, surname: surname, bio: bio, topics: topics)
+        .then((value) => Navigator.of(context).pushReplacementNamed('/home'));
+  }
 }

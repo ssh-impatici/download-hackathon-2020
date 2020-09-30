@@ -66,10 +66,18 @@ mixin HivesModel on ConnectedModel {
   }
 
   Future<List<Topic>> _retrieveTopicsFromNames(List<String> names) async {
+    if (names == null) {
+      return null;
+    }
+
     List<Topic> toReturn = [];
 
     for (String name in names) {
-      toReturn.add(await _retrieveTopicFromPath('topics/$name'));
+      Topic toAdd = await _retrieveTopicFromPath('topics/$name');
+
+      if (toAdd != null) {
+        toReturn.add(toAdd);
+      }
     }
 
     return toReturn;
@@ -84,7 +92,7 @@ mixin HivesModel on ConnectedModel {
 
         return Topic(
           id: result.id,
-          roles: data['roles'],
+          roles: List<String>.from(data['roles']),
         );
       } else {
         return null;
