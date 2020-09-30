@@ -11,12 +11,11 @@ const getDistance = (x1, x2, y1, y2) => {
 
 module.exports = function(e) {
   e.getHivesList = functions.https.onRequest(async (req, res) => {
-    const data = JSON.parse(req.body);
-    if (!data) return res.status(400).send("Bad request: no body found");
+    const data = { ...req.query };
 
     let userTopics = await db.doc(data.userRef).get();
-    userTopics = userTopics.get("topics");
-    userTopics = userTopics.map(topic => Object.keys(topic)[0]);
+    userTopics = userTopics.get("topics").map(topic => topic.id);
+
     let virtualHives = await db.collection("hives").where('latitude', '==', null).get();
     virtualHives = virtualHives.docs.map(doc => doc.data());
 
@@ -29,20 +28,29 @@ module.exports = function(e) {
       return scoreB - scoreA
     });
 
-    console.log(virtualHives.length);
-
     physicalHives = physicalHives
-      .filter(hive => hive.topics.filter(item => {
-        // userTopics.includes(item).length > 0)
-        console.log(userTopics, item);
-      }))
+      // .filter(hive => hive.topics.filter(topic => userTopics.includes(topic)).length > 0)
       .sort((a, b) => {
-        let distA = getDistance(a.latitude, data.userPosition.latitude, a.longitude, data.userPosition.longitude)
-        let distB = getDistance(b.latitude, data.userPosition.latitude, b.longitude, data.userPosition.longitude);
+        let distA = getDistance(a.latitude, data.latitude, a.longitude, data.longitude);
+        let distB = getDistance(b.latitude, data.latitude, b.longitude, data.longitude);
         return distA - distB;
       });
 
-    return res.status(200).send();
+    let resultHives = [];
+    let iVirtual = 0;
+    let iPhysical = 0;
+    for (let i = 0; i < physicalHives.length + virtualHives.length; i++) {
+      if (iVirtual < virtualHives.length) {
+        resultHives.push(virtualHives.shift());
+        iVirtual++;
+      }
+      if (iPhysical < physicalHives.length) {
+        resultHives.push(physicalHives.shift());
+        iPhysical++;
+      }
+    }
+
+    return res.status(200).send(resultHives);
   });
 
   e.getHivesMap = functions.https.onRequest(async (req, res) => {
