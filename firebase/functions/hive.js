@@ -64,9 +64,7 @@ module.exports = function(e) {
         });
       })
   });
-}
-
-module.exports = function(e) {
+  
   e.leaveHive = functions.https.onRequest(async (req, res) => {
 
     if (req.method !== 'POST' || !req.body)
