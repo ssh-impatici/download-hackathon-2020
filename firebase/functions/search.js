@@ -82,15 +82,34 @@ module.exports = function (e) {
     let zoom = Number(req.query.zoom);
     let lat = Number(req.query.latitude);
     let long = Number(req.query.longitude);
+    let topic = String(req.query.topic);
 
     console.log(lat + zoom);
-    let hives = await db.collection('hives')
-      .where('latitude', '<=', lat + zoom)
-      .where('latitude', '>=', lat - zoom)
-      .limit(100)
-      .get()
 
-    hives = hives.docs.map(doc => doc.data())
+    let hives = null;
+
+    if (topic != "undefined") {
+      hives = await db.collection('hives')
+        .where('latitude', '<=', lat + zoom)
+        .where('latitude', '>=', lat - zoom)
+        .where('topics', 'array-contains', topic) // Filter by topic
+        .limit(100)
+        .get()
+    } else {
+      hives = await db.collection('hives')
+        .where('latitude', '<=', lat + zoom)
+        .where('latitude', '>=', lat - zoom)
+        .limit(100)
+        .get()
+    }
+
+    hives = hives.docs.map(doc => {
+      return {
+        ...doc.data(),
+        hiveId: doc.id
+      }
+    })
+
     res.status(200).send(hives.filter(
       a => (a.longitude <= (long + zoom)) && (a.longitude >= (long - zoom))
     ));
