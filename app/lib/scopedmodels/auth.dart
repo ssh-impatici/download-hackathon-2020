@@ -225,10 +225,10 @@ mixin AuthModel on ConnectedModel {
 
         List<TakenRole> takenRoles = [];
         for (dynamic takenRole in data['takenRoles']) {
-          Model.User user = await _retrieveUserFromPath(takenRole['userId']);
+          Model.User user = await _retrieveUserFromPath(takenRole['userRef']);
 
           takenRoles.add(TakenRole(
-            role: takenRole['role'],
+            name: takenRole['name'],
             user: user,
           ));
         }

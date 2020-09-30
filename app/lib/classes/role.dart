@@ -23,10 +23,10 @@ class OpenRole {
 
 class TakenRole {
   User user;
-  String role;
+  String name;
 
   TakenRole({
     @required this.user,
-    @required this.role,
+    @required this.name,
   });
 }
