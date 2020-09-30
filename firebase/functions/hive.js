@@ -45,7 +45,15 @@ module.exports = function(e) {
       hives: Fields.arrayUnion(data.hiveRef)
     })
 
-    return res.status(201).send("Hive joined!");
+    var hiveRef_plain = data.hiveRef.substring(6);
+
+    var dataToSent = db.collection("hives").doc(hiveRef_plain).get()
+      .then(snap => {
+        return res.status(201).send({
+          hiveId: hiveRef_plain,
+          hiveData: snap.data()
+        });
+      })
   });
 
   e.createHive = functions.https.onRequest(async (req, res) => {
@@ -77,17 +85,14 @@ module.exports = function(e) {
       takenRoles: [],
       topics: data.topics
     }).then(function(docRef) {
-      console.log("Document written with ID: ", docRef.id);
       docId = docRef.id;
       db.collection("hives").doc(docRef.id).get()
         .then(snap => {
-          console.log('Here is the document you wrote to', snap.data());
           return res.status(201).send({
             hiveId: docId,
             hiveData: snap.data()
           });
         })
-
     });
   });
 }
