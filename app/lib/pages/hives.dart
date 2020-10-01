@@ -24,57 +24,45 @@ class _HivesPageState extends State<HivesPage> {
   }
 
   Future<void> _refreshHives() async {
-    print('init');
     await ScopedModel.of<MainModel>(context).getHives();
-    print('end');
+    setState(() {});
   }
 
   Widget listHiveWidget(MainModel model) {
-    return FutureBuilder(
-      future: model.getPosition(),
-      builder: (context, snapshot) {
-        List<Widget> hivesWidget = List<Widget>();
+    List<Widget> hivesWidgets = List<Widget>();
 
-        // Page Title
-        hivesWidget.add(
-          Container(
-            margin: EdgeInsets.only(top: 30, left: 20, bottom: 10),
-            child: Text(
-              'Available Hives',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
-        );
+    // Page Title
+    hivesWidgets.add(
+      Container(
+        margin: EdgeInsets.only(top: 30, left: 20, bottom: 10),
+        child: Text(
+          'Available Hives',
+          style: TextStyle(
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
 
-        // TODO: Search bar
+    // TODO: Search bar
 
-        if (!snapshot.hasData || snapshot.hasError || snapshot.data == null) {
-          model.hivesList.forEach((hive) {
-            hivesWidget.add(HiveCard(hive, model.user));
-          });
+    if (model.hivesList == null || model.hivesList.isEmpty) {
+      return ListView(
+        children: hivesWidgets,
+      );
+    }
 
-          return ListView(
-            children: hivesWidget,
-          );
-        } else {
-          Position location = snapshot.data;
+    Position location = model.position;
 
-          model.hivesList.forEach((hive) {
-            hivesWidget.add(HiveCard(
-              hive,
-              model.user,
-              location: location,
-            ));
-          });
+    model.hivesList.forEach((hive) {
+      hivesWidgets.add(HiveCard(
+        hive,
+        model.user,
+        location: location,
+      ));
+    });
 
-          return ListView(
-            children: hivesWidget,
-          );
-        }
-      },
+    return ListView(
+      children: hivesWidgets,
     );
   }
 }

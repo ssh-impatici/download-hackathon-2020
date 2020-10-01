@@ -39,7 +39,7 @@ class HiveCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
+                Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,14 +48,19 @@ class HiveCard extends StatelessWidget {
                         margin: EdgeInsets.only(bottom: 15),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             _typeIcon(context),
-                            Container(
+                            Expanded(
                               child: Text(
                                 hive.name,
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
@@ -83,11 +88,9 @@ class HiveCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Flexible(
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.yellow,
-                  ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.yellow,
                 )
               ],
             ),
