@@ -283,6 +283,11 @@ class _AuthPageState extends State<AuthPage> {
           onPressed: !isLoading && !isLoadingLogin
               ? () async {
                   AuthResult result = await model.signInWithGoogle();
+
+                  if (result == null) {
+                    return;
+                  }
+
                   switch (result) {
                     case AuthResult.SIGNEDIN:
                       // Get position once

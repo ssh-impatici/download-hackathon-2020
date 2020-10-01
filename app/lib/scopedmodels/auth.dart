@@ -148,6 +148,12 @@ mixin AuthModel on ConnectedModel {
     try {
       final GoogleSignInAccount googleSignInAccount =
           await _googleSignIn.signIn();
+
+      if (googleSignInAccount == null) {
+        _setGoogling(false);
+        return result;
+      }
+
       final GoogleSignInAuthentication googleSignInAuthentication =
           await googleSignInAccount.authentication;
 
