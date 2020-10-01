@@ -20,22 +20,20 @@ We have also introduced the possibility for each user to create a new hive becom
 
 We believe that the dualism of live events (present on the map) and virtual events will be very present in the future, given the period that has just passed, and will certainly be a solution to be adopted also for next year's Download Innovation, both in terms of the mix of live and virtual events and the use of the Beelder app to search for participants and form new teams for the Hackathon.
 
-## Quick Start and Installation
+## Quick Start
 
-This is a [flutter](https://flutter.io) app. We provide you an apk file that you can install on your device. Since the app isn't distributed on the PlayStore platform, it will probably alerts you about some kind of risk. You can install it without any fear, it is completely safe.
-If you want to build and run the app from source code on a device emulator on you computer, you can follow the [official documentation](https://flutter.io/docs/get-started/install) or, if you want to avoid the installation of Android Studio, you can follow [this great guide](https://medium.com/@quicky316/install-flutter-sdk-on-windows-without-android-studio-102fdf567ce4).
+### Installation
+
+This is a [Flutter](https://flutter.io) app. We provide you an apk file that you can install on your device. Since the app isn't distributed on the PlayStore platform, it will probably alerts you about some kind of risk. You can install it without any fear, it is completely safe.
+If you want to build and run the app from source code on a device emulator on you computer, you can install Flutter following the [official documentation](https://flutter.io/docs/get-started/install) or, if you want to avoid the installation of Android Studio, you can follow [this great guide](https://medium.com/@quicky316/install-flutter-sdk-on-windows-without-android-studio-102fdf567ce4).
 
 Once you have installed flutter, make sure to be in the `app` folder and to have installed the necessary plugins with `flutter pub get`.
 
-
 This repo is using Firebase with Cloud Firestore as backend. You can read the [official documentation](https://firebase.google.com/docs). The code is in the `firebase` folder.
-
 
 We provide a file named `beelder.apk` which can be installed on android devices running Android 4.1 (API level 16) or higher.
 
 Firebase is online and available to handle past requests.
-
-You can also build the app from source by installing Flutter. You can follow [this great guide](https://medium.com/@quicky316/install-flutter-sdk-on-windows-without-android-studio-102fdf567ce4) to install it.
 
 ### Usage
 
