@@ -34,11 +34,15 @@ class _CreateHivePageState extends State<CreateHivePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+        ),
         body: SingleChildScrollView(
           child: Form(
             key: _formKey,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
               width: MediaQuery.of(context).size.width,
               child: ScopedModelDescendant<MainModel>(
                 builder: (context, child, model) => Column(

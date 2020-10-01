@@ -32,7 +32,7 @@ class _UserPageState extends State<UserPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _title(widget.user.fullName),
+              _title(widget.user.fullName, isMyAccount),
               _email(widget.user.email),
               _bio(widget.user.bio),
               Container(
@@ -57,9 +57,18 @@ class _UserPageState extends State<UserPage> {
     );
 
     if (isMyAccount) {
-      return RefreshIndicator(onRefresh: _refreshUserInfo, child: body);
+      return RefreshIndicator(
+        onRefresh: _refreshUserInfo,
+        child: body,
+      );
     } else {
-      return body;
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+        ),
+        body: body,
+      );
     }
   }
 
@@ -68,9 +77,12 @@ class _UserPageState extends State<UserPage> {
     setState(() {});
   }
 
-  Widget _title(String name) {
+  Widget _title(String name, bool topSpacing) {
     return Container(
-      padding: EdgeInsets.only(top: 50, bottom: 30),
+      padding: EdgeInsets.only(
+        bottom: 30,
+        top: topSpacing ? 30.0 : 0.0,
+      ),
       child: Text(
         name,
         style: TextStyle(
