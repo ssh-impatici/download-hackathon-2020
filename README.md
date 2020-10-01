@@ -58,7 +58,7 @@ To create an hive you will need to complete all the fields by entering the topic
 The `explore` tab shows all hives, both nearby ones (indicating their distance in km) and virtual ones. In addition to the various topics, a key icon is shown if you are the queen bee of the hive.
 
 <p align="center">
-<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/todo.jpg" width="200">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_5.jpg" width="200">
 </p>
 
 The `my hives` tab shows the hives that you have joined or owned. In the `hive's detail` tab you can apply for multiple roles or remove yourself and also, if you are the creator, you can give team members a star rating for the role played.
