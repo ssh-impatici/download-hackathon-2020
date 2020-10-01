@@ -162,22 +162,21 @@ class _AuthPageState extends State<AuthPage> {
   Widget _button() {
     return ScopedModelDescendant(
         builder: (BuildContext context, Widget child, MainModel model) {
+      bool isLoading = model.loading;
+      bool isLoadingGoogle = model.googling;
+
       return Container(
         padding: EdgeInsets.only(top: 20, bottom: 15),
         child: RaisedButton(
           color: Colors.grey.shade900,
           disabledColor: Colors.grey.shade900,
           child: Center(
-            child: model.loading || model.googling
-                ? Container(
-                    padding: EdgeInsets.all(10),
-                    child: Center(child: Text('Bzz Bzz ..')))
-                : Text(
-                    mode == AuthMode.LOGIN ? 'Log in' : 'Sign in',
-                    style: TextStyle(color: Colors.white),
-                  ),
+            child: isLoading
+                ? Text('Bzz Bzz...')
+                : Text(mode == AuthMode.LOGIN ? 'Log in' : 'Sign in'),
           ),
-          onPressed: !model.loading ? () => _submit(model) : null,
+          onPressed:
+              !isLoading && !isLoadingGoogle ? () => _submit(model) : null,
         ),
       );
     });
@@ -256,58 +255,52 @@ class _AuthPageState extends State<AuthPage> {
   Widget _google() {
     return ScopedModelDescendant(
         builder: (BuildContext context, Widget child, MainModel model) {
+      bool isLoading = model.googling;
+      bool isLoadingLogin = model.loading;
+
       return Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(vertical: 20),
-        child: Container(
-          decoration: BoxDecoration(color: Colors.grey.shade900),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                child: model.googling
-                    ? Container(
-                        padding: EdgeInsets.all(10),
-                        child: Center(child: CircularProgressIndicator()))
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image(
-                            image: AssetImage('assets/images/google.png'),
-                            height: 20,
-                          ),
-                          SizedBox(width: 20),
-                          Text('Sign in with Google')
-                        ],
+        margin: EdgeInsets.symmetric(vertical: 20),
+        child: RaisedButton(
+          color: Colors.grey.shade900,
+          disabledColor: Colors.grey.shade900,
+          child: Center(
+            child: isLoading
+                ? Text('Bzz Bzz...')
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image(
+                        image: AssetImage('assets/images/google.png'),
+                        height: 18.0,
                       ),
-              ),
-              onTap: !model.loading
-                  ? () async {
-                      AuthResult result = await model.signInWithGoogle();
-                      switch (result) {
-                        case AuthResult.SIGNEDIN:
-                          await model.getHives();
-                          await model.getMapHives();
-                          Navigator.of(context).pushReplacementNamed('/home');
-                          break;
-                        case AuthResult.SIGNEDUP:
-                          await model.getTopics();
-                          Navigator.of(context).pushReplacementNamed('/info');
-                          break;
-                        case AuthResult.UNAUTHORIZED:
-                          await showDialog(
-                            context: context,
-                            child: AlertDialog(title: Text(model.errorMessage)),
-                          );
-                          break;
-                        default:
-                      }
-                    }
-                  : null,
-            ),
+                      SizedBox(width: 12.0),
+                      Text('Sign in with Google')
+                    ],
+                  ),
           ),
+          onPressed: !isLoading && !isLoadingLogin
+              ? () async {
+                  AuthResult result = await model.signInWithGoogle();
+                  switch (result) {
+                    case AuthResult.SIGNEDIN:
+                      await model.getHives();
+                      await model.getMapHives();
+                      Navigator.of(context).pushReplacementNamed('/home');
+                      break;
+                    case AuthResult.SIGNEDUP:
+                      await model.getTopics();
+                      Navigator.of(context).pushReplacementNamed('/info');
+                      break;
+                    case AuthResult.UNAUTHORIZED:
+                      await showDialog(
+                        context: context,
+                        child: AlertDialog(title: Text(model.errorMessage)),
+                      );
+                      break;
+                    default:
+                  }
+                }
+              : null,
         ),
       );
     });

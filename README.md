@@ -32,6 +32,9 @@ We provide a file named `Beelder.apk` which can be installed on android devices 
 
 Firebase is online and available to handle past requests.
 
+You can also build the app from source by installing Flutter. You can follow [this great guide](https://medium.com/@quicky316/install-flutter-sdk-on-windows-without-android-studio-102fdf567ce4) to install it.
+
+
 ### Usage
 
 Initially you have to sign up with the email address or by signing in with Google. After, you have to complete your profile by entering your data and selecting the topics you are interested in.
