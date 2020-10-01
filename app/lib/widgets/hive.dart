@@ -39,6 +39,8 @@ class _HiveDescriptionState extends State<HiveDescription> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _title(),
+                      _topics(),
+                      SizedBox(height: 20),
                       _section('Author'),
                       _author(),
                       _section('Hive Descrpition'),
@@ -107,6 +109,35 @@ class _HiveDescriptionState extends State<HiveDescription> {
         _hive.name,
         style: TextStyle(
             color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _topics() {
+    List<Widget> _list = List<Widget>();
+
+    _hive.topics.forEach((topic) {
+      _list.add(
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+          margin: EdgeInsets.only(right: 10),
+          decoration: BoxDecoration(
+              color: Colors.yellow, borderRadius: BorderRadius.circular(10)),
+          child: Text(
+            topic.id,
+            style: TextStyle(
+              color: Colors.grey.shade800,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+        ),
+      );
+    });
+
+    return Container(
+      child: Wrap(
+        children: _list,
       ),
     );
   }

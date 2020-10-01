@@ -1,47 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:hackathon/classes/topic.dart';
+import 'package:hackathon/classes/user.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class UserPage extends StatefulWidget {
-  //
+  final User user;
+
+  UserPage(this.user);
+
   @override
   _UserPageState createState() => _UserPageState();
 }
 
 class _UserPageState extends State<UserPage> {
-  //
-  bool editName = false;
-  bool editBio = false;
-  //
-  TextEditingController nameController = TextEditingController();
-  TextEditingController bioController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<MainModel>(
-      builder: (context, child, model) {
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _title(model.user.fullName),
-              _email(model.user.email),
-              _bio(model.user.bio),
-              Container(
-                padding: EdgeInsets.only(top: 10, bottom: 20),
-                child: Text('Interests',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              ),
-              _topics(model.user.topics),
-              _button(),
-            ],
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _title(widget.user.fullName),
+          _email(widget.user.email),
+          _bio(widget.user.bio),
+          Container(
+            padding: EdgeInsets.only(top: 10, bottom: 20),
+            child: Text('Interests',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ),
-        );
-      },
+          _topics(widget.user.topics),
+          _button(),
+        ],
+      ),
     );
   }
 
@@ -128,8 +120,11 @@ class _UserPageState extends State<UserPage> {
   }
 
   Widget _button() {
-    return ScopedModelDescendant(
-        builder: (BuildContext context, Widget child, MainModel model) {
+    MainModel model = ScopedModel.of<MainModel>(context);
+
+    if (model.user.id != widget.user.id) {
+      return Container();
+    } else {
       return Container(
         padding: EdgeInsets.only(top: 20, bottom: 15),
         child: RaisedButton(
@@ -151,6 +146,6 @@ class _UserPageState extends State<UserPage> {
           },
         ),
       );
-    });
+    }
   }
 }
