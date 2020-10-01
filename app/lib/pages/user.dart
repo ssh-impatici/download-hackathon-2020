@@ -41,7 +41,12 @@ class _UserPageState extends State<UserPage> {
             ),
           ),
           _topics(widget.user.topics),
-          shouldShowReview ? _reviews(widget.user.topics) : Container(),
+          shouldShowReview
+              ? Container(
+                  margin: EdgeInsets.only(top: 10.0),
+                  child: _reviews(widget.user.topics),
+                )
+              : Container(),
           _button(),
         ],
       ),
