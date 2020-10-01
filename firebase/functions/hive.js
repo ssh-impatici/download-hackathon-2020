@@ -90,7 +90,6 @@ module.exports = function(e) {
 
     // ##### Remove from taken roles
     let roles = hive.get("takenRoles");
-    console.log(roles);
     let roleIndex = roles.findIndex(r => r.name == data.roleRef);
     if (roleIndex < 0) return res.status(404).send("Role not available");
     roles.splice(roleIndex, 1)
@@ -101,7 +100,6 @@ module.exports = function(e) {
     // ##### Add to open roles
     // Get role id and get his quantity
     roles = hive.get("openRoles");
-    console.log(roles);
     roleIndex = roles.findIndex(r => r.name == data.roleRef);
     // If there is not in openRoles, quantity is set to 1
     if (roleIndex < 0) {
@@ -191,16 +189,18 @@ module.exports = function(e) {
     });
     const docId = docRef.id;
 
-    const user = await db.doc(data.creator).get();
+    let user = await db.doc(data.creator).get();
     let userHives = [];
-    if(user.hives) {
-      userHives = user.hives;
+    if(user.get("hives")) {
+      userHives = user.get("hives");
     } 
     
     userHives.push({
-      hiveRef: docId,
+      hiveRef: "hives/" + docId,
       roles: []
     });
+
+
 
     await db.doc(data.creator).update({
       hives: userHives
