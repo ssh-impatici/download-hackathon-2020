@@ -125,15 +125,29 @@ module.exports = function(e) {
     // ##### Remove hive from user's hives
     let userHives = user.get("hives");
     let userIndex = userHives.findIndex(r => (r.hiveRef == data.hiveRef));
+    let creatore = db.doc(data.hiveRef).get("creator")
+
     if (userIndex < 0) {
       return res.status(404).send("Hive not available");
     } else {
       userHives[userIndex].roles = userHives[userIndex].roles.filter(function(value, index, arr) {
         return value != data.roleRef;
       })
-      await db.doc(data.userRef).update({
-        hives: userHives
-      });
+
+      if ((userHives[userIndex].length != 0) || (data.userRef == creatore)) {
+        // Creator, so roles is empty but hiveRef keept
+        // or
+        // There is some roles, so roles is not empty
+        await db.doc(data.userRef).update({
+          hives: userHives
+        });
+      } else {
+        // Remove hives arrray
+        userHives[userIndex].splice(userIndex, 1)
+        await db.doc(data.userRef).update({
+          hives: userHives
+        });
+      }
     }
 
     var hiveRef_plain = data.hiveRef.replace("hives/", "");
@@ -163,8 +177,7 @@ module.exports = function(e) {
       addr = data.address
     }
 
-    let docId = null
-    await db.collection('hives').add({
+    const docRef = await db.collection('hives').add({
       active: true,
       creator: data.creator,
       description: data.description,
@@ -175,15 +188,30 @@ module.exports = function(e) {
       openRoles: data.openRoles,
       takenRoles: [],
       topics: data.topics
-    }).then(function(docRef) {
-      docId = docRef.id;
-      db.collection("hives").doc(docRef.id).get()
-        .then(snap => {
-          return res.status(201).send({
-            hiveId: docId,
-            ...snap.data()
-          });
-        })
     });
+    const docId = docRef.id;
+
+    const user = await db.doc(data.creator).get();
+    let userHives = [];
+    if(user.hives) {
+      userHives = user.hives;
+    } 
+    
+    userHives.push({
+      hiveRef: docId,
+      roles: []
+    });
+
+    await db.doc(data.creator).update({
+      hives: userHives
+    });
+
+    db.collection("hives").doc(docRef.id).get()
+      .then(snap => {
+        return res.status(201).send({
+          hiveId: docId,
+          ...snap.data()
+        });
+      })
   });
 }

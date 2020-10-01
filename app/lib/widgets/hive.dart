@@ -48,7 +48,9 @@ class _HiveDescriptionState extends State<HiveDescription> {
                           ? _section('Open Roles')
                           : Container(),
                       _openRoles(context),
-                      _section('People'),
+                      _hive.takenRoles != null && _hive.takenRoles.isNotEmpty
+                          ? _section('People')
+                          : Container(),
                       _takenRoles(context),
                       _giveUp()
                     ],
@@ -352,6 +354,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
                                       roleId: role.name,
                                       userId: model.user.id)
                                   .then((_) => _retrieveHive())
+                                  .then((_) => model.retrieveUserInfo())
                                   .then((_) => Navigator.pop(context));
                             },
                           ),
@@ -432,6 +435,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
                                       roleId: role.name,
                                       userId: role.user.id)
                                   .then((_) => _retrieveHive())
+                                  .then((_) => model.retrieveUserInfo())
                                   .then((_) => Navigator.pop(context));
                             },
                           ),
@@ -468,28 +472,35 @@ class _HiveDescriptionState extends State<HiveDescription> {
   Widget _giveUp() {
     return ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
-      return Container(
-        padding: EdgeInsets.only(top: 20, bottom: 15),
-        child: RaisedButton(
-          color: Colors.grey.shade900,
-          child: Center(
-            child: model.loading
-                ? Container(
-                    padding: EdgeInsets.all(10),
-                    child: Center(child: CircularProgressIndicator()))
-                : Text(
-                    'Leave',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  ),
+      bool userHasRoles = _hive.takenRoles
+          .any((takenRole) => takenRole.user.id == model.user.id);
+
+      if (!userHasRoles) {
+        return Container();
+      } else {
+        return Container(
+          padding: EdgeInsets.only(top: 20, bottom: 15),
+          child: RaisedButton(
+            color: Colors.grey.shade900,
+            child: Center(
+              child: model.loading
+                  ? Container(
+                      padding: EdgeInsets.all(10),
+                      child: Center(child: CircularProgressIndicator()))
+                  : Text(
+                      'Leave all roles',
+                      style: TextStyle(color: Colors.white, fontSize: 15),
+                    ),
+            ),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) => _confirmGiveUp(),
+              );
+            },
           ),
-          onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              builder: (context) => _confirmGiveUp(),
-            );
-          },
-        ),
-      );
+        );
+      }
     });
   }
 
@@ -541,11 +552,15 @@ class _HiveDescriptionState extends State<HiveDescription> {
                         Expanded(
                           child: InkWell(
                             child: _button(
-                                'Confirm', Colors.yellow, model.loading),
+                              'Confirm',
+                              Colors.yellow,
+                              model.loading,
+                            ),
                             onTap: () {
                               model
                                   .giveUpHive(hiveId: widget.hiveId)
                                   .then((_) => _retrieveHive())
+                                  .then((_) => model.retrieveUserInfo())
                                   .then((_) => Navigator.pop(context));
                             },
                           ),

@@ -184,15 +184,14 @@ mixin HivesModel on ConnectedModel {
 
       joinedHive = await _parseHive(json);
 
+      // Update hives map
       hivesMap.where((hive) => hive.id == hiveId).forEach((hive) {
         hive.openRoles = joinedHive.openRoles;
         hive.takenRoles = joinedHive.takenRoles;
       });
+
+      // Update hives list
       hivesList.where((hive) => hive.id == hiveId).forEach((hive) {
-        hive.openRoles = joinedHive.openRoles;
-        hive.takenRoles = joinedHive.takenRoles;
-      });
-      user.hives.where((hive) => hive.id == hiveId).forEach((hive) {
         hive.openRoles = joinedHive.openRoles;
         hive.takenRoles = joinedHive.takenRoles;
       });
@@ -224,15 +223,14 @@ mixin HivesModel on ConnectedModel {
 
       leftHive = await _parseHive(json);
 
+      // Update hives map
       hivesMap.where((hive) => hive.id == hiveId).forEach((hive) {
         hive.openRoles = leftHive.openRoles;
         hive.takenRoles = leftHive.takenRoles;
       });
+
+      // Update hives list
       hivesList.where((hive) => hive.id == hiveId).forEach((hive) {
-        hive.openRoles = leftHive.openRoles;
-        hive.takenRoles = leftHive.takenRoles;
-      });
-      user.hives.where((hive) => hive.id == hiveId).forEach((hive) {
         hive.openRoles = leftHive.openRoles;
         hive.takenRoles = leftHive.takenRoles;
       });
