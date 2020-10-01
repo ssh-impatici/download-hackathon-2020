@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
                   MapPage(model),
                   HivesPage(),
                   MyHivesPage(),
-                  UserPage(),
+                  UserPage(model.user),
                 ],
               ),
             ),
