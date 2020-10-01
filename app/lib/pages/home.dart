@@ -21,12 +21,16 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    if (widget.model != null) {
-      widget.model.initUser();
-      widget.model.initHives();
-      widget.model.initTopics();
-    }
+    if (widget.model != null) _init();
     super.initState();
+  }
+
+  void _init() async {
+    widget.model.setLoading(true);
+    await widget.model.initUser();
+    await widget.model.initHives();
+    await widget.model.initTopics();
+    widget.model.setLoading(false);
   }
 
   @override

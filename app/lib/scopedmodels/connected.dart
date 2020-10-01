@@ -23,4 +23,9 @@ mixin ConnectedModel on Model {
       firebaseMessaging.subscribeToTopic(topic);
     });
   }
+
+  setLoading(bool value) {
+    loading = value;
+    notifyListeners();
+  }
 }
