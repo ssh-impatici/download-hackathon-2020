@@ -34,9 +34,7 @@ module.exports = function(e) {
       // If quantity is enough subtract it
       roles[roleIndex].quantity -= 1;
     }
-    await db.doc(data.hiveRef).update({
-      openRoles: roles
-    });
+    await db.doc(data.hiveRef).update({ openRoles: roles });
 
     // ##### Add to taken roles
     await db.doc(data.hiveRef).update({
@@ -53,8 +51,10 @@ module.exports = function(e) {
     const user = await db.doc(data.userRef).get();
     let userHives = user.get("hives");
     if (!userHives) userHives = [];
+    console.log("user hives: ", userHives);
     const hiveIndex = userHives.findIndex(hive => hive.hiveRef === data.hiveRef);
-    if (hiveIndex > 0)
+    console.log("hive index: ", hiveIndex);
+    if (hiveIndex >= 0)
       userHives[hiveIndex].roles.push(data.roleRef);
     else
       userHives.push({
@@ -122,27 +122,23 @@ module.exports = function(e) {
 
     // ##### Remove hive from user's hives
     let userHives = user.get("hives");
-    let userIndex = userHives.findIndex(r => r.hiveRef == data.hiveRef);
+    let hiveIndex = userHives.findIndex(r => r.hiveRef == data.hiveRef);
     let creatore = db.doc(data.hiveRef).get("creator")
 
-    if (userIndex < 0) {
-      return res.status(404).send("Hive not available");
+    if (hiveIndex < 0) {
+      return res.status(404).send("Hive not found");
     } else {
-      userHives[userIndex].roles = userHives[userIndex].roles.filter(role => role != data.roleRef);
+      userHives[hiveIndex].roles = userHives[hiveIndex].roles.filter(role => role != data.roleRef);
 
-      if ((userHives[userIndex].roles.length != 0) || (data.userRef == creatore)) {
+      if ((userHives[hiveIndex].roles.length != 0) || (data.userRef == creatore)) {
         // Creator, so roles is empty but hiveRef keept
         // or
         // There is some roles, so roles is not empty
-        await db.doc(data.userRef).update({
-          hives: userHives
-        });
+        await db.doc(data.userRef).update({ hives: userHives });
       } else {
         // Remove hives arrray
-        userHives[userIndex].splice(userIndex, 1)
-        await db.doc(data.userRef).update({
-          hives: userHives
-        });
+        userHives[hiveIndex].splice(hiveIndex, 1)
+        await db.doc(data.userRef).update({ hives: userHives });
       }
     }
 
