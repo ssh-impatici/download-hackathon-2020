@@ -16,25 +16,42 @@ module.exports = function(e) {
     if (!user.exists) return res.status(404).send("User not found");
 
     let topics = user.get("topics");
-    let topicIndex1 = topics.findIndex(r => Object.keys(r) == data.topic);
-    let topicIndex2 = topics[topicIndex1].findIndex(r => Object.keys(r) == data.role)
 
-    const previous_reviews = topics[topicIndex1][topicIndex2].reviews
-    const previous_stars = topics[topicIndex1][topicIndex2].stars
+    let topicIndex1 = topics.findIndex(r => Object.keys(r) == data.topic);
+
+
+
+
+
+    let topicIndex2 = topics[topicIndex1][Object.keys(topics[topicIndex1])].findIndex(r => r.name == data.role)
+
+    console.log("XXXXXXXXX" + JSON.stringify(topics))
+    console.log("XXXXXXXXX" + JSON.stringify(topics[topicIndex1]))
+    console.log("XXXXXXXXX" + JSON.stringify(topics[topicIndex1][Object.keys(topics[topicIndex1])]))
+    console.log("XXXXXXXXX" + topicIndex2)
+
+
+    // IF TECH VUOTO (JOINA)
+
+
+
+
+
 
     if (topicIndex1 < 0 || topicIndex2 < 0) {
       return res.status(404).send("Topic/Role not available");
-    } else {
-      topics[topicIndex1][topicIndex2].reviews = topics[topicIndex1][topicIndex2].reviews + 1;
-      topics[topicIndex1][topicIndex2].stars = (previous_stars * previous_reviews + data.stars) / (previous_reviews + 1);
-      await db.doc(data.userRef).update({
-        topics: topics
-      });
     }
 
-    // TODO Valutare solo sui topic relativi all'ambito svolto nell'alveare, non potrebbe modificarli tutti
+    const previous_reviews = topics[topicIndex1][Object.keys(topics[topicIndex1])][topicIndex2].reviews
+    const previous_stars = topics[topicIndex1][Object.keys(topics[topicIndex1])][topicIndex2].stars
 
-    // TODO Giorgio sistema l'init
+    topics[topicIndex1][Object.keys(topics[topicIndex1])][topicIndex2].reviews++;
+    topics[topicIndex1][Object.keys(topics[topicIndex1])][topicIndex2].stars = (previous_stars * previous_reviews + data.stars) / (previous_reviews + 1);
+    await db.doc(data.userRef).update({
+      topics: topics
+    });
+
+    // TODO Valutare solo sui topic relativi all'ambito svolto nell'alveare, non potrebbe modificarli tutti i possibili topic?
 
     return res.status(201).send("Stars modified!");
   });

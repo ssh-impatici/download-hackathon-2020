@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hackathon/classes/hive.dart';
-import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/user.dart';
-import 'package:hackathon/utils/distance.dart';
+import 'package:hackathon/utils/location.dart';
 import 'package:hackathon/widgets/hive.dart';
 
 class HiveCard extends StatelessWidget {
@@ -89,7 +88,7 @@ class HiveCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                      _openRoles(hive.openRoles)
+                      _bottomTags()
                     ],
                   ),
                 ),
@@ -159,8 +158,8 @@ class HiveCard extends StatelessWidget {
     }
   }
 
-  Widget _openRoles(List<OpenRole> list) {
-    return list.length > 1
+  Widget _bottomTags() {
+    return hive.openRoles.length > 1
         ? Row(
             children: [
               Container(
@@ -169,7 +168,7 @@ class HiveCard extends StatelessWidget {
                     color: Colors.yellow,
                     borderRadius: BorderRadius.circular(10)),
                 child: Text(
-                  list.first.name,
+                  hive.openRoles.first.name,
                   style: TextStyle(
                     color: Colors.grey.shade800,
                     fontWeight: FontWeight.bold,
@@ -184,7 +183,7 @@ class HiveCard extends StatelessWidget {
                     color: Colors.grey.shade900,
                     borderRadius: BorderRadius.circular(10)),
                 child: Text(
-                  '+${list.length - 1} more',
+                  '+${hive.openRoles.length - 1}',
                   style: TextStyle(
                     color: Colors.yellow,
                     fontWeight: FontWeight.bold,
@@ -194,14 +193,14 @@ class HiveCard extends StatelessWidget {
               ),
             ],
           )
-        : list.isNotEmpty
+        : hive.openRoles.isNotEmpty
             ? Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                 decoration: BoxDecoration(
                     color: Colors.yellow,
                     borderRadius: BorderRadius.circular(10)),
                 child: Text(
-                  list.first.name,
+                  hive.openRoles.first.name,
                   style: TextStyle(
                       color: Colors.grey.shade800,
                       fontWeight: FontWeight.bold,

@@ -3,16 +3,18 @@ import 'package:hackathon/classes/user.dart';
 
 class RoleScoring {
   String name;
-  int score;
+  int reviews;
+  double stars;
 
   RoleScoring({
     @required this.name,
-    @required this.score,
+    @required this.reviews,
+    @required this.stars,
   });
 
   @override
   String toString() {
-    return '$name: $score';
+    return '$name: $stars';
   }
 }
 

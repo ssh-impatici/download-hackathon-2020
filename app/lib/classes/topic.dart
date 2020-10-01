@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hackathon/classes/role.dart';
 
 class Topic {
   String id;
@@ -17,13 +18,11 @@ class Topic {
 
 class UserTopic {
   String id;
-  int reviews;
-  double stars;
+  List<RoleScoring> scorings;
 
   UserTopic({
     @required this.id,
-    @required this.reviews,
-    @required this.stars,
+    @required this.scorings,
   });
 
   @override

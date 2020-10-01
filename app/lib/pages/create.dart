@@ -5,10 +5,10 @@ import 'package:hackathon/classes/hive.dart';
 import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/scopedmodels/main.dart';
+import 'package:hackathon/utils/location.dart';
 import 'package:hackathon/widgets/topic-auto-completion.dart';
 import 'package:hackathon/widgets/open-role-dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'dart:math';
 
 class CreateHivePage extends StatefulWidget {
   @override
@@ -23,10 +23,6 @@ class _CreateHivePageState extends State<CreateHivePage> {
 
   String name;
   String description;
-  LatLng location = LatLng(
-    45.642389 + ((Random().nextInt(100) - 50) / 10000),
-    9.5858929 + ((Random().nextInt(100) - 50) / 10000),
-  );
   String address;
   List<OpenRole> openRoles = [];
   List<Topic> topics = [];
@@ -377,13 +373,21 @@ class _CreateHivePageState extends State<CreateHivePage> {
       return;
     }
 
+    bool shouldCreateLocation = address != null && address.isNotEmpty;
+    LatLng location = shouldCreateLocation
+        ? randomLocation(
+            aroundPosition: LatLng(
+              model.position.latitude,
+              model.position.longitude,
+            ),
+          )
+        : null;
+
     Hive created = await model.createHive(
       name: name,
       description: description,
-      latitude:
-          address != null && address.isNotEmpty ? location.latitude : null,
-      longitude:
-          address != null && address.isNotEmpty ? location.longitude : null,
+      latitude: shouldCreateLocation ? location.latitude : null,
+      longitude: shouldCreateLocation ? location.longitude : null,
       address: address,
       openRoles: openRoles,
       topics: topics.map((topic) => topic.id).toList(),

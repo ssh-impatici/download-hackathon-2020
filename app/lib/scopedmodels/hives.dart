@@ -329,12 +329,24 @@ mixin HivesModel on ConnectedModel {
 
         List<UserTopic> topics = [];
 
-        for (dynamic topic in data['topics']) {
-          topics.add(UserTopic(
-            id: topic['id'],
-            reviews: topic['reviews'],
-            stars: topic['stars'],
-          ));
+        if (data['topics'] != null) {
+          for (Map<String, dynamic> topic in data['topics']) {
+            String id = topic.keys.first;
+            List<RoleScoring> scorings = [];
+
+            for (Map<String, dynamic> scoringData in topic[id]) {
+              scorings.add(RoleScoring(
+                name: scoringData['nome'],
+                reviews: scoringData['reviews'],
+                stars: scoringData['stars'],
+              ));
+            }
+
+            topics.add(UserTopic(
+              id: id,
+              scorings: scorings,
+            ));
+          }
         }
 
         return User(
