@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/classes/user.dart';
 import 'package:hackathon/scopedmodels/main.dart';

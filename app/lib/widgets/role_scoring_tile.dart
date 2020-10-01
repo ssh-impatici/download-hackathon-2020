@@ -30,7 +30,16 @@ class RoleScoringTile extends StatelessWidget {
             ),
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Text(
+                '(${roleScoring.reviews.toString()})',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 16.0,
+                ),
+              ),
+              SizedBox(width: 4.0),
               Text(
                 roleScoring.stars.toString(),
                 style: TextStyle(
