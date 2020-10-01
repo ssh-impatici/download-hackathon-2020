@@ -1,5 +1,4 @@
 import 'package:hackathon/scopedmodels/connected.dart';
-import 'package:hackathon/classes/user.dart';
 import 'package:hackathon/utils/api.dart';
 import 'package:dio/dio.dart';
 
