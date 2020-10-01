@@ -189,10 +189,10 @@ module.exports = function(e) {
 
     let user = await db.doc(data.creator).get();
     let userHives = [];
-    if(user.get("hives")) {
+    if (user.get("hives")) {
       userHives = user.get("hives");
-    } 
-    
+    }
+
     userHives.push({
       hiveRef: "hives/" + docId,
       roles: []
