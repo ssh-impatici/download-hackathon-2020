@@ -37,6 +37,14 @@ module.exports = function(e) {
       }
     });
 
+    let userHives = await db.doc(data.userRef).get();
+    userHives = userHives.get("hives").map(hive => hive.hiveRef);
+    console.log(userHives);
+
+    // filter out already joined hives or created by you
+    virtualHives = virtualHives.filter(hive => hive.creator !== data.userRef && !userHives.includes("hives/" + hive.hiveId));
+    physicalHives = physicalHives.filter(hive => hive.creator !== data.userRef && !userHives.includes("hives/" + hive.hiveId));
+
     if (data.topic) {
       virtualHives = virtualHives.filter(hive => hive.topics.includes(data.topic));
       physicalHives = physicalHives.filter(hive => hive.topics.includes(data.topic));
