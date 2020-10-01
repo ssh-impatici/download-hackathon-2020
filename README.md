@@ -93,7 +93,7 @@ Note: use pull to refresh in the tabs!
 -   **Fabio Sangregorio**: [Site](https://fabio.sangregorio.dev/)
 
 <p align="center">
-<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_11.jpg" width="500">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_11.jpg" width="200">
 </p>
 
 ## Version
