@@ -43,19 +43,19 @@ Initially you have to sign up with the email address or by signing in with Googl
 <img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_2.jpg" width="200">
 </p>
 
-The first part displayed by the app is the `map` tab where you can see the hives, click on them for details or click the button at the bottom right to create one. The buttons at the bottom left are used to filter the hives  on the map according to your interests, reload the map and refocus the map on your position.
+The first part displayed by the app is the `map` tab where you can see the hives, click on them for details or click the button at the bottom right to create one. The buttons at the bottom left are used to filter the hives  on the map according to your interests, reload the map and refocus the map on your position. To change tabs you need to use the nav bar.
 
 <p align="center">
 <img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_3.jpg" width="200">
 </p>
 
-To create an hive you will need to complete all the fields by also entering the topics and the open roles also specifying the quantity (Note: if the hive is virtual, leave empty the location!).
+To create an hive you will need to complete all the fields by entering the topics and the open roles also specifying the quantity (Note: if the hive is virtual, leave empty the location!).
 
 <p align="center">
 <img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_4.jpg" width="200">
 </p>
 
-To change tabs you need to use the nav bar. The `explore` tab shows all hives, both nearby ones (indicating their distance in km) and virtual ones. In addition to the various topics, a key icon is shown if you are the queen bee of the hive.
+The `explore` tab shows all hives, both nearby ones (indicating their distance in km) and virtual ones. In addition to the various topics, a key icon is shown if you are the queen bee of the hive.
 
 <p align="center">
 <img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/todo.jpg" width="200">
@@ -75,10 +75,10 @@ The `profile` tab show your informations, your bio, your interests and the speci
 <img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_9.jpg" width="200">
 </p>
 
-In addition you will be notified if a new apiary is created nearby with topics relevant to yours.
+In addition you will be notified if a new hive is created nearby with topics relevant to yours.
 
 <p align="center">
-<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_10.jpg" width="200">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_10.jpg" width="500">
 </p>
 
 Note: use pull to refresh in the tabs!
