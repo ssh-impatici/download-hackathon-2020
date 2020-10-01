@@ -161,7 +161,8 @@ class _AuthPageState extends State<AuthPage> {
                     style: TextStyle(color: Colors.white),
                   ),
           ),
-          onPressed: !model.loading ? () => _submit(model) : null,
+          onPressed:
+              !model.loading && !model.googling ? () => _submit(model) : null,
         ),
       );
     });
