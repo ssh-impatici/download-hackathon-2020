@@ -5,7 +5,6 @@ const {
 } = require('firebase-functions/lib/providers/auth');
 
 const db = admin.firestore();
-const Fields = admin.firestore.FieldValue;
 
 module.exports = function(e) {
   e.joinHive = functions.https.onRequest(async (req, res) => {
@@ -51,9 +50,7 @@ module.exports = function(e) {
     const user = await db.doc(data.userRef).get();
     let userHives = user.get("hives");
     if (!userHives) userHives = [];
-    console.log("user hives: ", userHives);
     const hiveIndex = userHives.findIndex(hive => hive.hiveRef === data.hiveRef);
-    console.log("hive index: ", hiveIndex);
     if (hiveIndex >= 0)
       userHives[hiveIndex].roles.push(data.roleRef);
     else
@@ -123,23 +120,19 @@ module.exports = function(e) {
     // ##### Remove hive from user's hives
     let userHives = user.get("hives");
     let hiveIndex = userHives.findIndex(r => r.hiveRef == data.hiveRef);
-    let creatore = db.doc(data.hiveRef).get("creator")
+    let creator = await db.doc(data.hiveRef).get();
+    if (hiveIndex < 0) return res.status(404).send("Hive not found");
 
-    if (hiveIndex < 0) {
-      return res.status(404).send("Hive not found");
+    userHives[hiveIndex].roles = userHives[hiveIndex].roles.filter(role => role != data.roleRef);
+    if ((userHives[hiveIndex].roles.length > 0) || (data.userRef == creator.get("creator"))) {
+      // Creator, so roles is empty but hiveRef keept
+      // or
+      // There is some roles, so roles is not empty
+      await db.doc(data.userRef).update({ hives: userHives });
     } else {
-      userHives[hiveIndex].roles = userHives[hiveIndex].roles.filter(role => role != data.roleRef);
-
-      if ((userHives[hiveIndex].roles.length != 0) || (data.userRef == creatore)) {
-        // Creator, so roles is empty but hiveRef keept
-        // or
-        // There is some roles, so roles is not empty
-        await db.doc(data.userRef).update({ hives: userHives });
-      } else {
-        // Remove hives arrray
-        userHives[hiveIndex].splice(hiveIndex, 1)
-        await db.doc(data.userRef).update({ hives: userHives });
-      }
+      // Remove hives arrray
+      userHives.splice(hiveIndex, 1);
+      await db.doc(data.userRef).update({ hives: userHives });
     }
 
     var hiveRef_plain = data.hiveRef.replace("hives/", "");
