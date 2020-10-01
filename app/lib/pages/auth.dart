@@ -26,24 +26,27 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _title(),
-                _email(),
-                _password(),
-                _verify(),
-                _button(),
-                _togglemode(),
-                _google()
-              ],
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _logo(),
+                  _title(),
+                  _email(),
+                  _password(),
+                  _verify(),
+                  _button(),
+                  _togglemode(),
+                  _google()
+                ],
+              ),
             ),
           ),
         ),
@@ -51,15 +54,28 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
+  Widget _logo() {
+    return Center(
+      child: Image.asset(
+        'assets/icons/icon.png',
+        height: 150.0,
+        width: 150.0,
+      ),
+    );
+  }
+
   Widget _title() {
-    return Container(
-      padding: EdgeInsets.only(top: 50, bottom: 30),
-      child: Text(
-        'Beelder',
-        style: TextStyle(
-            fontSize: 22,
+    return Center(
+      child: Container(
+        padding: EdgeInsets.only(top: 36, bottom: 30),
+        child: Text(
+          'Beelder.',
+          style: TextStyle(
+            fontSize: 32,
             color: Colors.grey.shade200,
-            fontWeight: FontWeight.bold),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

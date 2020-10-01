@@ -73,6 +73,7 @@ module.exports = function(e) {
       notification: {
         title: 'Beelder',
         body: `Someone joined your hive ${hive.get("name")}!`,
+        imageUrl: 'https://i.imgur.com/T0D6YTC.png'
       },
       data: {
         sound: 'default',
