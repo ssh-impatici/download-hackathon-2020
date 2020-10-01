@@ -5,7 +5,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="hackathon"
+        android:label="Beelder"
         android:icon="@mipmap/launcher_icon">
         
         <meta-data android:name="com.google.android.geo.API_KEY"
