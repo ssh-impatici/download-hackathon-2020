@@ -132,7 +132,7 @@ module.exports = function(e) {
         return value != data.roleRef;
       })
 
-      if ((userHives[userIndex].length != 0) || (data.userRef == creatore)) {
+      if ((userHives[userIndex].roles.length != 0) || (data.userRef == creatore)) {
         // Creator, so roles is empty but hiveRef keept
         // or
         // There is some roles, so roles is not empty
@@ -191,16 +191,14 @@ module.exports = function(e) {
 
     let user = await db.doc(data.creator).get();
     let userHives = [];
-    if(user.get("hives")) {
+    if (user.get("hives")) {
       userHives = user.get("hives");
-    } 
-    
+    }
+
     userHives.push({
       hiveRef: "hives/" + docId,
       roles: []
     });
-
-
 
     await db.doc(data.creator).update({
       hives: userHives

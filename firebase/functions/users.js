@@ -15,23 +15,26 @@ module.exports = function(e) {
     const user = await db.doc(data.userRef).get();
     if (!user.exists) return res.status(404).send("User not found");
 
-    const topics = user.get("topics");
-    const topicIndex = topics.findIndex(r => r.id == data.topic);
+    let topics = user.get("topics");
+    let topicIndex1 = topics.findIndex(r => Object.keys(r) == data.topic);
+    let topicIndex2 = topics[topicIndex1].findIndex(r => Object.keys(r) == data.role)
 
-    const previous_reviews = topics[topicIndex].reviews
-    const previous_stars = topics[topicIndex].stars
+    const previous_reviews = topics[topicIndex1][topicIndex2].reviews
+    const previous_stars = topics[topicIndex1][topicIndex2].stars
 
-    if (topicIndex < 0) {
-      return res.status(404).send("Topic not available");
+    if (topicIndex1 < 0 || topicIndex2 < 0) {
+      return res.status(404).send("Topic/Role not available");
     } else {
-      topics[topicIndex].reviews = topics[topicIndex].reviews + 1;
-      topics[topicIndex].stars = (previous_stars * previous_reviews + data.stars) / (previous_reviews + 1);
+      topics[topicIndex1][topicIndex2].reviews = topics[topicIndex1][topicIndex2].reviews + 1;
+      topics[topicIndex1][topicIndex2].stars = (previous_stars * previous_reviews + data.stars) / (previous_reviews + 1);
       await db.doc(data.userRef).update({
         topics: topics
       });
     }
 
     // TODO Valutare solo sui topic relativi all'ambito svolto nell'alveare, non potrebbe modificarli tutti
+
+    // TODO Giorgio sistema l'init
 
     return res.status(201).send("Stars modified!");
   });
