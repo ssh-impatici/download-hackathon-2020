@@ -1,7 +1,7 @@
 # Download Hackathon 2020 Team SSH-IMPATICI
 
 <p align="center">
-<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/beelder.jpeg" width="400">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/header.jpeg" width="500">
 </p>
 
 Beelder, a Flutter app with Firebase backend made in 48h for the Download Hackathon 2020
@@ -22,7 +22,7 @@ We believe that the dualism of live events (present on the map) and virtual even
 
 ## Quick start
 
-This is a normal flutter app. You should follow the instructions in the [official documentation](https://flutter.io/docs/get-started/install). The code is in the `app` folder.
+This is a normal Flutter app. You should follow the instructions in the [official documentation](https://flutter.io/docs/get-started/install). The code is in the `app` folder.
 
 This repo is using Firebase with Cloud Firestore as backend. You can read the [official documentation](https://firebase.google.com/docs). The code is in the `firebase` folder.
 
@@ -32,25 +32,56 @@ We provide a file named `Beelder.apk` which can be installed on android devices 
 
 Firebase is online and available to handle past requests.
 
+You can also build the app from source by installing Flutter. You can follow [this great guide](https://medium.com/@quicky316/install-flutter-sdk-on-windows-without-android-studio-102fdf567ce4) to install it.
+
 ### Usage
 
 Initially you have to sign up with the email address or by signing in with Google. After, you have to complete your profile by entering your data and selecting the topics you are interested in.
 
-The first part displayed by the app is a `map` where you can see the hives, click on them for details or click the button at the bottom right to create one. The buttons at the bottom left are used to filter the hives related to your interests on the map, reload the map and refocus the map on your position.
+<p align="center">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_1.jpg" width="200">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_2.jpg" width="200">
+</p>
 
-To create an hive you need to click the button at the bottom right and you will need to complete all the fields by also entering the topics and open roles required with the quantity (Note: if the hive is virtual, leave empty the location!).
+The first part displayed by the app is the `map` tab where you can see the hives, click on them for details or click the button at the bottom right to create one. The buttons at the bottom left are used to filter the hives  on the map according to your interests, reload the map and refocus the map on your position. To change tabs you need to use the nav bar.
 
-To change tabs you need to use the nav bar. The `explore` tab shows all hives, both nearby ones (indicating their distance) and virtual ones. In addition to the various topics, a key icon is shown if you are the queen bee of the hive.
+<p align="center">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_3.jpg" width="200">
+</p>
 
-The `my hives` tab shows the apiaries that you have joined or owned.
+To create an hive you will need to complete all the fields by entering the topics and the open roles also specifying the quantity (Note: if the hive is virtual, leave empty the location!).
 
-The `profile` tab show your informations, your bio, your interests and
+<p align="center">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_4.jpg" width="200">
+</p>
 
-TODO SCREENSHOT
+The `explore` tab shows all hives, both nearby ones (indicating their distance in km) and virtual ones. In addition to the various topics, a key icon is shown if you are the queen bee of the hive.
 
-Location null
-HIVES NON APIARY
-Notifiche
+<p align="center">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/todo.jpg" width="200">
+</p>
+
+The `my hives` tab shows the hives that you have joined or owned. In the `hive's detail` tab you can apply for multiple roles or remove yourself and also, if you are the creator, you can give team members a star rating for the role played.
+
+<p align="center">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_6.jpg" width="200">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_7.jpg" width="200">
+</p>
+
+The `profile` tab show your informations, your bio, your interests and the specific rating of each role held in the past grouped by topic.
+
+<p align="center">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_8.jpg" width="200">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_9.jpg" width="200">
+</p>
+
+In addition you will be notified if a new hive is created nearby with topics relevant to yours.
+
+<p align="center">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_10.jpg" width="500">
+</p>
+
+Note: use pull to refresh in the tabs!
 
 ## Authors
 

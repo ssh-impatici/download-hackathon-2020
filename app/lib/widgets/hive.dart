@@ -33,9 +33,13 @@ class _HiveDescriptionState extends State<HiveDescription> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+        ),
         body: SingleChildScrollView(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 50),
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
             child: _hive != null
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -107,7 +111,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
 
   Widget _title() {
     return Container(
-      margin: EdgeInsets.only(bottom: 25, top: 10),
+      margin: EdgeInsets.only(bottom: 25),
       child: Text(
         _hive.name,
         style: TextStyle(
@@ -628,7 +632,10 @@ class _HiveDescriptionState extends State<HiveDescription> {
                       child: Center(child: CircularProgressIndicator()))
                   : Text(
                       'Leave all roles',
-                      style: TextStyle(color: Colors.white, fontSize: 15),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
                     ),
             ),
             onPressed: () {

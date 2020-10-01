@@ -23,30 +23,34 @@ mixin HivesModel on ConnectedModel {
   }
 
   Future<Position> getPosition() async {
-    LocationPermission permission = await checkPermission();
+    try {
+      LocationPermission permission = await checkPermission();
 
-    if (permission == LocationPermission.always ||
-        permission == LocationPermission.whileInUse) {
-      position = await getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: Duration(seconds: 2),
-      );
+      if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {
+        position = await getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.low,
+          timeLimit: Duration(seconds: 5),
+        );
+        return position;
+      }
+
+      permission = await requestPermission();
+
+      if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {
+        position = await getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.low,
+          timeLimit: Duration(seconds: 5),
+        );
+        return position;
+      }
+    } catch (e) {
+      // Time limit reached
       return position;
     }
 
-    permission = await requestPermission();
-
-    if (permission == LocationPermission.always ||
-        permission == LocationPermission.whileInUse) {
-      position = await getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: Duration(seconds: 2),
-      );
-      return position;
-    }
-
-    position = null;
-    return null;
+    return position;
   }
 
   Future<List<Hive>> getMapHives({LatLng latLng}) async {
@@ -96,7 +100,7 @@ mixin HivesModel on ConnectedModel {
     return toReturn;
   }
 
-  Future<List<Hive>> getHives() async {
+  Future<List<Hive>> getHives({LatLng latLng}) async {
     _setLoading(true);
     List<Hive> toReturn = [];
 
@@ -105,7 +109,16 @@ mixin HivesModel on ConnectedModel {
 
       List<dynamic> json;
 
-      Position position = await getPosition();
+      LatLng position = latLng;
+
+      if (position == null) {
+        Position pos = await getPosition();
+
+        if (pos != null) {
+          position = LatLng(pos.latitude, pos.longitude);
+        }
+      }
+
       if (position == null) {
         Response response = await Dio().get(
           url,
