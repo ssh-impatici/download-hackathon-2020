@@ -71,8 +71,6 @@ module.exports = function(e) {
       topics: topics
     });
 
-    // TODO Valutare solo sui topic relativi all'ambito svolto nell'alveare, non potrebbe modificarli tutti i possibili topic?
-
     return res.status(201).send("Stars modified!");
   });
 }

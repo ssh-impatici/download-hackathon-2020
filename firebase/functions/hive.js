@@ -33,7 +33,9 @@ module.exports = function(e) {
       // If quantity is enough subtract it
       roles[roleIndex].quantity -= 1;
     }
-    await db.doc(data.hiveRef).update({ openRoles: roles });
+    await db.doc(data.hiveRef).update({
+      openRoles: roles
+    });
 
     // ##### Add to taken roles
     await db.doc(data.hiveRef).update({
@@ -128,11 +130,15 @@ module.exports = function(e) {
       // Creator, so roles is empty but hiveRef keept
       // or
       // There is some roles, so roles is not empty
-      await db.doc(data.userRef).update({ hives: userHives });
+      await db.doc(data.userRef).update({
+        hives: userHives
+      });
     } else {
       // Remove hives arrray
       userHives.splice(hiveIndex, 1);
-      await db.doc(data.userRef).update({ hives: userHives });
+      await db.doc(data.userRef).update({
+        hives: userHives
+      });
     }
 
     var hiveRef_plain = data.hiveRef.replace("hives/", "");
