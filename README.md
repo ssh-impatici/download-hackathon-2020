@@ -22,7 +22,7 @@ We believe that the dualism of live events (present on the map) and virtual even
 
 ## Quick Start and Installation
 
-This is a [flutter](https://flutter.io) app. We provide you an apk file that you can install on your device. Since the app isn't ditributed on the PlayStore platform, it will probably alerts you about some kind of risk. You can install it without any fear, it is completely safe.
+This is a [flutter](https://flutter.io) app. We provide you an apk file that you can install on your device. Since the app isn't distributed on the PlayStore platform, it will probably alerts you about some kind of risk. You can install it without any fear, it is completely safe.
 If you want to build and run the app from source code on a device emulator on you computer, you can follow the [official documentation](https://flutter.io/docs/get-started/install) or, if you want to avoid the installation of Android Studio, you can follow [this great guide](https://medium.com/@quicky316/install-flutter-sdk-on-windows-without-android-studio-102fdf567ce4).
 
 Once you have installed flutter, make sure to be in the `app` folder and to have installed the necessary plugins with `flutter pub get`.
