@@ -19,28 +19,48 @@ module.exports = function(e) {
 
     let topicIndex1 = topics.findIndex(r => Object.keys(r) == data.topic);
 
+    // Topic not in database, so add it
+    if (topicIndex1 < 0) {
+      let obj = {
+        [data.topic]: [{
+          "name": data.role,
+          "stars": data.stars,
+          "reviews": 1
+        }]
+      }
 
+      topics.push(obj)
 
+      await db.doc(data.userRef).update({
+        topics: topics
+      });
 
+      return res.status(201).send("Stars modified!");
+    }
 
     let topicIndex2 = topics[topicIndex1][Object.keys(topics[topicIndex1])].findIndex(r => r.name == data.role)
 
-    console.log("XXXXXXXXX" + JSON.stringify(topics))
-    console.log("XXXXXXXXX" + JSON.stringify(topics[topicIndex1]))
-    console.log("XXXXXXXXX" + JSON.stringify(topics[topicIndex1][Object.keys(topics[topicIndex1])]))
-    console.log("XXXXXXXXX" + topicIndex2)
+    // Role not in database inside topic, so add it
+    if (topicIndex2 < 0) {
+      let obj = {
+        "name": data.role,
+        "stars": data.stars,
+        "reviews": 1
+      }
 
+      topics[topicIndex1][Object.keys(topics[topicIndex1])].push(obj)
 
-    // IF TECH VUOTO (JOINA)
+      await db.doc(data.userRef).update({
+        topics: topics
+      });
 
-
-
-
-
-
-    if (topicIndex1 < 0 || topicIndex2 < 0) {
-      return res.status(404).send("Topic/Role not available");
+      return res.status(201).send("Stars modified!");
     }
+
+    console.log("Log " + JSON.stringify(topics))
+    console.log("Log " + JSON.stringify(topics[topicIndex1]))
+    console.log("Log " + JSON.stringify(topics[topicIndex1][Object.keys(topics[topicIndex1])]))
+    console.log("Log " + topicIndex2)
 
     const previous_reviews = topics[topicIndex1][Object.keys(topics[topicIndex1])][topicIndex2].reviews
     const previous_stars = topics[topicIndex1][Object.keys(topics[topicIndex1])][topicIndex2].stars
