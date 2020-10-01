@@ -4,7 +4,7 @@
 <img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/beelder.jpeg" width="400">
 </p>
 
-Beelder, a Flutter app with Firebase backend made for the Download Hackathon 2020
+Beelder, a Flutter app with Firebase backend made in 48h for the Download Hackathon 2020
 
 Download Innovation 2020: IT Conference & Festival (3rd Edition)
 
