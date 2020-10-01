@@ -63,7 +63,7 @@ mixin AuthModel on ConnectedModel {
       // Set the authenticated flag in connected model
       authenticated = true;
 
-      user = await retrieveUserInfo();
+      await retrieveUserInfo();
 
       if (user != null) {
         result = AuthResult.SIGNEDIN;
@@ -124,7 +124,7 @@ mixin AuthModel on ConnectedModel {
       authenticated = true;
 
       // Set the user info in connected model
-      user = await retrieveUserInfo();
+      await retrieveUserInfo();
 
       if (user != null) {
         result = AuthResult.SIGNEDIN;
@@ -144,14 +144,14 @@ mixin AuthModel on ConnectedModel {
   // Cloud Firestore user methods
 
   Future<Model.User> retrieveUserInfo() async {
-    User user = _auth.currentUser;
+    User currentUser = _auth.currentUser;
 
-    if (user == null) {
+    if (currentUser == null) {
       return null;
     }
 
     DocumentSnapshot result =
-        await _firestore.collection('users').doc(user.uid).get();
+        await _firestore.collection('users').doc(currentUser.uid).get();
 
     if (result != null) {
       Map<String, dynamic> data = result.data();
@@ -180,7 +180,7 @@ mixin AuthModel on ConnectedModel {
         }
       }
 
-      return Model.User(
+      user = Model.User(
         id: result.id,
         name: data['name'],
         surname: data['surname'],
@@ -189,6 +189,8 @@ mixin AuthModel on ConnectedModel {
         topics: topics,
         hives: hives,
       );
+
+      return user;
     } else {
       return null;
     }
@@ -226,7 +228,7 @@ mixin AuthModel on ConnectedModel {
       authenticated = true;
 
       // Set the user info in connected model
-      user = await retrieveUserInfo();
+      await retrieveUserInfo();
 
       if (user != null) {
         result = AuthResult.SIGNEDIN;
