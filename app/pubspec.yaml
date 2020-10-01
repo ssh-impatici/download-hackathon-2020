@@ -22,6 +22,7 @@ dependencies:
   autocomplete_textfield: ^1.7.3
   dio: ^3.0.10
   geolocator: ^6.0.0+4
+  intl: ^0.16.1
 
 dev_dependencies:
   flutter_test:

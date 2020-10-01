@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hackathon/classes/role.dart';
+import 'package:intl/intl.dart';
 
 class RoleScoringTile extends StatelessWidget {
   final RoleScoring roleScoring;
@@ -8,6 +9,9 @@ class RoleScoringTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String compactNumber =
+        NumberFormat.compact(locale: 'it-IT').format(roleScoring.reviews);
+
     return Container(
       padding: EdgeInsets.all(12.0),
       margin: EdgeInsets.only(bottom: 10.0),
@@ -33,7 +37,7 @@ class RoleScoringTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                '(${roleScoring.reviews.toString()})',
+                '($compactNumber)',
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 16.0,
