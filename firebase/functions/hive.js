@@ -72,7 +72,7 @@ module.exports = function(e) {
     const payload = {
       notification: {
         title: 'Beelder',
-        body: `Someone joined the hive ${hive.get("name")}!`,
+        body: `Someone joined your hive ${hive.get("name")}!`,
       },
       data: {
         sound: 'default',
