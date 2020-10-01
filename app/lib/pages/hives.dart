@@ -25,13 +25,14 @@ class _HivesPageState extends State<HivesPage> {
 
   Future<void> _refreshHives() async {
     await ScopedModel.of<MainModel>(context).getHives();
+    setState(() {});
   }
 
   Widget listHiveWidget(MainModel model) {
-    List<Widget> hivesWidget = List<Widget>();
+    List<Widget> hivesWidgets = List<Widget>();
 
     // Page Title
-    hivesWidget.add(
+    hivesWidgets.add(
       Container(
         margin: EdgeInsets.only(top: 30, left: 20, bottom: 10),
         child: Text(
@@ -46,14 +47,14 @@ class _HivesPageState extends State<HivesPage> {
 
     if (model.hivesList == null || model.hivesList.isEmpty) {
       return ListView(
-        children: hivesWidget,
+        children: hivesWidgets,
       );
     }
 
     Position location = model.position;
 
     model.hivesList.forEach((hive) {
-      hivesWidget.add(HiveCard(
+      hivesWidgets.add(HiveCard(
         hive,
         model.user,
         location: location,
@@ -61,7 +62,7 @@ class _HivesPageState extends State<HivesPage> {
     });
 
     return ListView(
-      children: hivesWidget,
+      children: hivesWidgets,
     );
   }
 }
