@@ -214,7 +214,7 @@ class _InfoPageState extends State<InfoPage> {
                     style: TextStyle(color: Colors.white),
                   ),
           ),
-          onPressed: () => _submit(model.addUserInfo, model.errorMessage),
+          onPressed: () => _submit(model),
         ),
       );
     });
@@ -241,10 +241,15 @@ class _InfoPageState extends State<InfoPage> {
     );
   }
 
-  void _submit(Function callback, String msg) async {
+  _submit(MainModel model) async {
     if (!_formKey.currentState.validate()) return;
     _formKey.currentState.save();
-    await callback(name: name, surname: surname, bio: bio, topics: topics)
-        .then((value) => Navigator.of(context).pushReplacementNamed('/home'));
+
+    await model.addUserInfo(
+        name: name, surname: surname, bio: bio, topics: topics);
+    await model.getTopics();
+    await model.getMapHives();
+    await model.getHives();
+    Navigator.of(context).pushReplacementNamed('/home');
   }
 }
