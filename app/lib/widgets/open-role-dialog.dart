@@ -17,8 +17,24 @@ class _OpenRoleDialogState extends State<OpenRoleDialog> {
   TextEditingController _quantityController = TextEditingController();
 
   int _quantity;
-  String _role;
+  String _role = '';
   String _roleErrorMessage;
+  ScrollController _controller;
+
+  FocusNode _focus;
+
+  @override
+  void initState() {
+    _focus = FocusNode();
+    _controller = ScrollController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,42 +42,48 @@ class _OpenRoleDialogState extends State<OpenRoleDialog> {
       title: Text("Available Roles"),
       content: Form(
         key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: 15.0),
-            _rolePicker(),
-            _roleErrorMessage != null ? _roleError() : Container(),
-            SizedBox(height: 15.0),
-            TextFormField(
-              controller: _quantityController,
-              decoration: InputDecoration(
-                hintText: "How many bees?",
+        child: SingleChildScrollView(
+          controller: _controller,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 15.0),
+              TextFormField(
+                focusNode: _focus,
+                controller: _quantityController,
+                decoration: InputDecoration(
+                  hintText: "How many bees?",
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ], // Only numbers can be entered
+                // ignore: missing_return
+                validator: (String value) {
+                  if (value.isEmpty) return 'You must enter the quantity!';
+                  if (int.tryParse(value) == null)
+                    return 'The quantity must BEE a number';
+                },
+                onSaved: (String value) {
+                  _quantity = int.parse(value);
+                  _quantityController..text = value;
+                },
               ),
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-              ], // Only numbers can be entered
-              // ignore: missing_return
-              validator: (String value) {
-                if (value.isEmpty) return 'You must enter the quantity!';
-                if (int.tryParse(value) == null)
-                  return 'The quantity must BEE a number';
-              },
-              onSaved: (String value) {
-                _quantity = int.parse(value);
-                _quantityController..text = value;
-              },
-            ),
-          ],
+              SizedBox(height: 15.0),
+              _roleErrorMessage != null ? _roleError() : Container(),
+              _rolePicker(),
+            ],
+          ),
         ),
       ),
       actions: [
         FlatButton(
-          textColor: Colors.deepOrange,
-          child: Text("Cancel"),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+            textColor: Colors.deepOrange,
+            child: Text("Cancel"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            }),
         FlatButton(
           textColor: Theme.of(context).textTheme.button.color,
           child: Text("Add"),
@@ -81,6 +103,7 @@ class _OpenRoleDialogState extends State<OpenRoleDialog> {
   Widget _rolePicker() {
     List<dynamic> roles =
         widget.topics.map((topic) => topic.roles).expand((i) => i).toList();
+
     List<Widget> choices = List();
 
     roles.forEach((item) {
@@ -100,7 +123,17 @@ class _OpenRoleDialogState extends State<OpenRoleDialog> {
             selectedColor: Colors.yellow,
             onSelected: (selected) {
               setState(() {
-                _role = item;
+                if (_role == '') {
+                  _role = item;
+                  _roleErrorMessage = null;
+                  _focus.requestFocus();
+                  _controller.animateTo(0.0,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeIn);
+                } else {
+                  _role = '';
+                  _focus.unfocus();
+                }
               });
             },
           ),
@@ -112,7 +145,7 @@ class _OpenRoleDialogState extends State<OpenRoleDialog> {
 
   Widget _roleError() {
     return Container(
-      margin: EdgeInsets.only(top: 4.0),
+      margin: EdgeInsets.only(top: 4.0, bottom: 5),
       child: Row(
         children: [
           Text(
@@ -128,7 +161,7 @@ class _OpenRoleDialogState extends State<OpenRoleDialog> {
   }
 
   _onSubmit() {
-    if (_role == null) {
+    if (_role == null || _role == '') {
       setState(() {
         _roleErrorMessage = 'Please pick a role';
       });

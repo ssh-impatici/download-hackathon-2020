@@ -83,23 +83,23 @@ class _CreateHivePageState extends State<CreateHivePage> {
                         : Container(),
                     _selectedTopics(topics),
                     SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        _title('Open roles'),
-                        topics.isEmpty
-                            ? Container()
-                            : InkWell(
+                    topics.isNotEmpty
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              _title('Open roles'),
+                              InkWell(
                                 borderRadius: BorderRadius.circular(50),
                                 onTap: addOpenRole,
                                 child: Icon(
                                   Icons.add_circle,
                                 ),
                               ),
-                      ],
-                    ),
+                            ],
+                          )
+                        : Container(),
                     _openRolesErrorMessage != null
                         ? _errorMessage(_openRolesErrorMessage)
                         : Container(),
@@ -233,7 +233,10 @@ class _CreateHivePageState extends State<CreateHivePage> {
 
   void addTopic(Topic topic) {
     setState(() {
-      topics.add(topic);
+      if (!topics.any((t) => t.id == topic.id)) {
+        topics.add(topic);
+      }
+
       _topicsErrorMessage = null;
     });
   }

@@ -488,7 +488,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
                       padding: EdgeInsets.all(10),
                       child: Center(child: CircularProgressIndicator()))
                   : Text(
-                      'Leave',
+                      'Leave all roles',
                       style: TextStyle(color: Colors.white, fontSize: 15),
                     ),
             ),
