@@ -67,7 +67,6 @@ module.exports = function(e) {
     var hiveRef_plain = data.hiveRef.replace("hives/", "");
 
     const fcm = admin.messaging();
-    const hive = snapshot.data();
 
     const topic = hiveRef_plain;
     const payload = {
