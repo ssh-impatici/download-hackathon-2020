@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hackathon/classes/hive.dart';
+import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/pages/create.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:hackathon/widgets/hive.dart';
@@ -21,7 +22,7 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   GoogleMapController _mapController;
-  bool bytopic = false;
+  bool interestingTopics = false;
   Set<Marker> _markers = Set<Marker>();
 
   LatLng _center = const LatLng(45.6918992, 9.6749658);
@@ -96,9 +97,16 @@ class _MapPageState extends State<MapPage> {
   }
 
   Widget _map() {
+    Set<Marker> _showedmarkers;
+    if (interestingTopics) {
+      _showedmarkers = _filteredMarkers(
+          _markers, widget.model.user.topics, widget.model.hivesMap);
+    } else
+      _showedmarkers = _markers;
+
     return GoogleMap(
       onMapCreated: _onMapCreated,
-      markers: _markers,
+      markers: _showedmarkers,
       zoomControlsEnabled: false,
       // Shows the blue dot on the current position
       myLocationEnabled: true,
@@ -140,9 +148,11 @@ class _MapPageState extends State<MapPage> {
       child: Switch(
         activeColor: Colors.grey.shade800.withOpacity(1),
         activeTrackColor: Colors.grey.shade600.withOpacity(1),
-        value: bytopic,
+        value: interestingTopics,
         onChanged: (value) {
-          setState(() => bytopic = value);
+          setState(() {
+            interestingTopics = value;
+          });
         },
       ),
     );
@@ -256,5 +266,29 @@ class _MapPageState extends State<MapPage> {
         zoom: 15.0,
       ),
     ));
+  }
+
+  Set<Marker> _filteredMarkers(
+      Set<Marker> markers, List<UserTopic> topics, List<Hive> hives) {
+    Set<Marker> result = Set<Marker>();
+    markers.forEach((marker) {
+      Hive selected = _selectHive(hives, marker.markerId.value);
+
+      if (selected != null) {
+        selected.topics.forEach((topic) {
+          if (topics.map((t) => t.id).contains(topic.id) &&
+              !result.contains(marker)) result.add(marker);
+        });
+      }
+    });
+    return result;
+  }
+
+  Hive _selectHive(List<Hive> hives, String id) {
+    Hive result;
+    hives.forEach((hive) {
+      if (hive.id == id) result = hive;
+    });
+    return result;
   }
 }
