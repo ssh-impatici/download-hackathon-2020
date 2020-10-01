@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/classes/user.dart';
 import 'package:hackathon/scopedmodels/main.dart';
@@ -23,34 +22,50 @@ class _UserPageState extends State<UserPage> {
         .expand((i) => i)
         .toList()
         .isNotEmpty;
+    bool isMyAccount =
+        widget.user.id == ScopedModel.of<MainModel>(context).user.id;
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _title(widget.user.fullName),
-          _email(widget.user.email),
-          _bio(widget.user.bio),
-          Container(
-            padding: EdgeInsets.only(top: 10, bottom: 20),
-            child: Text(
-              'Interests',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+    Widget body = ListView(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _title(widget.user.fullName),
+              _email(widget.user.email),
+              _bio(widget.user.bio),
+              Container(
+                padding: EdgeInsets.only(top: 10, bottom: 20),
+                child: Text(
+                  'Interests',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+              _topics(widget.user.topics),
+              shouldShowReview
+                  ? Container(
+                      margin: EdgeInsets.only(top: 10.0),
+                      child: _reviews(widget.user.topics),
+                    )
+                  : Container(),
+              _button(isMyAccount),
+            ],
           ),
-          _topics(widget.user.topics),
-          shouldShowReview
-              ? Container(
-                  margin: EdgeInsets.only(top: 10.0),
-                  child: _reviews(widget.user.topics),
-                )
-              : Container(),
-          _button(),
-        ],
-      ),
+        ),
+      ],
     );
+
+    if (isMyAccount) {
+      return RefreshIndicator(onRefresh: _refreshUserInfo, child: body);
+    } else {
+      return body;
+    }
+  }
+
+  Future<void> _refreshUserInfo() async {
+    await ScopedModel.of<MainModel>(context).retrieveUserInfo();
+    setState(() {});
   }
 
   Widget _title(String name) {
@@ -68,20 +83,8 @@ class _UserPageState extends State<UserPage> {
 
   Widget _email(String email) {
     return Container(
+      child: Text(email, style: TextStyle(fontSize: 16)),
       padding: EdgeInsets.only(top: 10, bottom: 10),
-      child: Row(
-        children: [
-          Container(
-            child: Text('Email',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            padding: EdgeInsets.only(top: 10, bottom: 10, right: 10),
-          ),
-          Container(
-            child: Text(email, style: TextStyle(fontSize: 16)),
-            padding: EdgeInsets.only(top: 10, bottom: 10),
-          )
-        ],
-      ),
     );
   }
 
@@ -147,7 +150,11 @@ class _UserPageState extends State<UserPage> {
       }
     });
 
-    return ListView(shrinkWrap: true, children: scoringWidgets);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: scoringWidgets,
+    );
   }
 
   Widget _reviewTopic(String name) {
@@ -160,12 +167,10 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  Widget _button() {
-    MainModel model = ScopedModel.of<MainModel>(context);
+  Widget _button(bool isMyAccount) {
+    if (isMyAccount) {
+      MainModel model = ScopedModel.of<MainModel>(context);
 
-    if (model.user.id != widget.user.id) {
-      return Container();
-    } else {
       return Container(
         padding: EdgeInsets.only(top: 20, bottom: 15),
         child: RaisedButton(
@@ -187,6 +192,8 @@ class _UserPageState extends State<UserPage> {
           },
         ),
       );
+    } else {
+      return Container();
     }
   }
 }

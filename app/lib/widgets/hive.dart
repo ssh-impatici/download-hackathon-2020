@@ -206,7 +206,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
   Widget _openRole(OpenRole role, BuildContext context) {
     bool alreadyJoined = _userAlreadyJoined(
         role, _retrieveHive(false), ScopedModel.of<MainModel>(context).user);
-    print(_hive);
+
     return GestureDetector(
       child: Container(
         margin: EdgeInsets.only(right: 10, bottom: 10),
@@ -301,8 +301,10 @@ class _HiveDescriptionState extends State<HiveDescription> {
                       ? Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Scaffold(
-                              body: UserPage(role.user),
+                            builder: (context) => SafeArea(
+                              child: Scaffold(
+                                body: UserPage(role.user),
+                              ),
                             ),
                           ),
                         )
@@ -639,20 +641,9 @@ class _HiveDescriptionState extends State<HiveDescription> {
   }
 
   bool _userAlreadyJoined(OpenRole role, Hive hive, User user) {
-    print('************************************************');
-    print(hive);
-    print(user.id);
-
     bool result = false;
 
     hive.takenRoles.forEach((trole) {
-      print(trole.user.id +
-          ' ' +
-          user.fullName +
-          ' ' +
-          trole.name +
-          ' ' +
-          role.name);
       if (trole.user.id == user.id && trole.name == role.name) result = true;
     });
     return result;
