@@ -18,16 +18,25 @@ mixin HivesModel on ConnectedModel {
   }
 
   Future<Position> getPosition() async {
-    LocationPermission permission = await requestPermission();
+    LocationPermission permission = await checkPermission();
 
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      return null;
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      return await getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
     }
 
-    return await getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
+    permission = await requestPermission();
+
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      return await getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+    }
+
+    return null;
   }
 
   Future<List<Hive>> getMapHives({LatLng latLng}) async {

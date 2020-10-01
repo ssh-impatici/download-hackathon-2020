@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:hackathon/classes/hive.dart';
 import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/user.dart';
+import 'package:hackathon/utils/distance.dart';
 import 'package:hackathon/widgets/hive.dart';
 
 class HiveCard extends StatelessWidget {
   final Hive hive;
   final User user;
+  final Position location;
 
-  HiveCard(this.hive, this.user);
+  HiveCard(this.hive, this.user, {this.location});
 
   @override
   Widget build(BuildContext context) {
@@ -47,24 +50,7 @@ class HiveCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            hive.address == null
-                                ? Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.yellow,
-                                      borderRadius: BorderRadius.circular(4.0),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 6.0,
-                                      vertical: 4.0,
-                                    ),
-                                    margin: EdgeInsets.only(right: 8.0),
-                                    child: Icon(
-                                      Icons.location_off,
-                                      size: 14.0,
-                                      color: Colors.black,
-                                    ),
-                                  )
-                                : Container(),
+                            _typeIcon(context),
                             Container(
                               child: Text(
                                 hive.name,
@@ -111,6 +97,60 @@ class HiveCard extends StatelessWidget {
     );
   }
 
+  Widget _typeIcon(BuildContext context) {
+    if (hive.latitude == null || hive.longitude == null) {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.yellow,
+          borderRadius: BorderRadius.circular(4.0),
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: 6.0,
+          vertical: 4.0,
+        ),
+        margin: EdgeInsets.only(right: 8.0),
+        child: Icon(
+          Icons.location_off,
+          size: 14.0,
+          color: Colors.black,
+        ),
+      );
+    } else {
+      if (location == null ||
+          location.latitude == null ||
+          location.longitude == null) {
+        return Container();
+      }
+
+      String dist = distance(
+        lat1: location.latitude,
+        lon1: location.longitude,
+        lat2: hive.latitude,
+        lon2: hive.longitude,
+      );
+
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.yellow,
+          borderRadius: BorderRadius.circular(4.0),
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: 6.0,
+          vertical: 4.0,
+        ),
+        margin: EdgeInsets.only(right: 8.0),
+        child: Text(
+          '$dist km',
+          style: TextStyle(
+            fontSize: 14.0,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    }
+  }
+
   Widget _openRoles(List<OpenRole> list) {
     return list.length > 1
         ? Row(
@@ -123,16 +163,27 @@ class HiveCard extends StatelessWidget {
                 child: Text(
                   list.first.name,
                   style: TextStyle(
-                      color: Colors.grey.shade800,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12),
+                    color: Colors.grey.shade800,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
                 ),
               ),
-              SizedBox(width: 20),
-              Text(
-                '+${list.length - 1} \t more..',
-                style: TextStyle(color: Colors.yellow, fontSize: 12),
-              )
+              SizedBox(width: 12.0),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                decoration: BoxDecoration(
+                    color: Colors.grey.shade900,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Text(
+                  '+${list.length - 1} more..',
+                  style: TextStyle(
+                    color: Colors.yellow,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
             ],
           )
         : list.isNotEmpty
