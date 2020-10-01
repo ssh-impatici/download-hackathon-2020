@@ -151,7 +151,10 @@ class _CreateHivePageState extends State<CreateHivePage> {
       child: Text(
         title,
         style: TextStyle(
-            color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -248,30 +251,31 @@ class _CreateHivePageState extends State<CreateHivePage> {
     selected.forEach((topic) {
       topics.add(
         Container(
-            padding: EdgeInsets.all(6),
-            margin: EdgeInsets.only(bottom: 5, top: 5, right: 5),
-            decoration: BoxDecoration(
-                color: Colors.grey.shade900,
-                borderRadius: BorderRadius.circular(5)),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  topic.id,
-                  style: TextStyle(
-                      color: Colors.yellow.shade400,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold),
+          padding: EdgeInsets.all(6),
+          margin: EdgeInsets.only(bottom: 5, top: 5, right: 5),
+          decoration: BoxDecoration(
+              color: Colors.grey.shade900,
+              borderRadius: BorderRadius.circular(5)),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                topic.id,
+                style: TextStyle(
+                    color: Colors.yellow.shade400,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold),
+              ),
+              GestureDetector(
+                child: Icon(
+                  Icons.close,
+                  size: 14,
                 ),
-                GestureDetector(
-                  child: Icon(
-                    Icons.close,
-                    size: 14,
-                  ),
-                  onTap: () => removeTopic(topic),
-                ),
-              ],
-            )),
+                onTap: () => removeTopic(topic),
+              ),
+            ],
+          ),
+        ),
       );
     });
 
@@ -330,25 +334,30 @@ class _CreateHivePageState extends State<CreateHivePage> {
 
   Widget _button() {
     return ScopedModelDescendant<MainModel>(
-        builder: (BuildContext context, Widget child, MainModel model) {
-      return Container(
-        padding: EdgeInsets.only(top: 20, bottom: 15),
-        child: RaisedButton(
-          color: Colors.grey.shade900,
-          child: Center(
-            child: model.loading
-                ? Container(
-                    padding: EdgeInsets.all(10),
-                    child: Center(child: CircularProgressIndicator()))
-                : Text(
-                    'Confirm',
-                    style: TextStyle(color: Colors.white),
-                  ),
+      builder: (BuildContext context, Widget child, MainModel model) {
+        return Container(
+          padding: EdgeInsets.only(top: 20, bottom: 15),
+          child: RaisedButton(
+            color: Colors.grey.shade900,
+            child: Center(
+              child: model.loading
+                  ? Container(
+                      padding: EdgeInsets.all(10),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  : Text(
+                      'Confirm',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                      ),
+                    ),
+            ),
+            onPressed: () => _submit(model),
           ),
-          onPressed: () => _submit(model),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   void _submit(MainModel model) async {
