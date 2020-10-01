@@ -233,7 +233,10 @@ class _CreateHivePageState extends State<CreateHivePage> {
 
   void addTopic(Topic topic) {
     setState(() {
-      topics.add(topic);
+      if (!topics.any((t) => t.id == topic.id)) {
+        topics.add(topic);
+      }
+
       _topicsErrorMessage = null;
     });
   }

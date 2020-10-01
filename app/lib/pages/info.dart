@@ -146,7 +146,9 @@ class _InfoPageState extends State<InfoPage> {
 
   void addTopic(Topic topic) {
     setState(() {
-      topics.add(topic.id);
+      if (!topics.any((t) => t == topic.id)) {
+        topics.add(topic.id);
+      }
     });
   }
 
