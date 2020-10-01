@@ -301,8 +301,10 @@ class _HiveDescriptionState extends State<HiveDescription> {
                       ? Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Scaffold(
-                              body: UserPage(role.user),
+                            builder: (context) => SafeArea(
+                              child: Scaffold(
+                                body: UserPage(role.user),
+                              ),
                             ),
                           ),
                         )
