@@ -177,8 +177,7 @@ module.exports = function(e) {
       addr = data.address
     }
 
-    let docId = null
-    await db.collection('hives').add({
+    const docRef = await db.collection('hives').add({
       active: true,
       creator: data.creator,
       description: data.description,
@@ -189,15 +188,30 @@ module.exports = function(e) {
       openRoles: data.openRoles,
       takenRoles: [],
       topics: data.topics
-    }).then(function(docRef) {
-      docId = docRef.id;
-      db.collection("hives").doc(docRef.id).get()
-        .then(snap => {
-          return res.status(201).send({
-            hiveId: docId,
-            ...snap.data()
-          });
-        })
     });
+    const docId = docRef.id;
+
+    const user = await db.doc(data.creator).get();
+    let userHives = [];
+    if(user.hives) {
+      userHives = user.hives;
+    } 
+    
+    userHives.push({
+      hiveRef: docId,
+      roles: []
+    });
+
+    await db.doc(data.creator).update({
+      hives: userHives
+    });
+
+    db.collection("hives").doc(docRef.id).get()
+      .then(snap => {
+        return res.status(201).send({
+          hiveId: docId,
+          ...snap.data()
+        });
+      })
   });
 }
