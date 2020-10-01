@@ -22,20 +22,25 @@ mixin HivesModel on ConnectedModel {
 
     if (permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse) {
-      return await getCurrentPosition(
+      position = await getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
+        timeLimit: Duration(seconds: 2),
       );
+      return position;
     }
 
     permission = await requestPermission();
 
     if (permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse) {
-      return await getCurrentPosition(
+      position = await getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
+        timeLimit: Duration(seconds: 2),
       );
+      return position;
     }
 
+    position = null;
     return null;
   }
 
