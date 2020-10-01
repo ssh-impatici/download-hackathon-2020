@@ -27,7 +27,7 @@ We believe that the dualism of live events (present on the map) and virtual even
 This is a [Flutter](https://flutter.io) app. We provide you an apk file that you can install on your device. Since the app isn't distributed on the PlayStore platform, it will probably alerts you about some kind of risk. You can install it without any fear, it is completely safe.
 If you want to build and run the app from source code on a device emulator on you computer, you can install Flutter following the [official documentation](https://flutter.io/docs/get-started/install) or, if you want to avoid the installation of Android Studio, you can follow [this great guide](https://medium.com/@quicky316/install-flutter-sdk-on-windows-without-android-studio-102fdf567ce4).
 
-Once you have installed flutter, make sure to be in the `app` folder and to have installed the necessary plugins with `flutter pub get`.
+Once you have installed Flutter, make sure to be in the `app` folder and to have installed the necessary plugins with `flutter pub get`.
 
 This repo is using Firebase with Cloud Firestore as backend. You can read the [official documentation](https://firebase.google.com/docs). The code is in the `firebase` folder.
 
@@ -44,7 +44,7 @@ Initially you have to sign up with the email address or by signing in with Googl
 <img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_2.jpg" width="200">
 </p>
 
-The first part displayed by the app is the `map` tab where you can see the hives, click on them for details or click the button at the bottom right to create one. The buttons at the bottom left are used to filter the hives  on the map according to your interests, reload the map and refocus the map on your position. To change tabs you need to use the nav bar.
+The first part displayed by the app is the `map` tab where you can see the hives, click on them for details or click the button at the bottom right to create one (Note: you have to grant access to location permission). The buttons at the bottom left are used to filter the hives  on the map according to your interests, reload the map and refocus the map on your position. To change tabs you need to use the nav bar.
 
 <p align="center">
 <img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_3.jpg" width="200">
