@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/classes/user.dart';
 import 'package:hackathon/scopedmodels/main.dart';
+import 'package:hackathon/widgets/role_scoring_tile.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class UserPage extends StatefulWidget {
@@ -16,6 +18,12 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
+    bool shouldShowReview = widget.user.topics
+        .map((e) => e.scorings)
+        .expand((i) => i)
+        .toList()
+        .isNotEmpty;
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
       child: Column(
@@ -27,10 +35,18 @@ class _UserPageState extends State<UserPage> {
           _bio(widget.user.bio),
           Container(
             padding: EdgeInsets.only(top: 10, bottom: 20),
-            child: Text('Interests',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            child: Text(
+              'Interests',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
           ),
           _topics(widget.user.topics),
+          shouldShowReview
+              ? Container(
+                  margin: EdgeInsets.only(top: 10.0),
+                  child: _reviews(widget.user.topics),
+                )
+              : Container(),
           _button(),
         ],
       ),
@@ -104,6 +120,31 @@ class _UserPageState extends State<UserPage> {
 
     return Container(
       child: Wrap(children: topics),
+    );
+  }
+
+  Widget _reviews(List<UserTopic> topics) {
+    List<Widget> scoringWidgets = [];
+
+    topics.forEach((topic) {
+      if (topic.scorings != null && topic.scorings.isNotEmpty) {
+        scoringWidgets.add(_reviewTopic(topic.id));
+        topic.scorings.forEach((scoring) {
+          scoringWidgets.add(RoleScoringTile(scoring));
+        });
+      }
+    });
+
+    return ListView(shrinkWrap: true, children: scoringWidgets);
+  }
+
+  Widget _reviewTopic(String name) {
+    return Container(
+      padding: EdgeInsets.only(top: 10, bottom: 20),
+      child: Text(
+        name,
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
     );
   }
 

@@ -17,7 +17,7 @@ class _HivesPageState extends State<HivesPage> {
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) => RefreshIndicator(
         onRefresh: _refreshHives,
-        child: model.hivesList.isNotEmpty
+        child: model.hivesList != null && model.hivesList.isNotEmpty
             ? listHiveWidget(model)
             : ListView(children: [
                 Container(
