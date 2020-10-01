@@ -336,9 +336,9 @@ mixin HivesModel on ConnectedModel {
 
             for (Map<String, dynamic> scoringData in topic[id]) {
               scorings.add(RoleScoring(
-                name: scoringData['nome'],
+                name: scoringData['name'],
                 reviews: scoringData['reviews'],
-                stars: scoringData['stars'],
+                stars: scoringData['stars'].toDouble(),
               ));
             }
 
