@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:hackathon/classes/hive.dart';
-import 'package:hackathon/classes/user.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:hackathon/widgets/hive_card.dart';
 import 'package:scoped_model/scoped_model.dart';
