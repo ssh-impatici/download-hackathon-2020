@@ -61,7 +61,8 @@ class _InfoPageState extends State<InfoPage> {
                     _title('Interests'),
                     _interests(model.topics),
                     _selected(topics),
-                    _button()
+                    _button(),
+                    _logout()
                   ],
                 ),
               ),
@@ -217,6 +218,27 @@ class _InfoPageState extends State<InfoPage> {
         ),
       );
     });
+  }
+
+  Widget _logout() {
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
+        return Container(
+          padding: EdgeInsets.symmetric(vertical: 15),
+          alignment: Alignment.center,
+          child: InkWell(
+            onTap: () async {
+              await model.logout();
+              Navigator.of(context).pushReplacementNamed('/');
+            },
+            child: Text(
+              'Go back to logout',
+              style: TextStyle(decoration: TextDecoration.underline),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _submit(Function callback, String msg) async {
