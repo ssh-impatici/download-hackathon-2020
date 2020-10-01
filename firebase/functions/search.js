@@ -38,8 +38,9 @@ module.exports = function(e) {
     });
 
     let userHives = await db.doc(data.userRef).get();
-    userHives = userHives.get("hives").map(hive => hive.hiveRef);
-    console.log(userHives);
+    userHives = userHives.get("hives");
+    if(!userHives) userHives = [];
+    userHives = userHives.map(hive => hive.hiveRef);
 
     // filter out already joined hives or created by you
     virtualHives = virtualHives.filter(hive => hive.creator !== data.userRef && !userHives.includes("hives/" + hive.hiveId));
