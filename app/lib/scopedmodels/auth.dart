@@ -102,6 +102,8 @@ mixin AuthModel on ConnectedModel {
       authenticated = false;
     }
 
+    authenticated = false;
+
     _setLoading(false);
     return AuthResult.UNAUTHORIZED;
   }

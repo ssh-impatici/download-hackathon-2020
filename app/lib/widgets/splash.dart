@@ -16,10 +16,12 @@ class SplashBeelder extends StatelessWidget {
             children: [
               Container(
                 child: Image(
-                  image: AssetImage('assets/images/icon.png'),
-                  height: 20,
+                  image: AssetImage('assets/icons/icon.png'),
+                  height: 150.0,
+                  width: 150.0,
                 ),
               ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.2),
               Center(
                 child: CircularProgressIndicator(),
               )

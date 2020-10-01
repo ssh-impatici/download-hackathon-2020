@@ -38,7 +38,7 @@ class _AppState extends State<App> {
         theme: AppTheme.theme,
         routes: {
           '/': (context) =>
-              _model.authenticated != null ? AuthPage() : HomePage(_model),
+              _model.authenticated ? AuthPage() : HomePage(_model),
           '/info': (context) => InfoPage(),
           '/home': (context) => HomePage()
         },
