@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 String distance({
   @required double lat1,
@@ -25,4 +26,13 @@ double deg2rad(double deg) {
 
 double rad2deg(double rad) {
   return (rad * 180.0 / pi);
+}
+
+LatLng randomLocation({
+  LatLng aroundPosition = const LatLng(45.642389, 9.5858929),
+}) {
+  return LatLng(
+    aroundPosition.latitude + ((Random().nextInt(100) - 50) / 10000),
+    aroundPosition.longitude + ((Random().nextInt(100) - 50) / 10000),
+  );
 }

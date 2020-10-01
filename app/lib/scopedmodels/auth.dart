@@ -163,11 +163,21 @@ mixin AuthModel on ConnectedModel {
       List<UserTopic> topics = [];
 
       if (data['topics'] != null) {
-        for (dynamic topic in data['topics']) {
+        for (Map<String, dynamic> topic in data['topics']) {
+          String id = topic.keys.first;
+          List<RoleScoring> scorings = [];
+
+          for (Map<String, dynamic> scoringData in topic[id]) {
+            scorings.add(RoleScoring(
+              name: scoringData['nome'],
+              reviews: scoringData['reviews'],
+              stars: scoringData['stars'],
+            ));
+          }
+
           topics.add(UserTopic(
-            id: topic['id'],
-            reviews: topic['reviews'],
-            stars: topic['stars'],
+            id: id,
+            scorings: scorings,
           ));
         }
       }
@@ -219,7 +229,7 @@ mixin AuthModel on ConnectedModel {
         'bio': bio,
         'topics': topics
             .map(
-              (topic) => {'id': topic, 'reviews': 0, 'stars': 0.0},
+              (topic) => {topic: []},
             )
             .toList(),
       });
@@ -312,12 +322,24 @@ mixin AuthModel on ConnectedModel {
 
         List<UserTopic> topics = [];
 
-        for (dynamic topic in data['topics']) {
-          topics.add(UserTopic(
-            id: topic['id'],
-            reviews: topic['reviews'],
-            stars: topic['stars'],
-          ));
+        if (data['topics'] != null) {
+          for (Map<String, dynamic> topic in data['topics']) {
+            String id = topic.keys.first;
+            List<RoleScoring> scorings = [];
+
+            for (Map<String, dynamic> scoringData in topic[id]) {
+              scorings.add(RoleScoring(
+                name: scoringData['nome'],
+                reviews: scoringData['reviews'],
+                stars: scoringData['stars'],
+              ));
+            }
+
+            topics.add(UserTopic(
+              id: id,
+              scorings: scorings,
+            ));
+          }
         }
 
         return Model.User(
