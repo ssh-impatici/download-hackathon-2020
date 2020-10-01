@@ -1,3 +1,4 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:hackathon/classes/hive.dart';
 import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/classes/user.dart';
@@ -11,4 +12,5 @@ mixin ConnectedModel on Model {
   List<Topic> topics = [];
   List<Hive> hivesMap = [];
   List<Hive> hivesList = [];
+  Position position;
 }

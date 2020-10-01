@@ -150,6 +150,7 @@ class _AuthPageState extends State<AuthPage> {
         padding: EdgeInsets.only(top: 20, bottom: 15),
         child: RaisedButton(
           color: Colors.grey.shade900,
+          disabledColor: Colors.grey.shade900,
           child: Center(
             child: model.loading
                 ? Container(
@@ -160,7 +161,7 @@ class _AuthPageState extends State<AuthPage> {
                     style: TextStyle(color: Colors.white),
                   ),
           ),
-          onPressed: () => _submit(model),
+          onPressed: !model.loading ? () => _submit(model) : null,
         ),
       );
     });
@@ -212,23 +213,28 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Widget _togglemode() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 15),
-      alignment: Alignment.center,
-      child: InkWell(
-        onTap: () {
-          setState(() => mode == AuthMode.LOGIN
-              ? mode = AuthMode.SINGUP
-              : mode = AuthMode.LOGIN);
-        },
-        child: Text(
-          mode == AuthMode.LOGIN
-              ? "Don't have an account? Sign up"
-              : 'Already have an account? Log in',
-          style: TextStyle(decoration: TextDecoration.underline),
+    return ScopedModelDescendant(
+        builder: (BuildContext context, Widget child, MainModel model) {
+      return Container(
+        padding: EdgeInsets.symmetric(vertical: 15),
+        alignment: Alignment.center,
+        child: InkWell(
+          onTap: !model.loading
+              ? () {
+                  setState(() => mode == AuthMode.LOGIN
+                      ? mode = AuthMode.SINGUP
+                      : mode = AuthMode.LOGIN);
+                }
+              : null,
+          child: Text(
+            mode == AuthMode.LOGIN
+                ? "Don't have an account? Sign up"
+                : 'Already have an account? Log in',
+            style: TextStyle(decoration: TextDecoration.underline),
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _google() {
@@ -245,39 +251,45 @@ class _AuthPageState extends State<AuthPage> {
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.8,
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image(
-                      image: AssetImage('assets/images/google.png'),
-                      height: 20,
-                    ),
-                    SizedBox(width: 20),
-                    Text('Sign in with Google')
-                  ],
-                ),
+                child: model.loading
+                    ? Container(
+                        padding: EdgeInsets.all(10),
+                        child: Center(child: CircularProgressIndicator()))
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image(
+                            image: AssetImage('assets/images/google.png'),
+                            height: 20,
+                          ),
+                          SizedBox(width: 20),
+                          Text('Sign in with Google')
+                        ],
+                      ),
               ),
-              onTap: () async {
-                AuthResult result = await model.signInWithGoogle();
-                switch (result) {
-                  case AuthResult.SIGNEDIN:
-                    await model.getHives();
-                    await model.getMapHives();
-                    Navigator.of(context).pushReplacementNamed('/home');
-                    break;
-                  case AuthResult.SIGNEDUP:
-                    await model.getTopics();
-                    Navigator.of(context).pushReplacementNamed('/info');
-                    break;
-                  case AuthResult.UNAUTHORIZED:
-                    await showDialog(
-                      context: context,
-                      child: AlertDialog(title: Text(model.errorMessage)),
-                    );
-                    break;
-                  default:
-                }
-              },
+              onTap: !model.loading
+                  ? () async {
+                      AuthResult result = await model.signInWithGoogle();
+                      switch (result) {
+                        case AuthResult.SIGNEDIN:
+                          await model.getHives();
+                          await model.getMapHives();
+                          Navigator.of(context).pushReplacementNamed('/home');
+                          break;
+                        case AuthResult.SIGNEDUP:
+                          await model.getTopics();
+                          Navigator.of(context).pushReplacementNamed('/info');
+                          break;
+                        case AuthResult.UNAUTHORIZED:
+                          await showDialog(
+                            context: context,
+                            child: AlertDialog(title: Text(model.errorMessage)),
+                          );
+                          break;
+                        default:
+                      }
+                    }
+                  : null,
             ),
           ),
         ),
