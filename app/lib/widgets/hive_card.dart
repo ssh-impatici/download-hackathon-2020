@@ -52,6 +52,7 @@ class HiveCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             _typeIcon(context),
+                            SizedBox(width: 5),
                             Expanded(
                               child: Text(
                                 hive.name,
@@ -71,16 +72,20 @@ class HiveCard extends StatelessWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            hive.creator.id == user.id
-                                ? Icon(
-                                    Icons.vpn_key,
-                                    size: 14.0,
-                                    color: Colors.yellow,
-                                  )
-                                : Container(),
                             Text(hive.creator != null
                                 ? hive.creator.fullName
                                 : ''),
+                            hive.creator.id == user.id
+                                ? Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    child: Icon(
+                                      Icons.vpn_key,
+                                      size: 15,
+                                      color: Colors.yellow,
+                                    ),
+                                  )
+                                : Container(),
                           ],
                         ),
                       ),
@@ -145,7 +150,7 @@ class HiveCard extends StatelessWidget {
         child: Text(
           '$dist km',
           style: TextStyle(
-            fontSize: 14.0,
+            fontSize: 10,
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
@@ -179,7 +184,7 @@ class HiveCard extends StatelessWidget {
                     color: Colors.grey.shade900,
                     borderRadius: BorderRadius.circular(10)),
                 child: Text(
-                  '+${list.length - 1} more..',
+                  '+${list.length - 1} more',
                   style: TextStyle(
                     color: Colors.yellow,
                     fontWeight: FontWeight.bold,
