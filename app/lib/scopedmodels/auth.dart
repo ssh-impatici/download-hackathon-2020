@@ -84,6 +84,39 @@ mixin AuthModel on ConnectedModel {
     return result;
   }
 
+  Future<AuthResult> autoSignIn() async {
+    _setLoading(true);
+    AuthResult result;
+
+    try {
+      User currentUser = _auth.currentUser;
+
+      if (currentUser != null) {
+        authenticated = true;
+
+        await retrieveUserInfo();
+
+        if (user != null) {
+          result = AuthResult.SIGNEDIN;
+        } else {
+          result = AuthResult.SIGNEDUP;
+        }
+      } else {
+        authenticated = false;
+        result = AuthResult.UNAUTHORIZED;
+      }
+    } catch (e) {
+      authenticated = false;
+      result = AuthResult.UNAUTHORIZED;
+      errorMessage = e.toString();
+    }
+
+    authenticated = false;
+
+    _setLoading(false);
+    return result;
+  }
+
   Future<AuthResult> logout() async {
     _setLoading(true);
 
@@ -98,7 +131,6 @@ mixin AuthModel on ConnectedModel {
     } catch (e) {
       errorMessage = e.toString();
     } finally {
-      user = null;
       authenticated = false;
     }
 

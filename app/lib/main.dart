@@ -6,6 +6,7 @@ import 'package:hackathon/scopedmodels/main.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hackathon/utils/theme.dart';
+import 'package:hackathon/widgets/splash.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import 'package:hackathon/pages/auth.dart';
@@ -37,8 +38,8 @@ class _AppState extends State<App> {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.theme,
         routes: {
-          '/': (context) =>
-              _model.authenticated ? AuthPage() : HomePage(_model),
+          '/': (context) => SplashBeelder(_model),
+          '/auth': (context) => AuthPage(),
           '/info': (context) => InfoPage(),
           '/home': (context) => HomePage()
         },

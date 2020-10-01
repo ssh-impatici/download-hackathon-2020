@@ -198,9 +198,8 @@ class _UserPageState extends State<UserPage> {
                   ),
           ),
           onPressed: () async {
-            await model
-                .logout()
-                .then((_) => Navigator.of(context).pushReplacementNamed('/'));
+            await model.logout();
+            Navigator.of(context).pushReplacementNamed('/');
           },
         ),
       );
