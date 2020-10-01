@@ -172,13 +172,8 @@ class _AuthPageState extends State<AuthPage> {
           disabledColor: Colors.grey.shade900,
           child: Center(
             child: isLoading
-                ? Container(
-                    padding: EdgeInsets.all(10),
-                    child: Center(child: Text('Bzz Bzz...')),
-                  )
-                : Text(
-                    mode == AuthMode.LOGIN ? 'Log in' : 'Sign in',
-                  ),
+                ? Text('Bzz Bzz...')
+                : Text(mode == AuthMode.LOGIN ? 'Log in' : 'Sign in'),
           ),
           onPressed:
               !isLoading && !isLoadingGoogle ? () => _submit(model) : null,
@@ -264,29 +259,21 @@ class _AuthPageState extends State<AuthPage> {
       bool isLoadingLogin = model.loading;
 
       return Container(
-        alignment: Alignment.center,
         margin: EdgeInsets.symmetric(vertical: 20),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade900,
-        ),
         child: RaisedButton(
           color: Colors.grey.shade900,
           disabledColor: Colors.grey.shade900,
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Center(
             child: isLoading
-                ? Container(
-                    padding: EdgeInsets.all(10),
-                    child: Center(child: CircularProgressIndicator()))
+                ? Text('Bzz Bzz...')
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image(
                         image: AssetImage('assets/images/google.png'),
-                        height: 20,
+                        height: 18.0,
                       ),
-                      SizedBox(width: 20),
+                      SizedBox(width: 12.0),
                       Text('Sign in with Google')
                     ],
                   ),
