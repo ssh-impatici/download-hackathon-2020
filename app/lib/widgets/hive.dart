@@ -408,6 +408,26 @@ class _HiveDescriptionState extends State<HiveDescription> {
       stars: stars,
     );
 
+    switch (widget.from) {
+      case FromScreen.MAP:
+        {
+          await model.getMapHives();
+          break;
+        }
+      case FromScreen.LIST:
+        {
+          await model.getHives();
+          break;
+        }
+      case FromScreen.MY_HIVES:
+        {
+          await model.retrieveUserInfo();
+          break;
+        }
+    }
+
+    _retrieveHive(true);
+
     return true;
   }
 
