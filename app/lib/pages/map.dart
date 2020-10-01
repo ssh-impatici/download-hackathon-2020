@@ -132,7 +132,7 @@ class _MapPageState extends State<MapPage> {
         child: Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Colors.grey.withOpacity(0.5)),
+              color: Colors.grey.shade800),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [_switch(), _reload(), _myPosition()],
@@ -148,6 +148,7 @@ class _MapPageState extends State<MapPage> {
       child: Switch(
         activeColor: Colors.grey.shade800.withOpacity(1),
         activeTrackColor: Colors.grey.shade600.withOpacity(1),
+        inactiveTrackColor: Colors.grey.shade400.withOpacity(1),
         value: interestingTopics,
         onChanged: (value) {
           setState(() {
@@ -201,7 +202,7 @@ class _MapPageState extends State<MapPage> {
             padding: EdgeInsets.all(10),
             child: Icon(
               Icons.refresh,
-              color: Colors.grey.shade800,
+              color: Colors.grey.shade400,
               size: 30,
             ),
           ),
@@ -234,7 +235,7 @@ class _MapPageState extends State<MapPage> {
             padding: EdgeInsets.all(10),
             child: Icon(
               Icons.gps_fixed,
-              color: Colors.grey.shade800,
+              color: Colors.grey.shade400,
               size: 30,
             ),
           ),

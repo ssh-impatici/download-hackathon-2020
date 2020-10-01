@@ -101,7 +101,6 @@ mixin AuthModel on ConnectedModel {
       user = null;
       authenticated = false;
     }
-
     authenticated = false;
 
     _setLoading(false);
