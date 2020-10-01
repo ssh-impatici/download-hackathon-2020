@@ -19,6 +19,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) {
+        model.addNotificationTopics(
+            model.user.topics.map((topic) => topic.id).toList());
         return SafeArea(
           child: Scaffold(
             bottomNavigationBar: BottomBar(_controller.jumpToPage),

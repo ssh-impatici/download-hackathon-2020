@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hackathon/classes/hive.dart';
 import 'package:hackathon/classes/topic.dart';
@@ -14,4 +15,12 @@ mixin ConnectedModel on Model {
   List<Hive> hivesMap = [];
   List<Hive> hivesList = [];
   Position position;
+
+  FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+
+  void addNotificationTopics(List<String> topics) async {
+    topics.forEach((topic) {
+      firebaseMessaging.subscribeToTopic(topic);
+    });
+  }
 }
