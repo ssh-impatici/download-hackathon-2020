@@ -42,4 +42,5 @@ flutter:
   assets:
     - assets/images/google.png
     - assets/images/beehive.png
+    - assets/icons/icon.png
 
