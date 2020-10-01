@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hackathon/classes/hive.dart';
 import 'package:hackathon/classes/role.dart';
 import 'package:hackathon/classes/user.dart';
+import 'package:hackathon/pages/user.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -294,22 +295,36 @@ class _HiveDescriptionState extends State<HiveDescription> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      role.name,
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      role.user.fullName,
-                      style: TextStyle(fontSize: 15),
-                    )
-                  ],
+              child: InkWell(
+                onTap: () => {
+                  role.user.id != model.user.id
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Scaffold(
+                              body: UserPage(role.user),
+                            ),
+                          ),
+                        )
+                      : {}
+                },
+                child: Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        role.name,
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        role.user.fullName,
+                        style: TextStyle(fontSize: 15),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
