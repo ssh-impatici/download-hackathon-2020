@@ -36,21 +36,17 @@ Firebase is online and available to handle past requests.
 
 Initially you have to sign up with the email address or by signing in with Google. After, you have to complete your profile by entering your data and selecting the topics you are interested in.
 
-The first part displayed by the app is a `map` where you can see the hives, click on them for details or click the button at the bottom right to create one. The buttons at the bottom left are used to filter the hives related to your interests on the map, reload the map and refocus the map on your position.
+The first part displayed by the app is the `map` tab where you can see the hives, click on them for details or click the button at the bottom right to create one. The buttons at the bottom left are used to filter the hives  on the map according to your interests, reload the map and refocus the map on your position.
 
-To create an hive you need to click the button at the bottom right and you will need to complete all the fields by also entering the topics and open roles required with the quantity (Note: if the hive is virtual, leave empty the location!).
+To create an hive you will need to complete all the fields by also entering the topics and the open roles also specifying the quantity (Note: if the hive is virtual, leave empty the location!).
 
-To change tabs you need to use the nav bar. The `explore` tab shows all hives, both nearby ones (indicating their distance) and virtual ones. In addition to the various topics, a key icon is shown if you are the queen bee of the hive.
+To change tabs you need to use the nav bar. The `explore` tab shows all hives, both nearby ones (indicating their distance in km) and virtual ones. In addition to the various topics, a key icon is shown if you are the queen bee of the hive.
 
-The `my hives` tab shows the apiaries that you have joined or owned.
+The `my hives` tab shows the hives that you have joined or owned. In the `hive's detail` tab you can apply for multiple roles or remove yourself and also, if you are the creator, you can give team members a star rating for the role played.
 
-The `profile` tab show your informations, your bio, your interests and
+The `profile` tab show your informations, your bio, your interests and the specific rating of each role held in the past grouped by topic.
 
-TODO SCREENSHOT
-
-Location null
-HIVES NON APIARY
-Notifiche
+In addition you will be notified if a new apiary is created nearby with topics relevant to yours.
 
 ## Authors
 
