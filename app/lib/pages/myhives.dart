@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hackathon/scopedmodels/main.dart';
+import 'package:hackathon/widgets/hive.dart';
 import 'package:hackathon/widgets/hive_card.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -53,6 +54,7 @@ class _MyHivesPageState extends State<MyHivesPage> {
       hivesWidgets.add(HiveCard(
         hive,
         model.user,
+        FromScreen.MY_HIVES,
         location: location,
       ));
     });

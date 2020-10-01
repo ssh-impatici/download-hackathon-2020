@@ -8,9 +8,10 @@ import 'package:hackathon/widgets/hive.dart';
 class HiveCard extends StatelessWidget {
   final Hive hive;
   final User user;
+  final FromScreen from;
   final Position location;
 
-  HiveCard(this.hive, this.user, {this.location});
+  HiveCard(this.hive, this.user, this.from, {this.location});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class HiveCard extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => HiveDescription(hive.id, FromScreen.LIST),
+                builder: (context) => HiveDescription(hive.id, from),
               ),
             );
           },
