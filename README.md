@@ -22,7 +22,7 @@ We believe that the dualism of live events (present on the map) and virtual even
 
 ## Quick start
 
-This is a normal flutter app. You should follow the instructions in the [official documentation](https://flutter.io/docs/get-started/install). The code is in the `app` folder.
+This is a normal Flutter app. You should follow the instructions in the [official documentation](https://flutter.io/docs/get-started/install). The code is in the `app` folder.
 
 This repo is using Firebase with Cloud Firestore as backend. You can read the [official documentation](https://firebase.google.com/docs). The code is in the `firebase` folder.
 
