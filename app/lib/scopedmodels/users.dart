@@ -8,8 +8,12 @@ mixin UsersModel on ConnectedModel {
     notifyListeners();
   }
 
-  Future<void> setUserRating(
-      {String userId, String topic, String role, int stars}) async {
+  Future<void> setUserRating({
+    String userId,
+    String topic,
+    String role,
+    int stars,
+  }) async {
     _setLoading(true);
 
     try {
@@ -18,7 +22,7 @@ mixin UsersModel on ConnectedModel {
       await Dio().post(
         url,
         data: {
-          'userRef': 'hives/$userId',
+          'userRef': 'users/$userId',
           'topic': topic,
           'role': role,
           'stars': stars
