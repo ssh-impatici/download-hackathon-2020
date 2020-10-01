@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:hackathon/utils/enums.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -283,8 +285,18 @@ class _AuthPageState extends State<AuthPage> {
                   AuthResult result = await model.signInWithGoogle();
                   switch (result) {
                     case AuthResult.SIGNEDIN:
-                      await model.getHives();
-                      await model.getMapHives();
+                      // Get position once
+                      Position pos = await model.getPosition();
+
+                      LatLng latLng;
+                      if (pos != null) {
+                        latLng = LatLng(pos.latitude, pos.longitude);
+                      }
+
+                      await model.getTopics();
+                      await model.getHives(latLng: latLng);
+                      await model.getMapHives(latLng: latLng);
+
                       Navigator.of(context).pushReplacementNamed('/home');
                       break;
                     case AuthResult.SIGNEDUP:
