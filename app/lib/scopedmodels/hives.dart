@@ -170,6 +170,7 @@ mixin HivesModel on ConnectedModel {
 
       Map<String, dynamic> json = response.data;
       toReturn = await _parseHive(json);
+      addNotificationTopics([toReturn.id]);
     } catch (e) {
       errorMessage = e.toString();
     }
