@@ -63,16 +63,32 @@ module.exports = function(e) {
     await db.doc(data.userRef).update({
       hives: userHives
     });
-
+    
     var hiveRef_plain = data.hiveRef.replace("hives/", "");
 
+    const fcm = admin.messaging();
+
+    const topic = hiveRef_plain;
+    const payload = {
+      notification: {
+        title: 'Beelder',
+        body: `Someone joined the hive ${hive.get("name")}!`,
+      },
+      data: {
+        sound: 'default',
+        click_action: 'FLUTTER_NOTIFICATION_CLICK'
+      }
+    };
+
+    fcm.sendToTopic(topic, payload);
+    
     db.collection("hives").doc(hiveRef_plain).get()
-      .then(snap => {
-        return res.status(201).send({
-          ...snap.data(),
-          hiveId: hiveRef_plain
-        });
-      })
+    .then(snap => {
+      return res.status(201).send({
+        ...snap.data(),
+        hiveId: hiveRef_plain
+      });
+    })
   });
 
   e.leaveHive = functions.https.onRequest(async (req, res) => {

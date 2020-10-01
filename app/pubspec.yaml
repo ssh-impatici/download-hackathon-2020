@@ -23,6 +23,7 @@ dependencies:
   dio: ^3.0.10
   geolocator: ^6.0.0+4
   firebase_messaging: ^7.0.1
+  intl: ^0.16.1
 
 dev_dependencies:
   flutter_test:
