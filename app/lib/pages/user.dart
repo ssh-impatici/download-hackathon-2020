@@ -67,20 +67,8 @@ class _UserPageState extends State<UserPage> {
 
   Widget _email(String email) {
     return Container(
+      child: Text(email, style: TextStyle(fontSize: 16)),
       padding: EdgeInsets.only(top: 10, bottom: 10),
-      child: Row(
-        children: [
-          Container(
-            child: Text('Email',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            padding: EdgeInsets.only(top: 10, bottom: 10, right: 10),
-          ),
-          Container(
-            child: Text(email, style: TextStyle(fontSize: 16)),
-            padding: EdgeInsets.only(top: 10, bottom: 10),
-          )
-        ],
-      ),
     );
   }
 

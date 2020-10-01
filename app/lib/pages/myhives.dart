@@ -19,10 +19,18 @@ class _MyHivesPageState extends State<MyHivesPage> {
         onRefresh: _refreshMyHives,
         child: model.user.hives.isNotEmpty
             ? listHiveWidgets(model)
-            : Center(
-                child: Text(
-                    "Oops you don't have any Hive! Create on in the map page."),
-              ),
+            : ListView(children: [
+                Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: Text(
+                      "Oops you don't have any Hive! Create one in the map page.",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ]),
       ),
     );
   }

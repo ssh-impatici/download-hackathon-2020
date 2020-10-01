@@ -152,10 +152,10 @@ class _AuthPageState extends State<AuthPage> {
           color: Colors.grey.shade900,
           disabledColor: Colors.grey.shade900,
           child: Center(
-            child: model.loading
+            child: model.loading || model.googling
                 ? Container(
                     padding: EdgeInsets.all(10),
-                    child: Center(child: CircularProgressIndicator()))
+                    child: Center(child: Text('Bzz Bzz ..')))
                 : Text(
                     mode == AuthMode.LOGIN ? 'Log in' : 'Sign in',
                     style: TextStyle(color: Colors.white),
@@ -251,7 +251,7 @@ class _AuthPageState extends State<AuthPage> {
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.8,
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                child: model.loading
+                child: model.googling
                     ? Container(
                         padding: EdgeInsets.all(10),
                         child: Center(child: CircularProgressIndicator()))

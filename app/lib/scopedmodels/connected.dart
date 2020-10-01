@@ -6,6 +6,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 mixin ConnectedModel on Model {
   bool loading = false;
+  bool googling = false;
   bool authenticated = false;
   User user;
   String errorMessage;
