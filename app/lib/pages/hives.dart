@@ -14,16 +14,11 @@ class HivesPage extends StatefulWidget {
 class _HivesPageState extends State<HivesPage> {
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: _refreshHives,
-      child: SingleChildScrollView(
-        child: ScopedModelDescendant<MainModel>(
-          builder: (context, child, model) => Container(
-            child: Column(
-              children: listHiveWidgets(model.hivesList),
-              crossAxisAlignment: CrossAxisAlignment.start,
-            ),
-          ),
+    return ScopedModelDescendant<MainModel>(
+      builder: (context, child, model) => RefreshIndicator(
+        onRefresh: _refreshHives,
+        child: ListView(
+          children: listHiveWidgets(model.hivesList),
         ),
       ),
     );
