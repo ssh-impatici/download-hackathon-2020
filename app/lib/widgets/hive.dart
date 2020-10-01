@@ -209,63 +209,70 @@ class _HiveDescriptionState extends State<HiveDescription> {
     bool alreadyJoined = _userAlreadyJoined(
         role, _retrieveHive(false), ScopedModel.of<MainModel>(context).user);
 
-    return GestureDetector(
-      child: Container(
-        margin: EdgeInsets.only(right: 10, bottom: 10),
-        padding: EdgeInsets.only(bottom: 10, left: 10, right: 20, top: 10),
-        decoration: BoxDecoration(
-          color: alreadyJoined ? Colors.grey.shade800 : Colors.yellow,
+    return Container(
+      decoration: BoxDecoration(
+        color: alreadyJoined ? Colors.grey.shade800 : Colors.yellow,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      margin: EdgeInsets.only(bottom: 10),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
           borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
+          onTap: () {
+            showModalBottomSheet(
+              context: context,
+              builder: (context) => _confirmJoin(role),
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.only(bottom: 10, left: 10, right: 20, top: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                    height: 25,
-                    width: 25,
-                    child: alreadyJoined
-                        ? Container()
-                        : InkWell(
-                            child: Icon(
+                Row(
+                  children: [
+                    Container(
+                      height: 25,
+                      width: 25,
+                      child: alreadyJoined
+                          ? Container()
+                          : Icon(
                               Icons.add,
                               color: Colors.grey.shade800,
                             ),
-                            onTap: () {
-                              showModalBottomSheet(
-                                context: context,
-                                builder: (context) => _confirmJoin(role),
-                              );
-                            },
-                          )),
-                SizedBox(width: 10),
-                Container(
-                  child: Text(
-                    role.name,
-                    style: TextStyle(
-                        color:
-                            alreadyJoined ? Colors.white : Colors.grey.shade800,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
+                    ),
+                    SizedBox(width: 10),
+                    Container(
+                      child: Text(
+                        role.name,
+                        style: TextStyle(
+                            color: alreadyJoined
+                                ? Colors.white
+                                : Colors.grey.shade800,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                    ),
+                  ],
                 ),
+                Flexible(
+                  child: Container(
+                    child: Text(
+                      role.quantity.toString(),
+                      style: TextStyle(
+                          color: alreadyJoined
+                              ? Colors.white
+                              : Colors.grey.shade800,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
+                    ),
+                  ),
+                )
               ],
             ),
-            Flexible(
-              child: Container(
-                child: Text(
-                  role.quantity.toString(),
-                  style: TextStyle(
-                      color:
-                          alreadyJoined ? Colors.white : Colors.grey.shade800,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15),
-                ),
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );
