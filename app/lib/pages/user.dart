@@ -4,6 +4,7 @@ import 'package:hackathon/classes/user.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:hackathon/widgets/role_scoring_tile.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserPage extends StatefulWidget {
   final User user;
@@ -99,8 +100,29 @@ class _UserPageState extends State<UserPage> {
 
   Widget _email(String email) {
     return Container(
-      child: Text(email, style: TextStyle(fontSize: 16)),
       padding: EdgeInsets.only(top: 10, bottom: 10),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(4.0),
+          onTap: () async {
+            String launchUrl = 'mailto:$email';
+
+            if (await canLaunch(launchUrl)) {
+              launch(launchUrl);
+            }
+          },
+          child: Container(
+            child: Text(
+              email,
+              style: TextStyle(
+                fontSize: 16,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
