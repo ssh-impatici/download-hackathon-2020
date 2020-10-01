@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:hackathon/classes/user.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:hackathon/widgets/hive_card.dart';
@@ -16,9 +17,7 @@ class _MyHivesPageState extends State<MyHivesPage> {
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) => RefreshIndicator(
         onRefresh: _refreshMyHives,
-        child: ListView(
-          children: listHiveWidgets(model.user),
-        ),
+        child: listHiveWidgets(model),
       ),
     );
   }
@@ -28,12 +27,11 @@ class _MyHivesPageState extends State<MyHivesPage> {
     setState(() {});
   }
 
-  List<Widget> listHiveWidgets(User user) {
-    print(user.hives);
-    List<Widget> hiveswidgets = List<Widget>();
+  Widget listHiveWidgets(MainModel model) {
+    List<Widget> hivesWidgets = List<Widget>();
 
     // Page Title
-    hiveswidgets.add(
+    hivesWidgets.add(
       Container(
         margin: EdgeInsets.only(top: 30, left: 20, bottom: 10),
         child: Text(
@@ -44,9 +42,24 @@ class _MyHivesPageState extends State<MyHivesPage> {
       ),
     );
 
-    user.hives.forEach((hive) {
-      hiveswidgets.add(HiveCard(hive, user));
+    if (model.user.hives == null || model.user.hives.isEmpty) {
+      return ListView(
+        children: hivesWidgets,
+      );
+    }
+
+    Position location = model.position;
+
+    model.user.hives.forEach((hive) {
+      hivesWidgets.add(HiveCard(
+        hive,
+        model.user,
+        location: location,
+      ));
     });
-    return hiveswidgets;
+
+    return ListView(
+      children: hivesWidgets,
+    );
   }
 }
