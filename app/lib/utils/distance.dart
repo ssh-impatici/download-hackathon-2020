@@ -16,7 +16,7 @@ String distance({
   dist = dist * 60 * 1.1515;
   // Conversion to Km
   dist = dist * 1.609344;
-  return dist.toStringAsFixed(2);
+  return dist.toStringAsFixed(1);
 }
 
 double deg2rad(double deg) {

@@ -140,10 +140,11 @@ class HiveCard extends StatelessWidget {
         ),
         margin: EdgeInsets.only(right: 8.0),
         child: Text(
-          dist,
+          '$dist km',
           style: TextStyle(
             fontSize: 14.0,
             color: Colors.black,
+            fontWeight: FontWeight.bold,
           ),
         ),
       );
