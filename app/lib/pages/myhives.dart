@@ -17,7 +17,12 @@ class _MyHivesPageState extends State<MyHivesPage> {
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) => RefreshIndicator(
         onRefresh: _refreshMyHives,
-        child: listHiveWidgets(model),
+        child: model.user.hives.isNotEmpty
+            ? listHiveWidgets(model)
+            : Center(
+                child: Text(
+                    "Oops you don't have any Hive! Create on in the map page."),
+              ),
       ),
     );
   }

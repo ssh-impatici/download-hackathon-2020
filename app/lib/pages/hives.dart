@@ -17,7 +17,14 @@ class _HivesPageState extends State<HivesPage> {
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) => RefreshIndicator(
         onRefresh: _refreshHives,
-        child: listHiveWidget(model),
+        child: model.hivesList.isNotEmpty
+            ? listHiveWidget(model)
+            : Center(
+                child: Text(
+                  'Oops! There are no Hives open.',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
       ),
     );
   }
