@@ -13,7 +13,6 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  //
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -25,6 +24,12 @@ class _AuthPageState extends State<AuthPage> {
   String email;
   String password;
   String verify;
+
+  @override
+  void initState() {
+    ScopedModel.of<MainModel>(context).user = null;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
