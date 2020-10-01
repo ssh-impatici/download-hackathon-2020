@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hackathon/classes/hive.dart';
 import 'package:hackathon/classes/role.dart';
+import 'package:hackathon/classes/topic.dart';
 import 'package:hackathon/classes/user.dart';
 import 'package:hackathon/pages/user.dart';
 import 'package:hackathon/scopedmodels/main.dart';
+import 'package:hackathon/widgets/review_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 enum FromScreen { MAP, LIST, MY_HIVES }
@@ -55,7 +57,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
                       _hive.takenRoles != null && _hive.takenRoles.isNotEmpty
                           ? _section('People')
                           : Container(),
-                      _takenRoles(context),
+                      _takenRoles(),
                       _giveUp()
                     ],
                   )
@@ -269,11 +271,13 @@ class _HiveDescriptionState extends State<HiveDescription> {
     );
   }
 
-  Widget _takenRoles(BuildContext context) {
+  Widget _takenRoles() {
     List<Widget> roles = List<Widget>();
+
     _hive.takenRoles.forEach((role) {
-      roles.add(_takenRole(role, context));
+      roles.add(_takenRole(role));
     });
+
     return Container(
       margin: EdgeInsets.only(top: 10),
       child: Column(
@@ -282,67 +286,132 @@ class _HiveDescriptionState extends State<HiveDescription> {
     );
   }
 
-  Widget _takenRole(TakenRole role, BuildContext context) {
+  Widget _takenRole(TakenRole role) {
     return ScopedModelDescendant<MainModel>(
-      builder: (context, child, model) => Container(
-        margin: EdgeInsets.only(bottom: 15),
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.grey.shade800),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: InkWell(
-                onTap: () => {
-                  role.user.id != model.user.id
-                      ? Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SafeArea(
-                              child: Scaffold(
-                                body: UserPage(role.user),
+      builder: (context, child, model) {
+        bool isOwner = model.user.id == _hive.creator.id;
+
+        return Container(
+          margin: EdgeInsets.only(bottom: 15),
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.grey.shade800),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: InkWell(
+                  onTap: () => {
+                    role.user.id != model.user.id
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SafeArea(
+                                child: Scaffold(
+                                  body: UserPage(role.user),
+                                ),
                               ),
                             ),
-                          ),
+                          )
+                        : {}
+                  },
+                  child: Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          role.name,
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          role.user.fullName,
+                          style: TextStyle(fontSize: 15),
                         )
-                      : {}
-                },
-                child: Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        role.name,
-                        style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        role.user.fullName,
-                        style: TextStyle(fontSize: 15),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
+              isOwner ? _review(role) : Container(),
+              model.user.id == _hive.creator.id || model.user.id == role.user.id
+                  ? _remove(model.leaveHive, role)
+                  : Container()
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _review(TakenRole role) {
+    return Container(
+      margin: EdgeInsets.only(right: 6.0),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20.0),
+          child: Container(
+            padding: EdgeInsets.all(4.0),
+            child: Icon(
+              Icons.rate_review,
+              size: 20.0,
             ),
-            model.user.id == _hive.creator.id || model.user.id == role.user.id
-                ? _remove(model.leaveHive, role)
-                : Container()
-          ],
+          ),
+          onTap: () async {
+            await ScopedModel.of<MainModel>(context).getTopics();
+
+            showDialog(
+              context: context,
+              builder: (ctx) => ReviewDialog(
+                role.user,
+                role.name,
+                (stars) => _onConfirm(role.user, role.name, stars),
+              ),
+            );
+          },
         ),
       ),
     );
   }
 
+  Future<bool> _onConfirm(User user, String role, int stars) async {
+    MainModel model = ScopedModel.of<MainModel>(context);
+
+    Topic topic = model.topics != null
+        ? model.topics.firstWhere((topic) => topic.roles.contains(role))
+        : null;
+
+    if (topic == null) {
+      return false;
+    }
+
+    await model.setUserRating(
+      userId: user.id,
+      role: role,
+      topic: topic.id,
+      stars: stars,
+    );
+
+    return true;
+  }
+
   Widget _remove(Function remove, TakenRole role) {
-    return Flexible(
+    return Material(
+      color: Colors.transparent,
       child: InkWell(
-        child: Icon(Icons.remove),
+        borderRadius: BorderRadius.circular(20.0),
+        child: Container(
+          padding: EdgeInsets.all(4.0),
+          child: Icon(
+            Icons.remove_circle,
+            size: 20.0,
+          ),
+        ),
         onTap: () {
           showModalBottomSheet(
             context: context,
