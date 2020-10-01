@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hackathon/classes/hive.dart';
 import 'package:hackathon/classes/role.dart';
+import 'package:hackathon/classes/user.dart';
 import 'package:hackathon/scopedmodels/main.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -21,7 +22,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
 
   @override
   void initState() {
-    _retrieveHive();
+    _retrieveHive(true);
     super.initState();
   }
 
@@ -62,7 +63,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
     );
   }
 
-  _retrieveHive() {
+  Hive _retrieveHive(bool reload) {
     Hive hive;
 
     switch (widget.from) {
@@ -90,9 +91,13 @@ class _HiveDescriptionState extends State<HiveDescription> {
         }
     }
 
-    setState(() {
-      _hive = hive;
-    });
+    if (reload) {
+      setState(() {
+        _hive = hive;
+      });
+    }
+
+    return hive;
   }
 
   Widget _title() {
@@ -167,6 +172,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
   }
 
   Widget _openRole(OpenRole role, BuildContext context) {
+    print(_hive);
     return GestureDetector(
       child: Container(
         margin: EdgeInsets.only(right: 10, bottom: 10),
@@ -181,18 +187,24 @@ class _HiveDescriptionState extends State<HiveDescription> {
           children: [
             Row(
               children: [
-                InkWell(
-                  child: Icon(
-                    Icons.add,
-                    color: Colors.grey.shade800,
-                  ),
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (context) => _confirmJoin(role),
-                    );
-                  },
-                ),
+                Container(
+                    height: 25,
+                    width: 25,
+                    child: _userAlreadyJoined(role, _retrieveHive(false),
+                            ScopedModel.of<MainModel>(context).user)
+                        ? Container()
+                        : InkWell(
+                            child: Icon(
+                              Icons.add,
+                              color: Colors.grey.shade800,
+                            ),
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) => _confirmJoin(role),
+                              );
+                            },
+                          )),
                 SizedBox(width: 10),
                 Container(
                   child: Text(
@@ -353,7 +365,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
                                       hiveId: _hive.id,
                                       roleId: role.name,
                                       userId: model.user.id)
-                                  .then((_) => _retrieveHive())
+                                  .then((_) => _retrieveHive(true))
                                   .then((_) => model.retrieveUserInfo())
                                   .then((_) => Navigator.pop(context));
                             },
@@ -434,7 +446,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
                                       hiveId: _hive.id,
                                       roleId: role.name,
                                       userId: role.user.id)
-                                  .then((_) => _retrieveHive())
+                                  .then((_) => _retrieveHive(true))
                                   .then((_) => model.retrieveUserInfo())
                                   .then((_) => Navigator.pop(context));
                             },
@@ -559,7 +571,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
                             onTap: () {
                               model
                                   .giveUpHive(hiveId: widget.hiveId)
-                                  .then((_) => _retrieveHive())
+                                  .then((_) => _retrieveHive(true))
                                   .then((_) => model.retrieveUserInfo())
                                   .then((_) => Navigator.pop(context));
                             },
@@ -575,5 +587,25 @@ class _HiveDescriptionState extends State<HiveDescription> {
         ),
       ),
     );
+  }
+
+  bool _userAlreadyJoined(OpenRole role, Hive hive, User user) {
+    print('************************************************');
+    print(hive);
+    print(user.id);
+
+    bool result = false;
+
+    hive.takenRoles.forEach((trole) {
+      print(trole.user.id +
+          ' ' +
+          user.fullName +
+          ' ' +
+          trole.name +
+          ' ' +
+          role.name);
+      if (trole.user.id == user.id && trole.name == role.name) result = true;
+    });
+    return result;
   }
 }
