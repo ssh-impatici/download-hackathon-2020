@@ -22,11 +22,19 @@ We believe that the dualism of live events (present on the map) and virtual even
 
 ## Quick start
 
-This is a normal flutter app. You should follow the instructions in the [official documentation](https://flutter.io/docs/get-started/install).
+This is a normal flutter app. You should follow the instructions in the [official documentation](https://flutter.io/docs/get-started/install). The code is in the "app" folder.
 
-This repo is using Firebase with Cloud Firestore as backend. You can read the [official documentation](https://firebase.google.com/docs).
+This repo is using Firebase with Cloud Firestore as backend. You can read the [official documentation](https://firebase.google.com/docs). The code is in the "firebase" folder.
 
-TODO (Export apk)
+### Installation
+
+We provide a file named "Beelder.apk" which can be installed on android devices running Android 4.1 (API level 16) or higher.
+
+Firebase is online and available to handle past requests.
+
+### Usage
+
+TODO SCREENSHOT
 
 ## Authors
 
