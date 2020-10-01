@@ -122,17 +122,15 @@ module.exports = function(e) {
 
     // ##### Remove hive from user's hives
     let userHives = user.get("hives");
-    let userIndex = userHives.findIndex(r => (r.hiveRef == data.hiveRef));
+    let userIndex = userHives.findIndex(r => r.hiveRef == data.hiveRef);
     let creatore = db.doc(data.hiveRef).get("creator")
 
     if (userIndex < 0) {
       return res.status(404).send("Hive not available");
     } else {
-      userHives[userIndex].roles = userHives[userIndex].roles.filter(function(value, index, arr) {
-        return value != data.roleRef;
-      })
+      userHives[userIndex].roles = userHives[userIndex].roles.filter(role => role != data.roleRef);
 
-      if ((userHives[userIndex].length != 0) || (data.userRef == creatore)) {
+      if ((userHives[userIndex].roles.length != 0) || (data.userRef == creatore)) {
         // Creator, so roles is empty but hiveRef keept
         // or
         // There is some roles, so roles is not empty
@@ -199,8 +197,6 @@ module.exports = function(e) {
       hiveRef: "hives/" + docId,
       roles: []
     });
-
-
 
     await db.doc(data.creator).update({
       hives: userHives
