@@ -22,13 +22,13 @@ We believe that the dualism of live events (present on the map) and virtual even
 
 ## Quick start
 
-This is a normal Flutter app. You should follow the instructions in the [official documentation](https://flutter.io/docs/get-started/install). The code is in the `app` folder.
+This is a normal Flutter app. You should follow the instructions in the [official documentation](https://flutter.io/docs/get-started/install) to install Flutter. The code is in the `app` folder.
 
 This repo is using Firebase with Cloud Firestore as backend. You can read the [official documentation](https://firebase.google.com/docs). The code is in the `firebase` folder.
 
 ### Installation
 
-We provide a file named `Beelder.apk` which can be installed on android devices running Android 4.1 (API level 16) or higher.
+We provide a file named `beelder.apk` which can be installed on android devices running Android 4.1 (API level 16) or higher.
 
 Firebase is online and available to handle past requests.
 
@@ -58,7 +58,7 @@ To create an hive you will need to complete all the fields by entering the topic
 The `explore` tab shows all hives, both nearby ones (indicating their distance in km) and virtual ones. In addition to the various topics, a key icon is shown if you are the queen bee of the hive.
 
 <p align="center">
-<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/todo.jpg" width="200">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_5.jpg" width="200">
 </p>
 
 The `my hives` tab shows the hives that you have joined or owned. In the `hive's detail` tab you can apply for multiple roles or remove yourself and also, if you are the creator, you can give team members a star rating for the role played.
@@ -91,6 +91,10 @@ Note: use pull to refresh in the tabs!
 -   **Lorenzo Conti**: [Site](https://www.lorenzoconti.dev/#/)
 -   **Samuele Ferri**: [Site](https://samuelexferri.com)
 -   **Fabio Sangregorio**: [Site](https://fabio.sangregorio.dev/)
+
+<p align="center">
+<img src="https://gitlab.com/download-event-2020/ssh_impatici/-/raw/master/images/screens/screen_11.jpg" width="200">
+</p>
 
 ## Version
 
