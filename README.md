@@ -99,7 +99,7 @@ Note: use pull to refresh in the tabs!
 
 ## Version
 
-![alt text](https://img.shields.io/badge/Version-0.0.1-blue.svg?style=for-the-badge)
+![alt text](https://img.shields.io/badge/Version-1.0.0-blue.svg?style=for-the-badge)
 
 ## License
 
