@@ -9,7 +9,6 @@ import 'package:hackathon/utils/location.dart';
 import 'package:hackathon/widgets/topic-auto-completion.dart';
 import 'package:hackathon/widgets/open-role-dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'dart:math';
 
 class CreateHivePage extends StatefulWidget {
   @override
