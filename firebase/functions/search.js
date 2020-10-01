@@ -39,7 +39,7 @@ module.exports = function(e) {
 
     let userHives = await db.doc(data.userRef).get();
     userHives = userHives.get("hives");
-    if(!userHives) userHives = [];
+    if (!userHives) userHives = [];
     userHives = userHives.map(hive => hive.hiveRef);
 
     // filter out already joined hives or created by you
@@ -87,7 +87,6 @@ module.exports = function(e) {
   });
 
   e.getHivesMap = functions.https.onRequest(async (req, res) => {
-    // TODO Zoom
     let zoom = Number(req.query.zoom);
     let lat = Number(req.query.latitude);
     let long = Number(req.query.longitude);
