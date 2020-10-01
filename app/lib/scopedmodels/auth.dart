@@ -18,6 +18,10 @@ mixin AuthModel on ConnectedModel {
     notifyListeners();
   }
 
+  Future<void> initUser() async {
+    await retrieveUserInfo();
+  }
+
   // Firebase email/password auth methods
 
   Future<AuthResult> createUserWithEmailAndPassword({
@@ -94,6 +98,7 @@ mixin AuthModel on ConnectedModel {
     } catch (e) {
       errorMessage = e.toString();
     } finally {
+      user = null;
       authenticated = false;
     }
 

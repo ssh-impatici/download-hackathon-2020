@@ -17,6 +17,14 @@ mixin HivesModel on ConnectedModel {
     notifyListeners();
   }
 
+  Future<void> initHives() async {
+    _setLoading(true);
+
+    await getHives();
+    await getMapHives();
+    _setLoading(false);
+  }
+
   Future<Position> getPosition() async {
     LocationPermission permission = await checkPermission();
 

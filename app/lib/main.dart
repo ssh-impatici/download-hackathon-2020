@@ -37,7 +37,8 @@ class _AppState extends State<App> {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.theme,
         routes: {
-          '/': (context) => AuthPage(),
+          '/': (context) =>
+              _model.authenticated != null ? AuthPage() : HomePage(_model),
           '/info': (context) => InfoPage(),
           '/home': (context) => HomePage()
         },

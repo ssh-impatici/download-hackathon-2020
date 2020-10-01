@@ -43,7 +43,7 @@ class RoleScoringTile extends StatelessWidget {
                   fontSize: 16.0,
                 ),
               ),
-              SizedBox(width: 4.0),
+              SizedBox(width: 10),
               Text(
                 roleScoring.stars.toStringAsFixed(1),
                 style: TextStyle(

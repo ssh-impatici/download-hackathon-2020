@@ -6,8 +6,9 @@ class TopicAutoCompletion extends StatefulWidget {
   //
   final List options;
   final Function callback;
+  final Function onFocus;
   final String hint;
-  TopicAutoCompletion(this.options, this.callback, {this.hint});
+  TopicAutoCompletion(this.options, this.callback, {this.hint, this.onFocus});
 
   @override
   _TopicAutoCompletionState createState() => _TopicAutoCompletionState();
@@ -16,6 +17,14 @@ class TopicAutoCompletion extends StatefulWidget {
 class _TopicAutoCompletionState extends State<TopicAutoCompletion> {
   //
   GlobalKey<AutoCompleteTextFieldState<Topic>> _key = GlobalKey();
+  FocusNode _focus = FocusNode();
+
+  @override
+  void initState() {
+    _focus.addListener(() => widget.onFocus());
+    super.initState();
+  }
+
   //
   @override
   Widget build(BuildContext context) {
@@ -29,6 +38,7 @@ class _TopicAutoCompletionState extends State<TopicAutoCompletion> {
   Widget _field() {
     return Container(
       child: AutoCompleteTextField<Topic>(
+        focusNode: _focus,
         decoration: InputDecoration(
           hintText: widget.hint,
         ),

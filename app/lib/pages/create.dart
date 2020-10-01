@@ -20,6 +20,7 @@ class _CreateHivePageState extends State<CreateHivePage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  ScrollController _controller;
 
   String name;
   String description;
@@ -31,82 +32,90 @@ class _CreateHivePageState extends State<CreateHivePage> {
   String _openRolesErrorMessage;
 
   @override
+  void initState() {
+    _controller = ScrollController();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
-              width: MediaQuery.of(context).size.width,
-              child: ScopedModelDescendant<MainModel>(
-                builder: (context, child, model) => Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(bottom: 20),
-                      child: Text(
-                        'Create Hive',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
+        body: ListView(controller: _controller, children: [
+          Container(
+            child: Form(
+              key: _formKey,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+                width: MediaQuery.of(context).size.width,
+                child: ScopedModelDescendant<MainModel>(
+                  builder: (context, child, model) => Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(bottom: 20),
+                        child: Text(
+                          'Create Hive',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(bottom: 20),
-                      child: Text(
-                        'Fill the info below to create a new hive!',
-                        style: TextStyle(fontSize: 16),
+                      Container(
+                        padding: EdgeInsets.only(bottom: 20),
+                        child: Text(
+                          'Fill the info below to create a new hive!',
+                          style: TextStyle(fontSize: 16),
+                        ),
                       ),
-                    ),
-                    _title('Name'),
-                    _name(),
-                    SizedBox(height: 15),
-                    _title('Description'),
-                    _description(),
-                    SizedBox(height: 15),
-                    _title('Location (optional)'),
-                    _address(),
-                    SizedBox(height: 15),
-                    _title('Topics'),
-                    _interests(model.topics),
-                    _topicsErrorMessage != null
-                        ? _errorMessage(_topicsErrorMessage)
-                        : Container(),
-                    _selectedTopics(topics),
-                    SizedBox(height: 15),
-                    topics.isNotEmpty
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              _title('Open roles'),
-                              InkWell(
-                                borderRadius: BorderRadius.circular(50),
-                                onTap: addOpenRole,
-                                child: Icon(
-                                  Icons.add_circle,
+                      _title('Name'),
+                      _name(),
+                      SizedBox(height: 15),
+                      _title('Description'),
+                      _description(),
+                      SizedBox(height: 15),
+                      _title('Location (optional)'),
+                      _address(),
+                      SizedBox(height: 15),
+                      _title('Topics'),
+                      _interests(model.topics),
+                      _topicsErrorMessage != null
+                          ? _errorMessage(_topicsErrorMessage)
+                          : Container(),
+                      _selectedTopics(topics),
+                      SizedBox(height: 15),
+                      topics.isNotEmpty
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                _title('Open roles'),
+                                InkWell(
+                                  borderRadius: BorderRadius.circular(50),
+                                  onTap: addOpenRole,
+                                  child: Icon(
+                                    Icons.add_circle,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          )
-                        : Container(),
-                    _openRolesErrorMessage != null
-                        ? _errorMessage(_openRolesErrorMessage)
-                        : Container(),
-                    _openRoles(openRoles),
-                    _button(),
-                  ],
+                              ],
+                            )
+                          : Container(),
+                      _openRolesErrorMessage != null
+                          ? _errorMessage(_openRolesErrorMessage)
+                          : Container(),
+                      _openRoles(openRoles),
+                      _button(),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+        ]),
       ),
     );
   }
@@ -223,8 +232,13 @@ class _CreateHivePageState extends State<CreateHivePage> {
 
   Widget _interests(List<Topic> options) {
     return Container(
-      child: TopicAutoCompletion(options, addTopic),
+      child: TopicAutoCompletion(options, addTopic, onFocus: onFocusCallback),
     );
+  }
+
+  void onFocusCallback() {
+    _controller.animateTo(_controller.offset,
+        duration: Duration(milliseconds: 200), curve: Curves.easeIn);
   }
 
   void addTopic(Topic topic) {

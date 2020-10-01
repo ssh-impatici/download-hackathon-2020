@@ -10,6 +10,10 @@ mixin TopicsModel on ConnectedModel {
     notifyListeners();
   }
 
+  Future<void> initTopics() async {
+    await getTopics();
+  }
+
   Future<List<Topic>> getTopics() async {
     _setLoading(true);
     List<Topic> toReturn = [];
