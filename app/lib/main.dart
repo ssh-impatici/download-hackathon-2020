@@ -26,11 +26,6 @@ class _AppState extends State<App> {
   final MainModel _model = MainModel();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return ScopedModel<MainModel>(
       model: _model,

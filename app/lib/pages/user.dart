@@ -17,6 +17,10 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
+    if (widget.user == null) {
+      return Container();
+    }
+
     bool shouldShowReview = widget.user.topics
         .map((e) => e.scorings)
         .expand((i) => i)

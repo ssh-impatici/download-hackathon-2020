@@ -194,7 +194,6 @@ class _CreateHivePageState extends State<CreateHivePage> {
   Widget _description() {
     return Container(
       child: TextFormField(
-        keyboardType: TextInputType.emailAddress,
         controller: descriptionController,
         decoration: InputDecoration(hintText: 'Description'),
         // ignore: missing_return

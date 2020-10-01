@@ -15,13 +15,15 @@ class TopicAutoCompletion extends StatefulWidget {
 }
 
 class _TopicAutoCompletionState extends State<TopicAutoCompletion> {
-  //
   GlobalKey<AutoCompleteTextFieldState<Topic>> _key = GlobalKey();
   FocusNode _focus = FocusNode();
 
   @override
   void initState() {
-    _focus.addListener(() => widget.onFocus());
+    if (widget.onFocus != null) {
+      _focus.addListener(() => widget.onFocus());
+    }
+
     super.initState();
   }
 
