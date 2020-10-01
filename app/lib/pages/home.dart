@@ -31,8 +31,8 @@ class _HomePageState extends State<HomePage> {
                 children: <Widget>[
                   MapPage(model),
                   HivesPage(),
+                  MyHivesPage(),
                   UserPage(),
-                  MyHivesPage()
                 ],
               ),
             ),

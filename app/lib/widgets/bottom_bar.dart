@@ -45,12 +45,12 @@ class _BottomBarState extends State<BottomBar> {
           title: Text('Explore'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          title: Text('Profile'),
-        ),
-        BottomNavigationBarItem(
           icon: Icon(Icons.list),
           title: Text('My Hives'),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          title: Text('Profile'),
         ),
       ],
       currentIndex: _selectedIndex,
