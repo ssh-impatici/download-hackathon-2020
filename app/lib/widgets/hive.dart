@@ -172,13 +172,15 @@ class _HiveDescriptionState extends State<HiveDescription> {
   }
 
   Widget _openRole(OpenRole role, BuildContext context) {
+    bool alreadyJoined = _userAlreadyJoined(
+        role, _retrieveHive(false), ScopedModel.of<MainModel>(context).user);
     print(_hive);
     return GestureDetector(
       child: Container(
         margin: EdgeInsets.only(right: 10, bottom: 10),
         padding: EdgeInsets.only(bottom: 10, left: 10, right: 20, top: 10),
         decoration: BoxDecoration(
-          color: Colors.yellow,
+          color: alreadyJoined ? Colors.grey.shade800 : Colors.yellow,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
@@ -190,8 +192,7 @@ class _HiveDescriptionState extends State<HiveDescription> {
                 Container(
                     height: 25,
                     width: 25,
-                    child: _userAlreadyJoined(role, _retrieveHive(false),
-                            ScopedModel.of<MainModel>(context).user)
+                    child: alreadyJoined
                         ? Container()
                         : InkWell(
                             child: Icon(
@@ -210,7 +211,8 @@ class _HiveDescriptionState extends State<HiveDescription> {
                   child: Text(
                     role.name,
                     style: TextStyle(
-                        color: Colors.grey.shade800,
+                        color:
+                            alreadyJoined ? Colors.white : Colors.grey.shade800,
                         fontWeight: FontWeight.bold,
                         fontSize: 15),
                   ),
@@ -222,7 +224,8 @@ class _HiveDescriptionState extends State<HiveDescription> {
                 child: Text(
                   role.quantity.toString(),
                   style: TextStyle(
-                      color: Colors.grey.shade800,
+                      color:
+                          alreadyJoined ? Colors.white : Colors.grey.shade800,
                       fontWeight: FontWeight.bold,
                       fontSize: 15),
                 ),

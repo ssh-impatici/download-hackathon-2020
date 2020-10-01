@@ -38,19 +38,31 @@ class _BottomBarState extends State<BottomBar> {
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.map),
-          title: Text('Map'),
+          title: Text(
+            'Map',
+            style: TextStyle(fontSize: 14),
+          ),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.search),
-          title: Text('Explore'),
+          title: Text(
+            'Explore',
+            style: TextStyle(fontSize: 14),
+          ),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.list),
-          title: Text('My Hives'),
+          title: Text(
+            'My Hives',
+            style: TextStyle(fontSize: 14),
+          ),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
-          title: Text('Profile'),
+          title: Text(
+            'Profile',
+            style: TextStyle(fontSize: 14),
+          ),
         ),
       ],
       currentIndex: _selectedIndex,
