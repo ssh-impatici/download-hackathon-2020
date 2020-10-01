@@ -13,8 +13,8 @@ mixin AuthModel on ConnectedModel {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  _setLoading(bool newState) {
-    loading = newState;
+  _setLoading(bool value) {
+    loading = value;
     notifyListeners();
   }
 
@@ -104,7 +104,7 @@ mixin AuthModel on ConnectedModel {
   // Firebase google sign-in methods
 
   Future<AuthResult> signInWithGoogle() async {
-    _setLoading(true);
+    _setGoogling(true);
     AuthResult result;
 
     try {
@@ -137,7 +137,7 @@ mixin AuthModel on ConnectedModel {
       errorMessage = e.toString();
     }
 
-    _setLoading(false);
+    _setGoogling(false);
     return result;
   }
 
@@ -393,5 +393,10 @@ mixin AuthModel on ConnectedModel {
     } catch (e) {
       return null;
     }
+  }
+
+  void _setGoogling(bool value) {
+    googling = value;
+    notifyListeners();
   }
 }

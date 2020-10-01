@@ -19,12 +19,18 @@ class _HivesPageState extends State<HivesPage> {
         onRefresh: _refreshHives,
         child: model.hivesList.isNotEmpty
             ? listHiveWidget(model)
-            : Center(
-                child: Text(
-                  'Oops! There are no Hives open.',
-                  style: TextStyle(color: Colors.white),
+            : ListView(children: [
+                Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: Text(
+                      'Oops! There are no Hives open.',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ),
-              ),
+              ]),
       ),
     );
   }

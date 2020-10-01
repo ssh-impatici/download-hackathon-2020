@@ -15,6 +15,8 @@ class HiveCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('HIVE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    print(hive.creator.id + ' ' + user.id);
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade800,
