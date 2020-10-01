@@ -62,6 +62,7 @@ module.exports = function(e) {
     console.log("Log " + JSON.stringify(topics[topicIndex1][Object.keys(topics[topicIndex1])]))
     console.log("Log " + topicIndex2)
 
+    // Topic and role in database, update ratings
     const previous_reviews = topics[topicIndex1][Object.keys(topics[topicIndex1])][topicIndex2].reviews
     const previous_stars = topics[topicIndex1][Object.keys(topics[topicIndex1])][topicIndex2].stars
 
